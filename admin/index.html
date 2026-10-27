@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>管理後台｜豪智慧有限公司</title>
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; frame-src 'self' https://*.firebaseapp.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#0B2B3F">
+  <link rel="icon" href="../favicon.ico" sizes="any">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../assets/css/style.css?v=9">
+  <link rel="stylesheet" href="../assets/css/admin.css?v=9">
+  <script src="../assets/js/theme-init.js?v=9"></script>
+  <script src="../assets/js/config.js?v=9" defer></script>
+  <script src="../assets/js/content.js?v=9" defer></script>
+  <script src="../assets/js/firebase-service.js?v=9" defer></script>
+  <script src="../assets/js/core.js?v=9" defer></script>
+  <script src="../assets/js/admin-editor.js?v=9" defer></script>
+  <script src="../assets/js/admin.js?v=9" defer></script>
+</head>
+<body class="admin-page">
+  <header class="admin-bar">
+    <a class="admin-brand" href="/" target="_blank" rel="noopener">
+      <img src="../assets/img/logo-circle.webp" width="36" height="36" alt="">
+      <span><strong>豪智慧有限公司</strong><small>管理後台</small></span>
+    </a>
+    <div class="admin-user" id="admin-user" hidden>
+      <span class="admin-email" id="admin-email"></span>
+      <button class="btn btn-sm btn-outline" type="button" id="btn-password">更改密碼</button>
+      <button class="btn btn-sm btn-outline" type="button" id="btn-logout">登出</button>
+    </div>
+  </header>
+
+  <main class="admin-main">
+    <section class="admin-center" id="view-loading">
+      <span class="admin-spinner" aria-hidden="true"></span>
+      <p>載入中…</p>
+    </section>
+
+    <section class="admin-card narrow" id="view-setup" hidden>
+      <h1>尚未連接資料庫</h1>
+      <p>請依照部署指南，把 Firebase 設定貼到 <code>assets/js/config.js</code>，存檔後重新整理本頁。</p>
+      <p class="admin-error" id="setup-error"></p>
+    </section>
+
+    <section class="admin-card narrow" id="view-login" hidden>
+      <h1>管理員登入</h1>
+      <p class="admin-sub">為了安全，關閉瀏覽器或閒置 30 分鐘會自動登出。</p>
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="login-email">Email</label>
+          <input id="login-email" name="email" type="email" autocomplete="username" required>
+        </div>
+        <div class="field">
+          <label for="login-password">密碼</label>
+          <input id="login-password" name="password" type="password" autocomplete="current-password" required>
+        </div>
+        <button class="btn btn-3d btn-primary btn-block" type="submit"><span class="btn-label">登入</span><span class="spinner" aria-hidden="true"></span></button>
+        <button class="link-btn" type="button" id="btn-forgot">忘記密碼？</button>
+        <p class="form-status" id="login-status" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section class="admin-card narrow" id="view-denied" hidden>
+      <h1>此帳號尚未開通管理權限</h1>
+      <p>請到 Firebase 主控台 → Firestore Database，在 <code>admins</code> 集合新增一份文件，<b>文件 ID</b> 填入下面這串 UID（欄位例如 <code>role</code> = <code>owner</code>），完成後重新整理本頁。</p>
+      <div class="uid-box"><code id="denied-uid"></code><button class="btn btn-sm btn-outline" type="button" id="btn-copy-uid">複製</button></div>
+      <p class="admin-error" id="denied-note"></p>
+      <button class="btn btn-sm btn-outline" type="button" data-logout>登出</button>
+    </section>
+
+    <section id="view-dash" hidden>
+      <nav class="admin-tabs" role="tablist" aria-label="管理功能">
+        <button type="button" role="tab" id="tab-inbox" aria-controls="panel-inbox" aria-selected="true" data-tab="inbox">客戶提問 <span class="tab-badge" id="badge-new" hidden>0</span></button>
+        <button type="button" role="tab" id="tab-visual" aria-controls="panel-visual" aria-selected="false" data-tab="visual">視覺化編輯</button>
+        <button type="button" role="tab" id="tab-content" aria-controls="panel-content" aria-selected="false" data-tab="content">網站內容（欄位）</button>
+        <button type="button" role="tab" id="tab-media" aria-controls="panel-media" aria-selected="false" data-tab="media">圖片庫</button>
+        <button type="button" role="tab" id="tab-history" aria-controls="panel-history" aria-selected="false" data-tab="history">版本紀錄</button>
+      </nav>
+
+      <!-- 客戶提問 -->
+      <div class="tab-panel" id="panel-inbox" role="tabpanel" aria-labelledby="tab-inbox">
+        <div class="admin-toolbar">
+          <div class="chips" role="group" aria-label="篩選狀態">
+            <button type="button" class="chip" data-filter="all" aria-pressed="true">全部</button>
+            <button type="button" class="chip" data-filter="new" aria-pressed="false">新提問</button>
+            <button type="button" class="chip" data-filter="read" aria-pressed="false">已讀</button>
+            <button type="button" class="chip" data-filter="replied" aria-pressed="false">已回覆</button>
+            <button type="button" class="chip" data-filter="archived" aria-pressed="false">已封存</button>
+          </div>
+          <input class="admin-search" id="inbox-search" type="search" placeholder="搜尋姓名、Email、主旨或內容" aria-label="搜尋提問">
+          <button class="btn btn-sm btn-outline" type="button" id="btn-export">匯出 CSV</button>
+          <button class="btn btn-sm btn-outline danger" type="button" id="btn-purge">刪除超過 2 年的提問</button>
+        </div>
+        <p class="inbox-summary" id="inbox-summary"></p>
+        <ul class="inbox" id="inbox-list"></ul>
+      </div>
+
+      <!-- 網站內容共用工具列（視覺化編輯與欄位編輯共用同一份內容） -->
+      <div class="content-tools" id="content-tools" hidden>
+        <div class="admin-toolbar">
+          <button class="btn btn-3d btn-primary btn-sm" type="button" id="btn-save"><span class="btn-label">檢查並發布</span><span class="spinner" aria-hidden="true"></span></button>
+          <button class="btn btn-sm btn-outline" type="button" id="btn-check">醫療法規用語檢查</button>
+          <button class="btn btn-sm btn-outline" type="button" id="btn-reload">放棄修改</button>
+          <a class="btn btn-sm btn-outline" href="/" target="_blank" rel="noopener">預覽網站</a>
+          <span class="toolbar-spacer"></span>
+          <button class="btn btn-sm btn-outline" type="button" id="btn-backup">下載備份</button>
+          <label class="btn btn-sm btn-outline file-btn">匯入備份<input type="file" id="file-import" accept="application/json,.json"></label>
+          <button class="btn btn-sm btn-outline danger" type="button" id="btn-defaults">套用預設內容</button>
+        </div>
+        <p class="form-status" id="content-status" role="status" aria-live="polite"></p>
+      </div>
+
+      <!-- 視覺化編輯 -->
+      <div class="tab-panel" id="panel-visual" role="tabpanel" aria-labelledby="tab-visual" hidden>
+        <div class="visual-bar">
+          <label class="vis-select"><span>預覽頁面</span>
+            <select id="visual-page">
+              <option value="home">首頁</option>
+              <option value="news">最新消息（列表）</option>
+              <option value="article">最新消息（單則內文）</option>
+              <option value="privacy">隱私權政策</option>
+            </select>
+          </label>
+          <select id="visual-article" class="vis-article" aria-label="選擇要預覽的消息" hidden></select>
+          <div class="chips" role="group" aria-label="預覽裝置尺寸">
+            <button type="button" class="chip" data-device="desktop" aria-pressed="true">桌機</button>
+            <button type="button" class="chip" data-device="tablet" aria-pressed="false">平板</button>
+            <button type="button" class="chip" data-device="mobile" aria-pressed="false">手機</button>
+          </div>
+          <span class="vis-scale" id="visual-scale"></span>
+          <button class="btn btn-sm btn-outline" type="button" id="visual-reload">重新整理預覽</button>
+        </div>
+        <div class="visual-layout">
+          <div class="visual-stage" id="visual-stage">
+            <div class="visual-screen"><iframe id="visual-frame" title="網站即時預覽：點選任何文字、圖片或區塊即可編輯"></iframe></div>
+            <div class="visual-wait" id="visual-wait" hidden>
+              <p>預覽畫面載入較慢或無法載入。<br>請確認網路連線後再試一次。</p>
+              <button class="btn btn-3d btn-primary btn-sm" type="button" id="visual-retry">重新載入預覽</button>
+            </div>
+          </div>
+          <aside class="visual-panel" id="visual-panel" aria-label="編輯面板">
+            <form id="visual-form" class="cms-form vis-form" novalidate></form>
+          </aside>
+        </div>
+      </div>
+
+      <!-- 網站內容（欄位） -->
+      <div class="tab-panel" id="panel-content" role="tabpanel" aria-labelledby="tab-content" hidden>
+        <div class="cms-layout">
+          <nav class="cms-nav" id="cms-nav" aria-label="內容區塊"></nav>
+          <form id="content-form" class="cms-form" novalidate></form>
+        </div>
+      </div>
+
+      <!-- 圖片庫 -->
+      <div class="tab-panel" id="panel-media" role="tabpanel" aria-labelledby="tab-media" hidden>
+        <div id="media-manager"></div>
+      </div>
+
+      <!-- 版本紀錄 -->
+      <div class="tab-panel" id="panel-history" role="tabpanel" aria-labelledby="tab-history" hidden>
+        <p class="admin-sub">每次發布都會自動保存一份版本（保留最近 20 份）。載入舊版本後，確認無誤再按「檢查並發布」即可還原。</p>
+        <ul class="history-list" id="history-list"></ul>
+      </div>
+    </section>
+  </main>
+
+  <dialog class="admin-dialog" id="media-dialog" aria-labelledby="media-dialog-title">
+    <div class="dialog-head"><h2 id="media-dialog-title">選擇圖片</h2><button class="mini-btn" type="button" data-close aria-label="關閉">✕</button></div>
+    <div class="dialog-body" id="media-picker"></div>
+    <div class="dialog-foot"><button class="btn btn-sm btn-outline" type="button" data-close>取消</button><button class="btn btn-3d btn-primary btn-sm" type="button" id="media-use" disabled>使用這張圖片</button></div>
+  </dialog>
+
+  <dialog class="admin-dialog" id="check-dialog" aria-labelledby="check-dialog-title">
+    <div class="dialog-head"><h2 id="check-dialog-title">醫療法規用語檢查</h2><button class="mini-btn" type="button" data-close aria-label="關閉">✕</button></div>
+    <div class="dialog-body" id="check-body"></div>
+    <div class="dialog-foot"><button class="btn btn-sm btn-outline" type="button" data-close>返回修改</button><button class="btn btn-3d btn-primary btn-sm" type="button" id="check-publish">仍要發布</button></div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

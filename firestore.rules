@@ -1,0 +1,146 @@
+rules_version = '2';
+
+// =====================================================================
+// MyopiaCare｜豪智慧有限公司 — Firestore 安全規則 v3
+// 貼到：Firebase 主控台 → Firestore Database → 規則 → 全部取代 → 發布
+//
+// 原則（最小權限）：
+//   1. 訪客只能「新增」一筆格式完全正確的客戶提問；不能讀取、修改或刪除。
+//   2. 網站內容（site/content）與網站圖片（media）任何人可讀單一文件，只有管理員可寫。
+//   3. 管理員 = admins 集合中有一份「文件 ID = 登入帳號 UID」的文件；
+//      admins 只能在 Firebase 主控台手動新增，網站程式完全無法寫入。
+//   4. 圖片只接受 PNG／JPEG／WebP／GIF 的 base64 資料（不接受 SVG，避免夾帶程式碼）。
+//   5. 瀏覽人次（stats/visits）只有一個數字欄位：訪客每次只能 +1，只有管理員能改成指定數字。
+//   6. 其他所有路徑一律拒絕。
+// =====================================================================
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function isText(v, minLen, maxLen) {
+      return v is string && v.size() >= minLen && v.size() <= maxLen;
+    }
+
+    function isImageData(v, maxLen) {
+      return v is string
+        && v.size() <= maxLen
+        && v.split(',').size() == 2
+        && v.split(',')[0] in ['data:image/png;base64', 'data:image/jpeg;base64', 'data:image/webp;base64', 'data:image/gif;base64'];
+    }
+
+    function onlyChanges(keys) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys);
+    }
+
+    // ---------- 客戶提問 ----------
+    match /inquiries/{inquiryId} {
+      allow create: if
+        request.resource.data.keys().hasOnly(['name', 'email', 'phone', 'role', 'subject', 'message', 'consent', 'status', 'createdAt'])
+        && request.resource.data.keys().hasAll(['name', 'email', 'phone', 'role', 'subject', 'message', 'consent', 'status', 'createdAt'])
+        && isText(request.resource.data.name, 1, 50)
+        && isText(request.resource.data.email, 5, 120)
+        && request.resource.data.email.matches('^[^@ ]+@[^@ ]+[.][^@ ]+$')
+        && isText(request.resource.data.phone, 0, 30)
+        && request.resource.data.role in ['parent', 'clinic', 'partner', 'other']
+        && isText(request.resource.data.subject, 1, 100)
+        && isText(request.resource.data.message, 5, 2000)
+        && request.resource.data.consent == true
+        && request.resource.data.status == 'new'
+        && request.resource.data.createdAt == request.time;
+
+      allow read, delete: if isAdmin();
+      allow update: if isAdmin()
+        && onlyChanges(['status', 'reply', 'repliedAt', 'repliedBy', 'readAt'])
+        && request.resource.data.status in ['new', 'read', 'replied', 'archived']
+        && (!('reply' in request.resource.data) || isText(request.resource.data.reply, 0, 5000));
+    }
+
+    // ---------- 網站內容 ----------
+    match /site/{docId} {
+      allow get: if docId == 'content';
+      allow list: if false;
+      allow create, update: if isAdmin()
+        && docId == 'content'
+        && request.resource.data.keys().hasOnly(['json', 'updatedAt', 'updatedBy'])
+        && isText(request.resource.data.json, 2, 300000)
+        && request.resource.data.updatedAt == request.time
+        && isText(request.resource.data.updatedBy, 0, 200);
+      allow delete: if false;
+    }
+
+    // ---------- 網站內容版本紀錄（只有管理員可讀；不可修改，只能新增與刪除） ----------
+    match /siteHistory/{versionId} {
+      allow read, delete: if isAdmin();
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasOnly(['json', 'savedAt', 'savedBy'])
+        && isText(request.resource.data.json, 2, 300000)
+        && request.resource.data.savedAt == request.time
+        && isText(request.resource.data.savedBy, 0, 200);
+      allow update: if false;
+    }
+
+    // ---------- 網站圖片（完整圖檔）：任何人可依代號讀取單張，不能列出全部 ----------
+    match /media/{mediaId} {
+      allow get: if true;
+      allow list: if false;
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasOnly(['data', 'alt', 'name', 'w', 'h', 'bytes', 'createdAt', 'createdBy'])
+        && isImageData(request.resource.data.data, 950000)
+        && isText(request.resource.data.alt, 0, 200)
+        && isText(request.resource.data.name, 0, 120)
+        && request.resource.data.w is int && request.resource.data.h is int && request.resource.data.bytes is int
+        && request.resource.data.createdAt == request.time
+        && isText(request.resource.data.createdBy, 0, 200);
+      allow update: if isAdmin() && onlyChanges(['alt']) && isText(request.resource.data.alt, 0, 200);
+      allow delete: if isAdmin();
+    }
+
+    // ---------- 圖片索引（縮圖，供後台圖片庫列表）：只有管理員可讀寫 ----------
+    match /mediaIndex/{mediaId} {
+      allow read, delete: if isAdmin();
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasOnly(['thumb', 'alt', 'name', 'w', 'h', 'bytes', 'createdAt'])
+        && isImageData(request.resource.data.thumb, 120000)
+        && isText(request.resource.data.alt, 0, 200)
+        && isText(request.resource.data.name, 0, 120)
+        && request.resource.data.createdAt == request.time;
+      allow update: if isAdmin() && onlyChanges(['alt']) && isText(request.resource.data.alt, 0, 200);
+    }
+
+    // ---------- 瀏覽人次：只有 count 一個整數欄位；訪客每次只能加 1，管理員可設定（例如歸零） ----------
+    match /stats/{docId} {
+      allow get: if docId == 'visits';
+      allow list: if false;
+      allow create: if docId == 'visits'
+        && request.resource.data.keys().hasOnly(['count'])
+        && request.resource.data.count is int
+        && (request.resource.data.count == 1
+            || (isAdmin() && request.resource.data.count >= 0 && request.resource.data.count < 1000000000000));
+      allow update: if docId == 'visits'
+        && request.resource.data.keys().hasOnly(['count'])
+        && request.resource.data.count is int
+        && (request.resource.data.count == resource.data.count + 1
+            || (isAdmin() && request.resource.data.count >= 0 && request.resource.data.count < 1000000000000));
+      allow delete: if false;
+    }
+
+    // ---------- 管理員名單：只能讀自己那一份，任何人都不能從網站寫入 ----------
+    match /admins/{uid} {
+      allow get: if isSignedIn() && request.auth.uid == uid;
+      allow list, write: if false;
+    }
+
+    // ---------- 其他全部拒絕 ----------
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

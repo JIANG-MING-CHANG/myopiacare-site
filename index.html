@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>豪智慧有限公司｜MyopiaCare 眼科數據紀錄</title>
+  <meta name="description" content="豪智慧有限公司由醫師創立，提供 MyopiaCare 眼科數據雲端紀錄、AI 數據趨勢圖表與回診提醒，協助醫師與家長清楚溝通。">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; frame-src https://*.firebaseapp.com; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="theme-color" content="#0B2B3F">
+  <link rel="canonical" href="https://myopiacare.site/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MyopiaCare｜豪智慧有限公司">
+  <meta property="og:title" content="豪智慧有限公司｜MyopiaCare 眼科數據紀錄">
+  <meta property="og:description" content="把每一次檢查紀錄整理成看得見的成長曲線，讓醫師與家長溝通更清楚。">
+  <meta property="og:url" content="https://myopiacare.site/">
+  <meta property="og:image" content="https://myopiacare.site/assets/img/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="zh_TW">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap">
+  <link rel="stylesheet" href="assets/css/style.css?v=9">
+
+  <script src="assets/js/theme-init.js?v=9"></script>
+  <script src="assets/js/config.js?v=9" defer></script>
+  <script src="assets/js/content.js?v=9" defer></script>
+  <script src="assets/js/firebase-service.js?v=9" defer></script>
+  <script src="assets/js/core.js?v=9" defer></script>
+  <script src="assets/js/main.js?v=9" defer></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "豪智慧有限公司",
+    "alternateName": "MyopiaCare",
+    "url": "https://myopiacare.site/",
+    "logo": "https://myopiacare.site/assets/img/logo-circle.png",
+    "email": "excellence_intelligence@myopiacare.site",
+    "telephone": "+886-926-016-016",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "國際二巷4之1號",
+      "addressLocality": "苗栗市",
+      "addressRegion": "苗栗縣",
+      "addressCountry": "TW"
+    },
+    "founder": {
+      "@type": "Person",
+      "name": "王志盟",
+      "alternateName": "Jyh-Meng Wang",
+      "jobTitle": "創辦人"
+    }
+  }
+  </script>
+</head>
+<body class="page-home">
+  <a class="skip-link" href="#main">跳到主要內容</a>
+
+  <header class="site-header" id="site-header" data-edit="nav">
+    <div class="container header-inner">
+      <a class="brand" href="/" data-route="home" aria-label="回到首頁">
+        <img class="brand-logo" src="assets/img/logo-circle.webp" data-img="brand.logo" data-fallback="assets/img/logo-circle.webp" data-alt-fixed width="48" height="48" alt="MyopiaCare 標誌">
+        <span class="brand-text"><strong data-cms="brand.nameZh">豪智慧有限公司</strong><small data-cms="brand.nameEn">Myopia Care</small></span>
+      </a>
+      <nav class="main-nav" id="main-nav" aria-label="主選單">
+        <ul>
+          <li data-section-key="services"><a href="/#services" data-route="home" data-hash="services" data-cms="nav.services">服務項目</a></li>
+          <li data-section-key="flow"><a href="/#flow" data-route="home" data-hash="flow" data-cms="nav.flow">使用流程</a></li>
+          <li data-section-key="news"><a href="/news/" data-route="news" data-cms="nav.news">最新消息</a></li>
+          <li data-section-key="about"><a href="/#about" data-route="home" data-hash="about" data-cms="nav.about">關於我們</a></li>
+          <li data-section-key="contact"><a href="/#contact" data-route="home" data-hash="contact" data-cms="nav.contact">聯絡我們</a></li>
+        </ul>
+        <a class="btn btn-3d btn-primary nav-cta" href="/#contact" data-route="home" data-hash="contact"><span data-cms="nav.cta">線上提問</span></a>
+      </nav>
+      <div class="header-actions">
+        <a class="icon-btn line-btn" data-href="contact.lineUrl" data-show="contact.showLine" href="/#contact" target="_blank" rel="noopener noreferrer" aria-label="加入 LINE 官方帳號" title="加入 LINE 官方帳號" hidden><img class="line-ico line-ico-light" src="assets/img/line-black.png" width="40" height="40" alt=""><img class="line-ico line-ico-dark" src="assets/img/line-green.png" width="40" height="40" alt=""></a>
+        <button class="icon-btn theme-toggle" type="button" aria-label="切換深色/淺色模式">
+          <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.6A8.2 8.2 0 0 1 9.4 4a8.2 8.2 0 1 0 10.6 10.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        </button>
+        <a class="btn btn-3d btn-primary btn-sm header-cta btn-pulse" href="/#contact" data-route="home" data-hash="contact"><span data-cms="nav.cta">線上提問</span></a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav" aria-label="開啟選單"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ================= 主視覺 ================= -->
+    <section class="hero" id="top" aria-labelledby="hero-title" data-edit="hero">
+      <img class="hero-photo" alt="" hidden>
+      <canvas class="hero-canvas" aria-hidden="true"></canvas>
+      <div class="hero-veil" aria-hidden="true"></div>
+      <div class="container hero-inner">
+        <p class="hero-eyebrow" data-cms="hero.eyebrow"></p>
+        <h1 class="hero-title" id="hero-title" data-cms="hero.title">Myopia Care</h1>
+        <p class="hero-sub"><span class="hero-line" aria-hidden="true"></span><span data-cms="hero.subtitle"></span><span class="hero-line" aria-hidden="true"></span></p>
+        <p class="hero-lead" data-cms="hero.lead"></p>
+        <div class="hero-cta">
+          <a class="btn btn-3d btn-primary btn-lg magnetic" href="#services"><span data-cms="hero.ctaPrimary"></span></a>
+          <a class="btn btn-3d btn-sky btn-lg magnetic" href="#contact"><span data-cms="hero.ctaSecondary"></span></a>
+        </div>
+      </div>
+      <div class="hero-cards" aria-hidden="true" data-edit="hero.showCards">
+        <div class="data-card layer-card tilt depth-a">
+          <span class="layer layer-1"></span><span class="layer layer-2"></span>
+          <div class="layer-face">
+            <span class="glare"></span>
+            <p class="dc-label"><span data-cms="hero.card1Label">眼軸長度</span> <em>示意</em></p>
+            <p class="dc-value"><span data-cms="hero.card1Value">23.86</span><small data-cms="hero.card1Unit">mm</small></p>
+            <p class="dc-meta" data-card-meta="hero.card1Meta" data-edit="hero.card1Meta">與前次紀錄 <b class="up">+0.12</b></p>
+          </div>
+        </div>
+        <div class="data-card layer-card tilt depth-b">
+          <span class="layer layer-1"></span><span class="layer layer-2"></span>
+          <div class="layer-face">
+            <span class="glare"></span>
+            <p class="dc-label"><span data-cms="hero.card2Label">屈光度</span> <em>示意</em></p>
+            <p class="dc-value"><span data-cms="hero.card2Value">−2.25</span><small data-cms="hero.card2Unit">D</small></p>
+            <p class="dc-meta" data-card-meta="hero.card2Meta" data-edit="hero.card2Meta">右眼 · 檢查紀錄</p>
+          </div>
+        </div>
+        <div class="data-card layer-card tilt depth-c">
+          <span class="layer layer-1"></span><span class="layer layer-2"></span>
+          <div class="layer-face">
+            <span class="glare"></span>
+            <p class="dc-label"><span data-cms="hero.card3Label">紀錄趨勢</span> <em>示意</em></p>
+            <svg class="dc-spark" viewBox="0 0 120 36" preserveAspectRatio="none"><defs><linearGradient id="spark-g" x1="0" x2="1"><stop offset="0" stop-color="#4FD8F7"/><stop offset="1" stop-color="#B6EA6E"/></linearGradient></defs><path d="M2 30 C 18 28, 26 22, 40 21 S 62 16, 74 15 S 98 12, 118 11" fill="none" stroke="url(#spark-g)" stroke-width="3" stroke-linecap="round"/><circle cx="118" cy="11" r="3.5" fill="#B6EA6E"/></svg>
+            <p class="dc-meta" data-card-meta="hero.card3Meta" data-edit="hero.card3Meta">歷次紀錄 · 圖表呈現</p>
+          </div>
+        </div>
+        <div class="data-card layer-card tilt depth-d">
+          <span class="layer layer-1"></span><span class="layer layer-2"></span>
+          <div class="layer-face">
+            <span class="glare"></span>
+            <p class="dc-label"><span data-cms="hero.card4Label">散光軸度</span> <em>示意</em></p>
+            <div class="dc-row">
+              <p class="dc-value"><span data-cms="hero.card4Value">180</span><small data-cms="hero.card4Unit">°</small></p>
+              <svg class="dc-axis" viewBox="14 0 92 46" data-edit="hero.card4Value"><defs><linearGradient id="axis-g" gradientUnits="userSpaceOnUse" x1="18" y1="40" x2="102" y2="40"><stop offset="0" stop-color="#4FD8F7"/><stop offset="1" stop-color="#B6EA6E"/></linearGradient><clipPath id="axis-clip"><rect x="0" y="0" width="120" height="42.5"/></clipPath></defs><path class="ax-base" d="M24 40h72"/><path class="ax-arc" d="M24 40 A36 36 0 0 1 96 40"/><path class="ax-ticks" d="M96 40h-5M91.2 22l-4.3 2.5M78 8.8l-2.5 4.3M60 4v5M42 8.8l2.5 4.3M28.8 22l4.3 2.5M24 40h5"/><g clip-path="url(#axis-clip)"><g class="ax-needle"><line x1="18" y1="40" x2="102" y2="40" stroke="url(#axis-g)"/><circle class="ax-end" cx="96" cy="40" r="3.6"/></g></g><circle class="ax-center" cx="60" cy="40" r="2.6"/></svg>
+            </div>
+            <p class="dc-meta" data-card-meta="hero.card4Meta" data-edit="hero.card4Meta">右眼 · 散光 <b class="up">−0.75 D</b></p>
+          </div>
+        </div>
+      </div>
+      <a class="scroll-cue" href="#services" aria-label="往下捲動"><span></span></a>
+    </section>
+
+    <!-- ================= 服務項目 ================= -->
+    <section class="section services" id="services" data-section-key="services" aria-labelledby="services-title">
+      <div class="container">
+        <header class="section-head reveal">
+          <p class="section-kicker" data-cms="services.kicker"></p>
+          <h2 class="section-title" id="services-title" data-cms="services.title"></h2>
+          <p class="section-desc" data-cms="services.intro"></p>
+        </header>
+        <div class="carousel reveal" data-carousel role="region" aria-roledescription="carousel" aria-label="服務項目">
+          <button class="carousel-btn prev" type="button" aria-label="上一張"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="carousel-viewport" tabindex="0" aria-label="服務卡片，可用左右方向鍵切換"><ul class="carousel-track" id="services-track"></ul></div>
+          <button class="carousel-btn next" type="button" aria-label="下一張"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="carousel-dots" aria-label="選擇服務卡片"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 使用流程 ================= -->
+    <section class="section flow" id="flow" data-section-key="flow" aria-labelledby="flow-title">
+      <div class="container">
+        <header class="section-head reveal">
+          <p class="section-kicker" data-cms="flow.kicker"></p>
+          <h2 class="section-title" id="flow-title" data-cms="flow.title"></h2>
+          <p class="section-desc" data-cms="flow.intro"></p>
+        </header>
+        <div class="flow-track">
+          <div class="flow-line" aria-hidden="true"><span></span></div>
+          <ol class="flow-steps" id="flow-steps"></ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 最新消息 ================= -->
+    <section class="section news" id="news" data-section-key="news" aria-labelledby="news-title">
+      <div class="container news-grid">
+        <div class="news-visual reveal">
+          <div class="frame-offset" aria-hidden="true"></div>
+          <div class="device layer-card tilt" aria-hidden="true">
+            <span class="layer layer-1"></span><span class="layer layer-2"></span>
+            <div class="layer-face device-face">
+              <span class="glare"></span>
+              <div class="device-top">
+                <img src="assets/img/logo-circle.webp" width="28" height="28" alt="">
+                <div><b>眼軸數據紀錄</b><small>MyopiaCare · 示意畫面</small></div>
+              </div>
+              <svg class="growth-chart" viewBox="0 0 320 170">
+                <defs><linearGradient id="gc-area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2BB3E6" stop-opacity=".28"/><stop offset="1" stop-color="#2BB3E6" stop-opacity="0"/></linearGradient></defs>
+                <g class="gc-grid"><line x1="30" y1="20" x2="310" y2="20"/><line x1="30" y1="60" x2="310" y2="60"/><line x1="30" y1="100" x2="310" y2="100"/><line x1="30" y1="140" x2="310" y2="140"/></g>
+                <g class="gc-axis"><text x="22" y="24" text-anchor="end">25</text><text x="22" y="64" text-anchor="end">24</text><text x="22" y="104" text-anchor="end">23</text><text x="22" y="144" text-anchor="end">22</text><text x="40" y="162">6歲</text><text x="110" y="162">8歲</text><text x="180" y="162">10歲</text><text x="250" y="162">12歲</text></g>
+                <path d="M40 132 L75 118 L110 104 L145 92 L180 82 L215 74 L250 68 L285 64 L285 140 L40 140 Z" fill="url(#gc-area)"/>
+                <path class="gc-line od" d="M40 132 L75 118 L110 104 L145 92 L180 82 L215 74 L250 68 L285 64"/>
+                <path class="gc-line os" d="M40 136 L75 125 L110 113 L145 102 L180 94 L215 88 L250 83 L285 80"/>
+                <g class="gc-dots"><circle cx="285" cy="64" r="4.5" class="od"/><circle cx="285" cy="80" r="4.5" class="os"/></g>
+              </svg>
+              <div class="device-legend"><span class="od">右眼 OD</span><span class="os">左眼 OS</span><span class="unit">單位：mm</span></div>
+              <div class="device-chips"><span><b>3</b>次檢查</span><span><b>6</b>個月紀錄</span><span><b>1</b>則提醒</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="news-panel reveal">
+          <header class="section-head align-left">
+            <p class="section-kicker" data-cms="news.kicker"></p>
+            <h2 class="section-title" id="news-title" data-cms="news.title"></h2>
+          </header>
+          <ul class="news-list" id="news-list"></ul>
+          <a class="btn btn-3d btn-dark btn-arrow magnetic" href="/news/" data-route="news">
+            <span data-cms="news.moreLabel">查看全部消息</span>
+            <svg viewBox="0 0 40 12" aria-hidden="true"><path d="M0 6h37M32 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 關於我們 ================= -->
+    <section class="about" id="about" data-section-key="about" aria-labelledby="about-title">
+      <div class="about-bg" aria-hidden="true"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span></div>
+      <div class="container">
+        <div class="glass-card reveal">
+          <p class="section-kicker" data-cms="about.kicker"></p>
+          <h2 class="section-title" id="about-title" data-cms="about.title"></h2>
+          <div class="about-body rich" data-cms-rich="about.body"></div>
+          <figure class="doctor">
+            <div class="doctor-avatar" id="doctor-avatar" aria-hidden="true" data-edit="about.doctorPhoto"></div>
+            <div class="doctor-text">
+              <blockquote data-cms="about.doctorQuote"></blockquote>
+              <figcaption><span class="doctor-name"><strong data-cms="about.doctorName"></strong><span class="doctor-license" data-cms="about.doctorLicense"></span></span><span class="doctor-title" data-cms="about.doctorTitle"></span></figcaption>
+            </div>
+          </figure>
+          <a class="btn btn-3d btn-dark magnetic" href="#contact"><span data-cms="nav.cta">線上提問</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 聯絡我們 ================= -->
+    <section class="section contact" id="contact" data-section-key="contact" aria-labelledby="contact-title">
+      <div class="container contact-grid">
+        <div class="contact-info reveal">
+          <header class="section-head align-left">
+            <p class="section-kicker" data-cms="contact.kicker"></p>
+            <h2 class="section-title" id="contact-title" data-cms="contact.title"></h2>
+            <p class="section-desc" data-cms="contact.intro"></p>
+          </header>
+          <ul class="info-list">
+            <li><span class="info-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3.5h2.6l1.4 4-1.9 1.3a12 12 0 0 0 6.5 6.5l1.3-1.9 4 1.4v2.6a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.6 5.7a2 2 0 0 1 2-2.2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span><small>電話</small><a data-tel="contact.phone" data-cms="contact.phone"></a></span></li>
+            <li><span class="info-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 7l8 6 8-6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></span><span><small>Email</small><a data-mailto="contact.email" data-cms="contact.email"></a></span></li>
+            <li><span class="info-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="10" r="2.3" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></span><span><small>地址</small><a data-map="contact.address" data-cms="contact.address" target="_blank" rel="noopener noreferrer"></a></span></li>
+            <li><span class="info-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 7.5V12l3 2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span><small>服務時間</small><span data-cms="contact.hours"></span></span></li>
+          </ul>
+          <a class="btn btn-3d btn-line magnetic" data-href="contact.lineUrl" data-show="contact.showLine" href="#contact" target="_blank" rel="noopener noreferrer" hidden>加入 LINE 官方帳號</a>
+        </div>
+
+        <form class="contact-form reveal" id="contact-form" novalidate data-edit="contact.formTitle">
+          <div class="form-head">
+            <h3 data-cms="contact.formTitle">線上提問</h3>
+            <p>標示 <span class="req">*</span> 為必填</p>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label for="f-name">姓名 <span class="req">*</span></label>
+              <input id="f-name" name="name" type="text" autocomplete="name" maxlength="50" required aria-describedby="err-name">
+              <p class="field-error" id="err-name"></p>
+            </div>
+            <div class="field">
+              <label for="f-role">您的身分 <span class="req">*</span></label>
+              <select id="f-role" name="role" required aria-describedby="err-role">
+                <option value="">請選擇</option>
+                <option value="parent">家長／一般民眾</option>
+                <option value="clinic">眼科院所</option>
+                <option value="partner">合作夥伴</option>
+                <option value="other">其他</option>
+              </select>
+              <p class="field-error" id="err-role"></p>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label for="f-email">Email <span class="req">*</span></label>
+              <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="120" required aria-describedby="err-email">
+              <p class="field-error" id="err-email"></p>
+            </div>
+            <div class="field">
+              <label for="f-phone">電話（選填）</label>
+              <input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="30" aria-describedby="err-phone">
+              <p class="field-error" id="err-phone"></p>
+            </div>
+          </div>
+          <div class="field">
+            <label for="f-subject">主旨 <span class="req">*</span></label>
+            <input id="f-subject" name="subject" type="text" maxlength="100" required aria-describedby="err-subject">
+            <p class="field-error" id="err-subject"></p>
+          </div>
+          <div class="field">
+            <label for="f-message">提問內容 <span class="req">*</span> <span class="counter" id="msg-counter">0 / 2000</span></label>
+            <textarea id="f-message" name="message" rows="5" maxlength="2000" required aria-describedby="err-message"></textarea>
+            <p class="field-error" id="err-message"></p>
+          </div>
+          <div class="hp-field" aria-hidden="true">
+            <label for="f-website">網站（請勿填寫）</label>
+            <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off">
+          </div>
+          <div class="field field-consent">
+            <label class="consent">
+              <input type="checkbox" name="consent" id="f-consent" required aria-describedby="err-consent">
+              <span>我已閱讀並同意<a href="/privacy/" data-route="privacy" target="_blank" rel="noopener">隱私權政策</a>，同意豪智慧有限公司蒐集上述資料，僅用於回覆本次提問。</span>
+            </label>
+            <p class="field-error" id="err-consent"></p>
+          </div>
+          <p class="form-note" data-cms="contact.formNote">本表單不提供醫療諮詢或診斷。請勿填寫病歷、檢查報告或身分證字號等敏感資料；如有急症請立即就醫。</p>
+          <button class="btn btn-3d btn-primary btn-block btn-lg" type="submit">
+            <span class="btn-label" data-cms="contact.submitLabel">送出提問</span>
+            <span class="spinner" aria-hidden="true"></span>
+          </button>
+          <p class="form-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- ================= App 下載 ================= -->
+    <section class="app-cta" id="app" data-section-key="app" aria-labelledby="app-title">
+      <div class="container app-inner">
+        <div class="app-icon-wrap reveal">
+          <div class="app-phone layer-card tilt" data-edit="app.image">
+            <span class="layer layer-1"></span><span class="layer layer-2"></span>
+            <span class="phone-key phone-key-a" aria-hidden="true"></span><span class="phone-key phone-key-b" aria-hidden="true"></span><span class="phone-key phone-key-c" aria-hidden="true"></span>
+            <div class="layer-face phone-body">
+              <span class="glare"></span>
+              <div class="phone-screen">
+                <div class="phone-status" aria-hidden="true">
+                  <span class="ps-time">10:30</span>
+                  <span class="ps-cam"></span>
+                  <svg class="ps-icons" viewBox="0 0 52 12"><path d="M1 10h2v1H1zM5 8h2v3H5zM9 5.5h2V11H9zM13 3h2v8h-2z" fill="currentColor"/><path d="M21 5.2a6.5 6.5 0 0 1 9 0M22.8 7.2a4 4 0 0 1 5.4 0M24.6 9.1a1.4 1.4 0 0 1 1.8 0" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><rect x="34.5" y="2.5" width="14" height="8" rx="2.2" fill="none" stroke="currentColor" stroke-width="1" opacity=".7"/><rect x="36" y="4" width="9" height="5" rx="1.2" fill="currentColor"/><rect x="49.3" y="5" width="1.4" height="3" rx=".6" fill="currentColor" opacity=".7"/></svg>
+                </div>
+                <div class="phone-splash">
+                  <span class="phone-rings" aria-hidden="true"></span>
+                  <img class="phone-app-icon" src="assets/img/logo-app.webp" data-img="app.image" data-fallback="assets/img/logo-app.webp" width="320" height="320" alt="MyopiaCare App 圖示" data-alt-fixed loading="lazy">
+                  <p class="phone-app-name" data-cms="app.screenTitle">MyopiaCare</p>
+                  <p class="phone-app-text" data-cms="app.screenText"></p>
+                </div>
+                <nav class="phone-dock" aria-label="社群媒體">
+                  <a class="social-link sl-fb" data-href="app.facebookUrl" href="#app" target="_blank" rel="noopener noreferrer" aria-label="Facebook 粉絲專頁"><img src="assets/img/social-facebook.png" width="48" height="48" alt="" loading="lazy" decoding="async"></a>
+                  <a class="social-link sl-x" data-href="app.xUrl" href="#app" target="_blank" rel="noopener noreferrer" aria-label="X（Twitter）"><img src="assets/img/social-x.png" width="48" height="48" alt="" loading="lazy" decoding="async"></a>
+                  <a class="social-link sl-ig" data-href="app.instagramUrl" href="#app" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><img src="assets/img/social-instagram.png" width="48" height="48" alt="" loading="lazy" decoding="async"></a>
+                </nav>
+                <span class="phone-home" aria-hidden="true"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="app-text reveal">
+          <p class="section-kicker" data-cms="app.kicker"></p>
+          <h2 class="section-title" id="app-title" data-cms="app.title"></h2>
+          <p class="section-desc" data-cms="app.desc"></p>
+          <div class="store-badges">
+            <a class="store-badge" data-href="app.appStoreUrl" href="#app" target="_blank" rel="noopener noreferrer"><img src="assets/img/appstore-badge.png" width="203" height="58" alt="Download on the App Store"><span class="soon">即將上架</span></a>
+            <a class="store-badge" data-href="app.googlePlayUrl" href="#app" target="_blank" rel="noopener noreferrer"><img src="assets/img/googleplay-badge.png" width="203" height="58" alt="Get it on Google Play"><span class="soon">即將上架</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" data-edit="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <img src="assets/img/logo-circle.webp" data-img="brand.logo" data-fallback="assets/img/logo-circle.webp" data-alt-fixed width="64" height="64" alt="MyopiaCare 標誌" loading="lazy">
+        <div><strong data-cms="brand.nameZh">豪智慧有限公司</strong><p data-cms="brand.tagline"></p></div>
+      </div>
+      <ul class="footer-contact">
+        <li><span>電話</span><a data-tel="contact.phone" data-cms="contact.phone"></a></li>
+        <li><span>Email</span><a data-mailto="contact.email" data-cms="contact.email"></a></li>
+        <li><span>地址</span><span data-cms="contact.address"></span></li>
+        <li><span>時間</span><span data-cms="contact.hours"></span></li>
+      </ul>
+      <nav class="footer-links" aria-label="頁尾連結">
+        <a href="/#services" data-route="home" data-hash="services" data-section-key="services" data-cms="nav.services">服務項目</a>
+        <a href="/news/" data-route="news" data-section-key="news" data-cms="nav.news">最新消息</a>
+        <a href="/#about" data-route="home" data-hash="about" data-section-key="about" data-cms="nav.about">關於我們</a>
+        <a href="/#contact" data-route="home" data-hash="contact" data-section-key="contact" data-cms="nav.contact">聯絡我們</a>
+        <a href="/privacy/" data-route="privacy" data-cms="privacy.title">隱私權政策</a>
+      </nav>
+    </div>
+    <div class="container footer-bottom">
+      <p class="footer-note" data-cms="footer.note"></p>
+      <div class="footer-meta">
+        <p class="visit-counter" data-counter data-edit="footer.showCounter" hidden><span data-cms="footer.counterLabel">累計瀏覽人次</span><b class="visit-num" data-visit-count>—</b></p>
+        <p>© <span data-year>2026</span> <span data-cms="brand.nameZh">豪智慧有限公司</span> All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <a class="back-to-top" href="#top" aria-label="回到頂端"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+  <a class="sticky-cta btn btn-3d btn-primary" href="#contact"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v10H9l-5 4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span data-cms="nav.cta">線上提問</span></a>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <noscript><p class="noscript">請開啟瀏覽器的 JavaScript 以完整瀏覽本網站。</p></noscript>
+</body>
+</html>
