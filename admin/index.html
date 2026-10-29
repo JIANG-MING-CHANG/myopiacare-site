@@ -12,15 +12,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&family=Noto+Sans+TC:wght@400;500;700&display=swap">
-  <link rel="stylesheet" href="../assets/css/style.css?v=9">
-  <link rel="stylesheet" href="../assets/css/admin.css?v=9">
-  <script src="../assets/js/theme-init.js?v=9"></script>
-  <script src="../assets/js/config.js?v=9" defer></script>
-  <script src="../assets/js/content.js?v=9" defer></script>
-  <script src="../assets/js/firebase-service.js?v=9" defer></script>
-  <script src="../assets/js/core.js?v=9" defer></script>
-  <script src="../assets/js/admin-editor.js?v=9" defer></script>
-  <script src="../assets/js/admin.js?v=9" defer></script>
+  <link rel="stylesheet" href="../assets/css/style.css?v=11">
+  <link rel="stylesheet" href="../assets/css/admin.css?v=11">
+  <script src="../assets/js/theme-init.js?v=11"></script>
+  <script src="../assets/js/config.js?v=11" defer></script>
+  <script src="../assets/js/content.js?v=11" defer></script>
+  <script src="../assets/js/firebase-service.js?v=11" defer></script>
+  <script src="../assets/js/core.js?v=11" defer></script>
+  <script src="../assets/js/admin-editor.js?v=11" defer></script>
+  <script src="../assets/js/admin.js?v=11" defer></script>
 </head>
 <body class="admin-page">
   <header class="admin-bar">
@@ -105,6 +105,7 @@
         <div class="admin-toolbar">
           <button class="btn btn-3d btn-primary btn-sm" type="button" id="btn-save"><span class="btn-label">檢查並發布</span><span class="spinner" aria-hidden="true"></span></button>
           <button class="btn btn-sm btn-outline" type="button" id="btn-check">醫療法規用語檢查</button>
+          <button class="btn btn-sm btn-outline" type="button" id="btn-diag">連線診斷</button>
           <button class="btn btn-sm btn-outline" type="button" id="btn-reload">放棄修改</button>
           <a class="btn btn-sm btn-outline" href="/" target="_blank" rel="noopener">預覽網站</a>
           <span class="toolbar-spacer"></span>
@@ -180,6 +181,12 @@
     <div class="dialog-head"><h2 id="check-dialog-title">醫療法規用語檢查</h2><button class="mini-btn" type="button" data-close aria-label="關閉">✕</button></div>
     <div class="dialog-body" id="check-body"></div>
     <div class="dialog-foot"><button class="btn btn-sm btn-outline" type="button" data-close>返回修改</button><button class="btn btn-3d btn-primary btn-sm" type="button" id="check-publish">仍要發布</button></div>
+  </dialog>
+
+  <dialog class="admin-dialog diag-dialog" id="diag-dialog" aria-labelledby="diag-dialog-title">
+    <div class="dialog-head"><h2 id="diag-dialog-title">連線診斷</h2><button class="mini-btn" type="button" data-close aria-label="關閉">✕</button></div>
+    <div class="dialog-body" id="diag-body" aria-live="polite"></div>
+    <div class="dialog-foot"><button class="btn btn-sm btn-outline" type="button" id="diag-copy">複製診斷結果</button><button class="btn btn-sm btn-outline" type="button" id="diag-run">重新診斷</button><button class="btn btn-3d btn-primary btn-sm" type="button" data-close>關閉</button></div>
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
