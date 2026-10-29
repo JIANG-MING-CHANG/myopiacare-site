@@ -473,6 +473,10 @@
       facebookUrl: T('Facebook 粉絲專頁連結', { type: 'url', hint: '例如 https://www.facebook.com/你的專頁；留空時圖示仍顯示，點擊會提示「即將開放」。' }),
       xUrl: T('X（Twitter）連結', { type: 'url', hint: '例如 https://x.com/你的帳號；留空時點擊會提示「即將開放」。' }),
       instagramUrl: T('Instagram 連結', { type: 'url', hint: '例如 https://www.instagram.com/你的帳號；留空時點擊會提示「即將開放」。' }) } },
+    { key: 'mascot', label: '眼球寶寶', desc: '浮動提問吉祥物：畫面右下角的眼球寶寶會跟著訪客捲動；點一下會出現特效，並直接前往「線上提問」表單。關閉「聯絡我們」區塊時也會一起隱藏。', fields: {
+      show: T('顯示眼球寶寶', { type: 'bool' }),
+      bubble: T('對話泡泡文字', { hint: '第一次進站、滑鼠移上去時顯示，例如「有問題嗎？點我線上提問」。建議 15 字以內。' }),
+      image: T('眼球寶寶圖片（選填）', { type: 'image', hint: '請用去背的 PNG 或 WebP（直式、約 240×245）；留空則使用預設的眼球寶寶。' }) } },
     { key: 'privacy', label: '隱私權政策頁', desc: '頁面網址：myopiacare.site/privacy/', fields: {
       kicker: T('英文小標'), title: T('頁面名稱'), body: T('內容', { type: 'rich' }) } },
     { key: 'footer', label: '頁尾', fields: {
@@ -839,31 +843,77 @@
     dialog.showModal();
   }
 
-  function validateContent(c) {
-    var problems = [];
-    [['contact', 'lineUrl'], ['app', 'appStoreUrl'], ['app', 'googlePlayUrl'], ['app', 'facebookUrl'], ['app', 'xUrl'], ['app', 'instagramUrl']].forEach(function (p) {
-      var v = str(c[p[0]][p[1]]).trim();
-      if (v && !/^https:\/\/[^\s]+$/i.test(v)) problems.push('「' + schemaFor(p[0]).fields[p[1]].label + '」必須是 https:// 開頭的完整網址。');
+  /* ---------- 網址自動修正：少打 https://、打成 http://、LINE 只填 @ID 時自動補正，避免發布被擋 ---------- */
+  var URL_FIELDS = [['contact', 'lineUrl'], ['app', 'appStoreUrl'], ['app', 'googlePlayUrl'], ['app', 'facebookUrl'], ['app', 'xUrl'], ['app', 'instagramUrl']];
+  function fixUrl(v, field) {
+    var s = str(v).trim();
+    if (!s) return '';
+    if (field === 'lineUrl' && /^@[A-Za-z0-9._-]{2,40}$/.test(s)) return 'https://line.me/R/ti/p/%40' + s.slice(1);
+    if (/^http:\/\//i.test(s)) return 'https://' + s.slice(7);
+    if (/^\/\/[^\s/]/.test(s)) return 'https:' + s;
+    if (!/^[a-z][a-z0-9+.-]*:/i.test(s) && /^(www\.)?[a-z0-9-]+(\.[a-z0-9-]+)+([/?#][^\s]*)?$/i.test(s)) return 'https://' + s;
+    return s;
+  }
+  function syncInputs(path, value) {
+    var key = JSON.stringify(path);
+    $all('input[data-path], textarea[data-path]').forEach(function (n) {
+      if (n.dataset.path === key && n.type !== 'checkbox' && n.type !== 'radio') n.value = value;
     });
-    (c.news.items || []).forEach(function (n, i) {
-      if (n.date && !/^\d{4}-\d{2}-\d{2}$/.test(n.date)) problems.push('消息 #' + (i + 1) + ' 的日期格式應為 2026-10-25。');
-      if (!str(n.title).trim()) problems.push('消息 #' + (i + 1) + ' 沒有標題，前台不會顯示。');
+  }
+  function autoFixUrls(c) {
+    var fixed = [];
+    URL_FIELDS.forEach(function (p) {
+      if (!isObj(c[p[0]]) || typeof c[p[0]][p[1]] !== 'string') return;
+      var before = c[p[0]][p[1]];
+      var after = fixUrl(before, p[1]);
+      if (after === before) return;
+      c[p[0]][p[1]] = after;
+      syncInputs(p, after);
+      if (after.trim() !== before.trim()) fixed.push(schemaFor(p[0]).fields[p[1]].label);
     });
-    if (!str(c.site.title).trim()) problems.push('「首頁網頁標題」不能空白。');
-    var axis = str(c.hero.card4Value).replace(/[°\s]/g, '');
-    if (axis && !(/^\d{1,3}(\.\d+)?$/.test(axis) && parseFloat(axis) <= 180)) problems.push('「數據卡 4｜軸度數值」請填 0–180 的數字。');
-    return problems;
+    return fixed;
   }
 
+  /* 回傳要修正的欄位：msg 是說明，section／field／index／sub 用來「前往修改」 */
+  function validateContent(c) {
+    var problems = [];
+    URL_FIELDS.forEach(function (p) {
+      var v = str(c[p[0]][p[1]]).trim();
+      if (v && !/^https:\/\/[^\s]+$/i.test(v)) problems.push({ msg: '「' + schemaFor(p[0]).fields[p[1]].label + '」必須是 https:// 開頭的完整網址。', section: p[0], field: p[1], index: -1 });
+    });
+    (c.news.items || []).forEach(function (n, i) {
+      if (n.date && !/^\d{4}-\d{2}-\d{2}$/.test(n.date)) problems.push({ msg: '消息 #' + (i + 1) + ' 的日期格式應為 2026-10-25。', section: 'news', field: 'items', index: i, sub: 'date' });
+      if (!str(n.title).trim()) problems.push({ msg: '消息 #' + (i + 1) + ' 沒有標題，前台不會顯示。', section: 'news', field: 'items', index: i, sub: 'title' });
+    });
+    if (!str(c.site.title).trim()) problems.push({ msg: '「首頁網頁標題」不能空白。', section: 'site', field: 'title', index: -1 });
+    var axis = str(c.hero.card4Value).replace(/[°\s]/g, '');
+    if (axis && !(/^\d{1,3}(\.\d+)?$/.test(axis) && parseFloat(axis) <= 180)) problems.push({ msg: '「數據卡 4｜軸度數值」請填 0–180 的數字。', section: 'hero', field: 'card4Value', index: -1 });
+    return problems;
+  }
+  var MAX_JSON = 290000;
+  var PUBLISH_TIMEOUT = 25000;
+  var checkPending = false;
+
   function startPublish() {
+    if (!contentState) return;
     flushEditors();
     var status = $('#content-status');
+    var fixed = autoFixUrls(contentState);
+    if (fixed.length) { visSend(); toast('已自動把「' + fixed.join('、') + '」補成完整網址。'); }
     var problems = validateContent(contentState);
-    if (problems.length) { setStatus(status, problems.join(' '), 'error'); return; }
+    if (problems.length) {
+      setStatus(status, problems.map(function (p) { return p.msg; }).join(' '), 'error');
+      showProblems(problems);
+      return;
+    }
     var json = JSON.stringify(contentState);
-    if (json.length > 290000) { setStatus(status, '內容太長了（超過 29 萬字元），請精簡內文後再發布。圖片請使用圖片庫，不要直接貼進文字。', 'error'); return; }
+    if (json.length > MAX_JSON) {
+      setStatus(status, '內容太長了（超過 29 萬字元），請精簡內文後再發布。圖片請使用圖片庫，不要直接貼進文字。', 'error');
+      showProblems([{ msg: '網站內容總長度約 ' + Math.round(json.length / 1000) + ' 千字元，超過上限 290 千字元。請刪減消息內文，圖片一律從圖片庫插入（不要直接貼上圖片）。', section: 'news', field: 'items', index: -1 }]);
+      return;
+    }
     var found = checkCompliance();
-    if (found.length) { showCheck(found, true); return; }
+    if (found.length) { checkPending = true; showCheck(found, true); return; }
     publish();
   }
 
@@ -871,19 +921,33 @@
     var status = $('#content-status');
     var btn = $('#btn-save');
     var json = JSON.stringify(contentState);
+    var finished = false;
     busy(btn, true);
     setStatus(status, '發布中…');
     var b = fs.writeBatch(db);
     var by = (currentUser && currentUser.email) || '';
     b.set(fs.doc(db, 'site', 'content'), { json: json, updatedAt: fs.serverTimestamp(), updatedBy: by });
     b.set(fs.doc(fs.collection(db, 'siteHistory')), { json: json, savedAt: fs.serverTimestamp(), savedBy: by });
+    // 連線被擋住時，資料庫程式會一直等待而不回報錯誤；超過時間就主動說明原因
+    var slow = setTimeout(function () {
+      if (finished) return;
+      busy(btn, false);
+      setStatus(status, '發布等候逾時：資料庫一直沒有回應。請依照跳出視窗的說明處理。', 'error');
+      openDiag({ code: 'timeout' }, true);
+    }, PUBLISH_TIMEOUT);
     b.commit().then(function () {
-      setDirty(false);
+      finished = true;
+      clearTimeout(slow);
+      if (JSON.stringify(contentState) === json) setDirty(false);
       setStatus(status, '已發布！重新整理網站就會看到新內容。', 'success');
       toast('網站內容已發布。');
+      if (diag.fromPublish && $('#diag-dialog').open) $('#diag-dialog').close();
       pruneHistory();
     }).catch(function (err) {
+      finished = true;
+      clearTimeout(slow);
       setStatus(status, '發布失敗（' + (err.code || '錯誤') + '）。' + (err.code === 'permission-denied' ? '請確認此帳號在 admins 名單內，且已發布最新的 firestore.rules。' : '請稍後再試。'), 'error');
+      openDiag(err, true);
     }).then(function () { busy(btn, false); });
   }
 
@@ -895,6 +959,310 @@
       extra.forEach(function (d) { b.delete(d.ref); });
       return b.commit();
     }).catch(function () { /* 清理失敗不影響發布 */ });
+  }
+
+  /* =========================================================
+     發布問題說明與連線診斷
+     - 發布失敗時自動逐項檢查設定，用白話說明是哪一步有問題、該怎麼修正
+     - 檢查只讀取資料；「寫入測試」只對瀏覽人次做 +0，不會改動任何內容
+     ========================================================= */
+  var diag = { running: 0, fromPublish: false, err: null, text: [] };
+  var NET_CODES = ['unavailable', 'deadline-exceeded', 'timeout', 'cancelled', 'aborted'];
+  function projectId() { var c = window.MC_FIREBASE_CONFIG || {}; return str(c.projectId) || '（未設定）'; }
+  function isNet(err) { return !!err && NET_CODES.indexOf(err.code) !== -1; }
+  function codeOf(err) { return (err && (err.code || err.message)) || '未知錯誤'; }
+  function timed(p) { return FB && FB.withTimeout ? FB.withTimeout(p, 12000) : p; }
+
+  function rulesSteps() {
+    return [
+      '用 Safari 或 Chrome 打開 console.firebase.google.com，點進專案 ID 為「' + projectId() + '」的專案（點左上角齒輪 →「專案設定」可看到專案 ID，必須完全一樣）。',
+      '左側選「Firestore Database」，上方切到「規則（Rules）」分頁。',
+      '另開一個分頁到你的 GitHub repository，點檔案「firestore.rules」，按右上角「Copy raw file」（兩個方框的複製圖示）。',
+      '回到 Firebase 規則編輯區，按 ⌘A 全選 → Delete 刪除 → ⌘V 貼上。第一行必須是 rules_version = \'2\';',
+      '按「發布（Publish）」，看到發布成功後等 1 分鐘，回到後台按 ⌘R 重新整理，再按「檢查並發布」。'
+    ];
+  }
+  function netSteps() {
+    return [
+      '先確認網路正常（開其他網站試試），再按下方「重新診斷」。',
+      '有安裝廣告阻擋程式（AdBlock、uBlock、1Blocker、AdGuard、Brave 防護等）時，請對 myopiacare.site 暫停或加入白名單。Safari：選單列「Safari → 此網站的設定…」→ 取消勾選「啟用內容阻擋器」。',
+      '公司、學校或公共 Wi‑Fi 有時會擋 Google 的資料庫服務，可改用手機熱點再試一次。',
+      '換另一個瀏覽器（Chrome 或 Safari）登入後台再發布。'
+    ];
+  }
+  function adminSteps(uid) {
+    return [
+      '打開 console.firebase.google.com → 專案「' + projectId() + '」→ 左側「Firestore Database」→「資料」分頁。',
+      '點「admins」集合（沒有的話按「開始集合」，集合 ID 填 admins）→「新增文件」。',
+      '文件 ID 貼上 ' + uid + '（不要按「自動 ID」），欄位 role、類型 string、值 owner → 儲存。',
+      '回到後台按 ⌘R 重新整理，再按「檢查並發布」。'
+    ];
+  }
+  function loginSteps() { return ['按右上角「登出」，再用管理員帳號重新登入。', '登入後再按「檢查並發布」。']; }
+
+  function stepsBox(title, steps, tone) {
+    var box = el('div', 'diag-fix is-' + tone);
+    box.appendChild(el('strong', 'diag-fix-title', title));
+    var ol = el('ol');
+    steps.forEach(function (s) { ol.appendChild(el('li', null, s)); });
+    box.appendChild(ol);
+    diag.text.push('', '【' + title + '】');
+    steps.forEach(function (s, i) { diag.text.push((i + 1) + '. ' + s); });
+    return box;
+  }
+  function problemsBox(problems) {
+    var box = el('div', 'diag-fix is-bad');
+    var title = '還不能發布：有 ' + problems.length + ' 個地方需要修正';
+    box.appendChild(el('strong', 'diag-fix-title', title));
+    var ul = el('ul', 'diag-problems');
+    diag.text.push('', '【' + title + '】');
+    problems.forEach(function (p) {
+      var li = el('li');
+      li.appendChild(el('span', null, p.msg));
+      var go = el('button', 'btn btn-sm btn-outline', '前往修改');
+      go.type = 'button';
+      go.addEventListener('click', function () { goToField(p); });
+      li.appendChild(go);
+      ul.appendChild(li);
+      diag.text.push('・' + p.msg);
+    });
+    box.appendChild(ul);
+    box.appendChild(el('p', 'diag-note', '改好後再按「檢查並發布」。'));
+    return box;
+  }
+
+  /* 跳到需要修正的欄位（視覺化編輯或欄位編輯都可以） */
+  function goToField(p) {
+    var dlg = $('#diag-dialog');
+    if (dlg.open) dlg.close();
+    activeSection = p.section;
+    var visual = !$('#panel-visual').hidden;
+    if (visual) {
+      vis.target = { section: p.section, field: p.field || '', index: typeof p.index === 'number' ? p.index : -1, key: p.section };
+      buildPanel();
+      visPostSelect(p.section);
+    } else if ($('#panel-content').hidden) {
+      openTab('content');
+    } else {
+      buildForm();
+    }
+    var path = [p.section, p.field].concat(p.sub && p.index >= 0 ? [p.index, p.sub] : []);
+    var input = doc.getElementById((visual ? 'vis-' : 'cms-') + path.join('-'));
+    if (!input) return;
+    var det = input.closest('details');
+    if (det) det.open = true;
+    var wrap = input.closest('.cms-field') || input;
+    wrap.classList.add('is-target');
+    if (wrap.scrollIntoView) wrap.scrollIntoView({ block: 'center', behavior: 'auto' });
+    try { input.focus({ preventScroll: true }); } catch (e) { input.focus(); }
+  }
+
+  function prepDialog(title, lead, withTools) {
+    diag.running++;
+    diag.text = [];
+    $('#diag-dialog-title').textContent = title;
+    var body = $('#diag-body');
+    body.textContent = '';
+    if (lead) body.appendChild(el('p', 'diag-lead', lead));
+    $('#diag-run').hidden = !withTools;
+    $('#diag-copy').hidden = !withTools;
+    var dialog = $('#diag-dialog');
+    if (!dialog.open) dialog.showModal();
+    return body;
+  }
+
+  /* 發布前格式檢查沒通過：列出問題與「前往修改」 */
+  function showProblems(problems) {
+    diag.err = null;
+    diag.fromPublish = false;
+    var body = prepDialog('還不能發布', '下面這些地方修正後，就可以發布：', false);
+    body.appendChild(problemsBox(problems));
+  }
+
+  var LEADS = {
+    'permission-denied': '資料庫拒絕了這次發布（權限不足）。',
+    'timeout': '等了 25 秒仍沒有收到資料庫回應，連線可能被擋住了。',
+    'unavailable': '目前連不上資料庫。',
+    'deadline-exceeded': '資料庫回應逾時。',
+    'unauthenticated': '登入狀態已失效。',
+    'resource-exhausted': 'Firebase 回報今天的免費使用量已用完。',
+    'invalid-argument': '資料庫不接受這份內容。'
+  };
+
+  function openDiag(err, fromPublish) {
+    diag.err = err || null;
+    diag.fromPublish = !!fromPublish;
+    var first = fromPublish ? (LEADS[err && err.code] || '發布時發生錯誤（' + codeOf(err) + '）。') : '';
+    var body = prepDialog(fromPublish ? '發布沒有成功：正在找原因…' : '連線診斷：檢查中…',
+      first + '正在逐項檢查網站、帳號與資料庫設定（只讀取資料，不會改動網站內容）…', true);
+    var run = diag.running;
+    diag.text.push('MyopiaCare 後台診斷　' + new Date().toLocaleString('zh-TW'), '網址：' + location.host);
+    if (err) diag.text.push('發布錯誤代碼：' + codeOf(err));
+    var out = el('div', 'diag-out');
+    body.appendChild(out);
+    var list = el('ol', 'diag-list');
+    body.appendChild(list);
+    $('#diag-run').disabled = true;
+    runDiag(list, run).then(function (res) {
+      if (!res || run !== diag.running) return;
+      $('#diag-run').disabled = false;
+      $('#diag-dialog-title').textContent = fromPublish ? '發布沒有成功：原因與解決步驟' : '連線診斷結果';
+      $('.diag-lead', body).textContent = first + '檢查完成，結果與解決步驟如下（下方是每一項的檢查明細）：';
+      conclude(res).forEach(function (n) { out.appendChild(n); });
+      body.scrollTop = 0;
+    });
+  }
+
+  function runDiag(list, run) {
+    var user = currentUser;
+    var res = {};
+    var stop = '';
+    function line(label) {
+      var li = el('li', 'diag-item is-run');
+      var icon = el('span', 'diag-icon', '…');
+      icon.setAttribute('aria-hidden', 'true');
+      li.appendChild(icon);
+      li.appendChild(el('strong', 'diag-label', label));
+      var detail = el('span', 'diag-detail', '檢查中…');
+      li.appendChild(detail);
+      list.appendChild(li);
+      return function (state, text) {
+        if (run !== diag.running) return;
+        li.className = 'diag-item is-' + state;
+        icon.textContent = { ok: '✓', warn: '!', skip: '–' }[state] || '✕';
+        detail.textContent = text;
+        diag.text.push(({ ok: '✓', warn: '!', skip: '–' }[state] || '✕') + ' ' + label + '：' + text);
+      };
+    }
+    var DB_STEPS = ['admin', 'read', 'rules', 'write', 'lock'];
+    var steps = [
+      ['config', '網站的 Firebase 設定（config.js）', function () { return Promise.resolve(['ok', '專案 ID：' + projectId()]); }],
+      ['login', '登入帳號', function () { return Promise.resolve(user ? ['ok', (user.email || '') + '（UID：' + user.uid + '）'] : ['bad', '目前沒有登入']); }],
+      ['admin', '管理員名單（admins）', function () {
+        return timed(fs.getDoc(fs.doc(db, 'admins', user.uid))).then(function (s) {
+          return s.exists() ? ['ok', '這個帳號在管理員名單內'] : ['bad', '找不到文件 ID 等於這個 UID 的管理員文件'];
+        });
+      }],
+      ['read', '讀取網站內容', function () {
+        return timed(fs.getDoc(fs.doc(db, 'site', 'content'))).then(function (s) {
+          return ['ok', s.exists() ? '可以讀取（已有發布過的內容）' : '可以讀取（還沒發布過，第一次發布會自動建立）'];
+        });
+      }],
+      ['rules', '資料庫規則（管理員讀取權限）', function () {
+        return timed(Promise.all([
+          fs.getDocs(fs.query(fs.collection(db, 'siteHistory'), fs.limit(1))),
+          fs.getDocs(fs.query(fs.collection(db, 'mediaIndex'), fs.limit(1)))
+        ])).then(function () { return ['ok', '版本紀錄與圖片庫都可以讀取']; });
+      }],
+      ['write', '資料庫寫入測試（不會改動任何內容）', function () {
+        return timed(fs.setDoc(fs.doc(db, 'stats', 'visits'), { count: fs.increment(0) }, { merge: true })).then(function () { return ['ok', '可以寫入']; });
+      }],
+      ['lock', '資料庫安全鎖（規則不是測試模式）', function () {
+        return timed(fs.getDoc(fs.doc(db, 'mcDiagnostics', 'probe'))).then(function () {
+          return ['warn', '規則仍是「測試模式」：任何人都能讀寫資料庫（包含客戶提問），而且建立約 30 天後會自動鎖死，屆時後台完全無法使用。'];
+        }, function (err) {
+          if (err && err.code === 'permission-denied') return ['ok', '已鎖好（只有管理員能修改）'];
+          throw err;
+        });
+      }],
+      ['content', '網站內容格式', function () {
+        flushEditors();
+        var c = contentState ? clone(contentState) : null;
+        if (!c) return Promise.resolve(['skip', '內容尚未載入']);
+        URL_FIELDS.forEach(function (p) { if (isObj(c[p[0]]) && typeof c[p[0]][p[1]] === 'string') c[p[0]][p[1]] = fixUrl(c[p[0]][p[1]], p[1]); });
+        var probs = validateContent(c);
+        var size = JSON.stringify(c).length;
+        if (size > MAX_JSON) probs.push({ msg: '網站內容總長度約 ' + Math.round(size / 1000) + ' 千字元，超過上限 290 千字元，請刪減消息內文。', section: 'news', field: 'items', index: -1 });
+        res.problems = probs;
+        return Promise.resolve(probs.length
+          ? ['bad', probs.length + ' 個地方需要修正（見下方）']
+          : ['ok', '格式正確（約 ' + Math.max(1, Math.round(size / 1000)) + ' 千字元）']);
+      }]
+    ];
+    var chain = Promise.resolve();
+    steps.forEach(function (s) {
+      chain = chain.then(function () {
+        if (run !== diag.running) return;
+        var set = line(s[1]);
+        var isDb = DB_STEPS.indexOf(s[0]) !== -1;
+        if (isDb && (stop === 'net' || stop === 'login')) { res[s[0]] = 'skip'; set('skip', stop === 'net' ? '連不上資料庫，略過這一項' : '沒有登入，略過這一項'); return; }
+        if ((s[0] === 'rules' || s[0] === 'write') && stop === 'admin') { res[s[0]] = 'skip'; set('skip', '帳號不在管理員名單內，略過這一項'); return; }
+        return s[2]().then(function (r) {
+          res[s[0]] = r[0];
+          set(r[0], r[1]);
+        }, function (err) {
+          res[s[0]] = 'bad';
+          res[s[0] + 'Err'] = err;
+          if (isNet(err)) { stop = 'net'; set('bad', '連不上資料庫（' + codeOf(err) + '）'); }
+          else if (err && err.code === 'permission-denied') set('bad', '被資料庫規則拒絕（permission-denied）');
+          else set('bad', '發生錯誤（' + codeOf(err) + '）');
+        }).then(function () {
+          if (s[0] === 'login' && res.login === 'bad') stop = 'login';
+          if (s[0] === 'admin' && res.admin === 'bad' && !stop) stop = 'admin';
+        });
+      });
+    });
+    return chain.then(function () { return run === diag.running ? res : null; });
+  }
+
+  function conclude(res) {
+    var err = diag.err;
+    var uid = currentUser ? currentUser.uid : '';
+    var out = [];
+    var anyNet = [res.adminErr, res.readErr, res.rulesErr, res.writeErr, res.lockErr].some(isNet);
+    var rulesShown = false;
+    if (res.login === 'bad' || (err && err.code === 'unauthenticated')) {
+      out.push(stepsBox('原因：登入狀態已失效', loginSteps(), 'bad'));
+    } else if (anyNet) {
+      out.push(stepsBox('原因：連不上資料庫（網路或瀏覽器外掛擋住了連線）', netSteps(), 'bad'));
+    } else if (res.admin === 'bad') {
+      rulesShown = !!(res.adminErr && res.adminErr.code === 'permission-denied');
+      out.push(rulesShown
+        ? stepsBox('原因：資料庫規則沒有正確發布', rulesSteps(), 'bad')
+        : stepsBox('原因：這個帳號不在管理員名單內', adminSteps(uid), 'bad'));
+    } else if (res.read === 'bad' || res.rules === 'bad' || res.write === 'bad') {
+      rulesShown = true;
+      out.push(stepsBox('原因：資料庫規則不是最新版（或貼到了別的 Firebase 專案）', rulesSteps(), 'bad'));
+    } else if (res.content === 'bad' && res.problems && res.problems.length) {
+      out.push(problemsBox(res.problems));
+    } else if (err && err.code === 'permission-denied') {
+      rulesShown = true;
+      out.push(stepsBox('原因：資料庫規則中「網站內容」的部分不是最新版', rulesSteps(), 'bad'));
+    } else if (err && err.code === 'resource-exhausted') {
+      out.push(stepsBox('原因：今天的 Firebase 免費使用量已用完', ['免費方案每天約可寫入 2 萬次，台灣時間每天下午 3～4 點重新計算。', '先按工具列「下載備份」存一份內容，等重新計算後再按「檢查並發布」。'], 'warn'));
+    } else if (err && err.code === 'invalid-argument') {
+      out.push(stepsBox('原因：資料庫不接受這份內容', ['按工具列「下載備份」存一份內容檔。', '按下方「複製診斷結果」，連同備份檔一起交給技術人員檢查。'], 'bad'));
+    } else if (err) {
+      out.push(stepsBox('設定都正常，剛才可能只是連線不穩', ['按「關閉」，再按一次「檢查並發布」。', '仍然失敗時，依照下面的連線檢查處理，或按「複製診斷結果」交給技術人員。'].concat(netSteps().slice(1)), 'warn'));
+    } else {
+      var ok = el('div', 'diag-fix is-ok');
+      ok.appendChild(el('strong', 'diag-fix-title', '全部正常：設定都正確，可以按「檢查並發布」。'));
+      diag.text.push('', '【全部正常】');
+      out.push(ok);
+    }
+    if (res.lock === 'warn' && !rulesShown) {
+      out.push(stepsBox('另外建議：把資料庫規則換成正式版（保護客戶資料）', rulesSteps(), 'warn'));
+    }
+    return out;
+  }
+
+  function copyText(text) {
+    function fallback() {
+      var ta = el('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.className = 'sr-copy';
+      $('#diag-dialog').appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = doc.execCommand('copy'); } catch (e) { ok = false; }
+      ta.remove();
+      return ok;
+    }
+    var done = function () { toast('診斷結果已複製，可以直接貼上傳給技術人員。'); };
+    var fail = function () { if (fallback()) done(); else toast('無法自動複製，請改用截圖。'); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fail);
+    else fail();
   }
 
   function loadHistory() {
@@ -1002,8 +1370,16 @@
       if (window.scrollY > top) window.scrollTo(0, top);
     });
     $('#btn-save').addEventListener('click', startPublish);
-    $('#btn-check').addEventListener('click', function () { flushEditors(); showCheck(checkCompliance(), false); });
-    $('#check-publish').addEventListener('click', function () { $('#check-dialog').close(); publish(); });
+    $('#btn-check').addEventListener('click', function () { flushEditors(); checkPending = false; showCheck(checkCompliance(), false); });
+    $('#check-publish').addEventListener('click', function () { checkPending = false; $('#check-dialog').close(); publish(); });
+    $('#check-dialog').addEventListener('close', function () {
+      if (!checkPending) return;
+      checkPending = false;
+      setStatus($('#content-status'), '尚未發布：用語檢查視窗已關閉。修改用語後再按「檢查並發布」，或在視窗裡按「我已確認，仍要發布」。', 'warn');
+    });
+    $('#btn-diag').addEventListener('click', function () { openDiag(null, false); });
+    $('#diag-run').addEventListener('click', function () { openDiag(null, false); });
+    $('#diag-copy').addEventListener('click', function () { copyText(diag.text.join('\n')); });
     $('#btn-reload').addEventListener('click', function () {
       if (contentDirty && !window.confirm('要放棄尚未發布的修改嗎？')) return;
       loadContent();

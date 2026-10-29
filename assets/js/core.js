@@ -396,6 +396,7 @@
     });
     $all('[data-year]').forEach(function (n) { n.textContent = String(new Date().getFullYear()); });
     renderCounter(content);
+    renderMascot(content);
   }
 
   /* ============ 頁尾瀏覽人次（匿名累計：同一瀏覽器 30 分鐘內只算一次，不記錄任何個人資料） ============ */
@@ -444,23 +445,17 @@
     var toggle = $('.nav-toggle', header);
     var nav = $('#main-nav');
     var backTop = $('.back-to-top');
-    var sticky = $('.sticky-cta');
     var hero = $('.hero');
     var heroInner = $('.hero-inner');
-    var contact = $('#contact');
     var plain = doc.body.classList.contains('page-plain');
     var ticking = false;
-    var contactVisible = false;
 
-    if (contact && 'IntersectionObserver' in window) {
-      new IntersectionObserver(function (en) { contactVisible = en[0].isIntersecting; onScroll(); }, { threshold: 0.15 }).observe(contact);
-    }
     function onScroll() {
       ticking = false;
       var y = window.scrollY || window.pageYOffset || 0;
       if (!plain) header.classList.toggle('is-scrolled', y > 24);
       if (backTop) backTop.classList.toggle('is-visible', y > 700);
-      if (sticky) sticky.classList.toggle('is-visible', y > (plain ? 240 : 560) && !contactVisible && !header.classList.contains('nav-open'));
+      mascotSync();
       if (hero && heroInner && !reduceMotion.matches) {
         var hh = hero.offsetHeight || 1;
         if (y < hh) {
@@ -623,6 +618,186 @@
     });
   }
 
+  /* ============ 眼球寶寶：浮動提問吉祥物 ============
+   * 跟著訪客捲動（彈簧式跟隨）、桌機會轉頭看向游標；
+   * 點一下：周圍出現特效 → 捲到「線上提問」表單（其他頁面則回到首頁表單）。
+   * 進到聯絡我們區塊、或手機選單打開時自動收起。 */
+  var mascotSync = function () {};
+  function mascotEnabled(content) {
+    if (!content) return true;
+    return !(content.mascot && content.mascot.show === false) && !(content.sections && content.sections.contact === false);
+  }
+  function renderMascot(content) {
+    var m = $('#mascot');
+    if (!m) return;
+    var on = mascotEnabled(content);
+    if (EDIT) { m.hidden = false; m.classList.toggle('mc-off', !on); }
+    else m.hidden = !on;
+    mascotSync();
+  }
+  function initMascot() {
+    var m = $('#mascot');
+    if (!m) return;
+    if (EDIT) { m.classList.add('is-visible', 'show-bubble'); return; }
+    var body = $('.mascot-body', m);
+    var act = $('.mascot-act', m);
+    var fx = $('.mascot-fx', m);
+    var header = $('#site-header');
+    var contact = $('#contact');
+    var motion = !reduceMotion.matches;
+    var ready = false, contactVisible = false, busy = false;
+
+    function sync() {
+      var navOpen = !!(header && header.classList.contains('nav-open'));
+      var show = ready && !m.hidden && !contactVisible && !navOpen;
+      m.classList.toggle('is-visible', show);
+      root.classList.toggle('mascot-on', show);
+      m.tabIndex = show ? 0 : -1;
+      if (show) m.removeAttribute('aria-hidden'); else m.setAttribute('aria-hidden', 'true');
+      if (!show) {
+        m.classList.remove('show-bubble');
+        if (doc.activeElement === m && m.blur) m.blur();
+      }
+    }
+    mascotSync = sync;
+    if (contact && 'IntersectionObserver' in window) {
+      new IntersectionObserver(function (en) { contactVisible = en[0].isIntersecting; sync(); }, { threshold: 0.15 }).observe(contact);
+    }
+    sync();
+    setTimeout(function () { ready = true; sync(); greet(); }, motion ? 900 : 0);
+
+    // 第一次進站打招呼（同一個分頁只出現一次）；滑過或用鍵盤選到時也會顯示
+    function greet() {
+      var seen = false;
+      try { seen = sessionStorage.getItem('mc-mascot-hi') === '1'; sessionStorage.setItem('mc-mascot-hi', '1'); } catch (e) { seen = false; }
+      if (seen) return;
+      setTimeout(function () {
+        if (!m.classList.contains('is-visible')) return;
+        m.classList.add('show-bubble');
+        setTimeout(function () { m.classList.remove('show-bubble'); }, 4800);
+      }, 1100);
+    }
+
+    // 跟隨：捲動時被「拖著走」再彈回原位；桌機轉向游標
+    var st = { y: 0, ty: 0, x: 0, tx: 0, r: 0, tr: 0, lastY: window.scrollY || window.pageYOffset || 0, raf: 0 };
+    function frame() {
+      st.raf = 0;
+      st.ty *= 0.84;
+      var py = st.y;
+      st.y += (st.ty - st.y) * 0.16;
+      st.x += (st.tx - st.x) * 0.12;
+      var tilt = st.tr + clamp((st.y - py) * 1.6, -10, 10);
+      st.r += (tilt - st.r) * 0.18;
+      body.style.transform = 'translate3d(' + st.x.toFixed(2) + 'px,' + st.y.toFixed(2) + 'px,0) rotate(' + st.r.toFixed(2) + 'deg)';
+      if (Math.abs(st.ty) > 0.05 || Math.abs(st.y - st.ty) > 0.05 || Math.abs(st.x - st.tx) > 0.05 || Math.abs(st.r - st.tr) > 0.05) kick();
+    }
+    function kick() { if (!st.raf) st.raf = requestAnimationFrame(frame); }
+    window.addEventListener('scroll', function () {
+      var y = window.scrollY || window.pageYOffset || 0;
+      var dy = y - st.lastY;
+      st.lastY = y;
+      if (!motion || !m.classList.contains('is-visible')) return;
+      st.ty = clamp(st.ty - dy * 0.45, -46, 46);
+      kick();
+    }, { passive: true });
+    if (motion) {
+      doc.addEventListener('pointermove', function (e) {
+        if (e.pointerType === 'touch' || !finePointer.matches || !m.classList.contains('is-visible')) return;
+        var r = m.getBoundingClientRect();
+        if (!r.width) return;
+        var dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height * 0.45);
+        var dist = Math.sqrt(dx * dx + dy * dy) || 1;
+        var k = clamp(1 - dist / 900, 0.3, 1);
+        st.tr = clamp(dx / dist * 9 * k, -9, 9);
+        st.tx = clamp(dx / dist * 6 * k, -6, 6);
+        kick();
+      }, { passive: true });
+      root.addEventListener('pointerleave', function () { st.tr = 0; st.tx = 0; kick(); });
+    }
+
+    // 點一下：特效 → 前往線上提問表單
+    function anim(node, frames, opts) {
+      if (!node.animate) return null;
+      try { return node.animate(frames, opts); } catch (e) { return null; }
+    }
+    function burst() {
+      if (!motion || !fx || !fx.animate) return;
+      var colors = ['#2BB3E6', '#7ED957', '#FFD34D', '#5AA9F0', '#9BE3F8'];
+      var n = 14;
+      for (var i = 0; i < n; i++) {
+        var kind = i % 7 === 3 ? 'heart' : (i % 3 === 0 ? 'line' : (i % 3 === 1 ? 'star' : 'dot'));
+        var p = el('span', 'mascot-spark is-' + kind, kind === 'heart' ? '♥' : '');
+        var ang = (i / n) * Math.PI * 2 - Math.PI / 2 + (Math.random() - 0.5) * 0.45;
+        var dist = (kind === 'line' ? 80 : 70) + Math.random() * 34;
+        var dx = Math.cos(ang) * dist, dy = Math.sin(ang) * dist;
+        var rot = kind === 'line' ? ang * 180 / Math.PI + 90 : Math.round(Math.random() * 120 - 60);
+        if (kind === 'star' || kind === 'dot') p.style.background = colors[i % colors.length];
+        fx.appendChild(p);
+        var a = anim(p, [
+          { transform: 'translate(0px,0px) rotate(' + rot + 'deg) scale(.2)', opacity: 0 },
+          { transform: 'translate(' + (dx * 0.62).toFixed(1) + 'px,' + (dy * 0.62).toFixed(1) + 'px) rotate(' + rot + 'deg) scale(1.1)', opacity: 1, offset: 0.3 },
+          { transform: 'translate(' + (dx * 0.92).toFixed(1) + 'px,' + (dy * 0.92).toFixed(1) + 'px) rotate(' + (kind === 'line' ? rot : rot + 45) + 'deg) scale(.95)', opacity: 1, offset: 0.72 },
+          { transform: 'translate(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px) rotate(' + (kind === 'line' ? rot : rot + 70) + 'deg) scale(.5)', opacity: 0 }
+        ], { duration: 820 + Math.round(Math.random() * 200), easing: 'cubic-bezier(.2,.7,.3,1)', fill: 'forwards' });
+        cleanup(p, a, 1300);
+      }
+      for (var j = 0; j < 2; j++) {
+        var ring = el('span', 'mascot-ring');
+        fx.appendChild(ring);
+        cleanup(ring, anim(ring, [{ transform: 'scale(.35)', opacity: 0.95 }, { transform: 'scale(1.7)', opacity: 0 }], { duration: 820, delay: j * 160, easing: 'ease-out', fill: 'forwards' }), 1300);
+      }
+      anim(act, [
+        { transform: 'none' },
+        { transform: 'translateY(4px) scale(1.12,.86)', offset: 0.18 },
+        { transform: 'translateY(-22px) scale(.94,1.08)', offset: 0.5 },
+        { transform: 'translateY(0) scale(1.04,.96)', offset: 0.82 },
+        { transform: 'none' }
+      ], { duration: 620, easing: 'ease-out' });
+    }
+    function cleanup(node, a, ms) {
+      var gone = false;
+      function rm() { if (!gone) { gone = true; if (node.parentNode) node.parentNode.removeChild(node); } }
+      if (a) a.onfinish = rm;
+      setTimeout(rm, ms);
+    }
+    function goForm() {
+      var form = $('#contact-form');
+      var sec = $('#contact');
+      if (!form || !sec || sec.hidden || !form.getClientRects().length) { window.location.href = m.href; return; }
+      // 用版面位置計算（不受淡入動畫位移影響），並扣掉固定在上方的頁首高度
+      var y = 0;
+      for (var n = form; n; n = n.offsetParent) y += n.offsetTop;
+      var hh = header ? header.getBoundingClientRect().height : 0;
+      var top = Math.max(0, y - Math.max(hh, 56) - 16);
+      try { window.scrollTo({ top: top, behavior: motion ? 'smooth' : 'auto' }); } catch (e) { window.scrollTo(0, top); }
+      try { history.replaceState(null, '', '#contact'); } catch (e) { /* ignore */ }
+      var done = false;
+      function arrive() {
+        if (done) return;
+        done = true;
+        form.classList.remove('is-called');
+        void form.offsetWidth;
+        form.classList.add('is-called');
+        setTimeout(function () { form.classList.remove('is-called'); }, 1800);
+        var first = form.elements && form.elements.name;
+        if (first && finePointer.matches) { try { first.focus({ preventScroll: true }); } catch (e) { first.focus(); } }
+      }
+      if (!motion) { arrive(); return; }
+      if ('onscrollend' in window) window.addEventListener('scrollend', arrive, { once: true });
+      setTimeout(arrive, 900);
+    }
+    m.addEventListener('click', function (e) {
+      if (e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      if (busy) return;
+      busy = true;
+      m.classList.remove('show-bubble');
+      m.classList.add('is-busy');
+      burst();
+      setTimeout(function () { busy = false; m.classList.remove('is-busy'); goForm(); }, motion ? 520 : 0);
+    });
+  }
+
   /* ============ 視覺化編輯模式 ============ */
   var EDIT_SEL = '[data-edit], [data-cms], [data-cms-rich], img[data-img], [data-href], [data-card-meta]';
   var EDIT_PASS = '.carousel-btn, .carousel-dots button, .nav-toggle, .theme-toggle';
@@ -743,6 +918,7 @@
     initTheme();
     initPointerEffects();
     initBadges();
+    initMascot();
 
     var cached = null;
     try { cached = JSON.parse(lsGet(CACHE_KEY) || 'null'); } catch (e) { cached = null; }
