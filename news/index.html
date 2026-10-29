@@ -21,13 +21,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap">
-  <link rel="stylesheet" href="../assets/css/style.css?v=9">
-  <script src="../assets/js/theme-init.js?v=9"></script>
-  <script src="../assets/js/config.js?v=9" defer></script>
-  <script src="../assets/js/content.js?v=9" defer></script>
-  <script src="../assets/js/firebase-service.js?v=9" defer></script>
-  <script src="../assets/js/core.js?v=9" defer></script>
-  <script src="../assets/js/page.js?v=9" defer></script>
+  <link rel="stylesheet" href="../assets/css/style.css?v=11">
+  <script src="../assets/js/theme-init.js?v=11"></script>
+  <script src="../assets/js/config.js?v=11" defer></script>
+  <script src="../assets/js/content.js?v=11" defer></script>
+  <script src="../assets/js/firebase-service.js?v=11" defer></script>
+  <script src="../assets/js/core.js?v=11" defer></script>
+  <script src="../assets/js/page.js?v=11" defer></script>
 </head>
 <body class="page-sub page-news">
   <a class="skip-link" href="#main">跳到主要內容</a>
@@ -107,7 +107,13 @@
   </footer>
 
   <a class="back-to-top" href="#top" aria-label="回到頂端"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-  <a class="sticky-cta btn btn-3d btn-primary" href="/#contact" data-route="home" data-hash="contact"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v10H9l-5 4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span data-cms="nav.cta">線上提問</span></a>
+  <!-- 眼球寶寶：浮動提問吉祥物（跟著捲動，點一下出現特效並前往線上提問表單） -->
+  <a class="mascot" id="mascot" href="/#contact" data-route="home" data-hash="contact" data-edit="mascot" hidden>
+    <span class="mascot-bubble" data-cms="mascot.bubble" data-cms-fallback="線上提問">有問題嗎？點我線上提問</span>
+    <span class="mascot-body"><span class="mascot-act"><span class="mascot-bob"><img class="mascot-img" src="../assets/img/mascot.webp" data-img="mascot.image" data-fallback="../assets/img/mascot.webp" data-alt-fixed width="240" height="245" alt="" draggable="false"></span></span></span>
+    <span class="mascot-shadow" aria-hidden="true"></span>
+    <span class="mascot-fx" aria-hidden="true"></span>
+  </a>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <noscript><p class="noscript">請開啟瀏覽器的 JavaScript 以完整瀏覽本網站。</p></noscript>
 </body>
