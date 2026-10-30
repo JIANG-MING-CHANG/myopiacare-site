@@ -1,4 +1,4 @@
-# MyopiaCare｜豪智慧有限公司 官方網站 v17
+# MyopiaCare｜豪智慧有限公司 官方網站 v18
 
 純靜態網站（HTML／CSS／JavaScript，免建置工具），架設於 **GitHub Pages**，客戶提問、網站內容、圖片與瀏覽人次存放於 **Firebase Firestore**（免費 Spark 方案）。
 
@@ -71,6 +71,20 @@
 - 頁尾：公司名稱與聯絡資料、聲明、瀏覽人次（v16 起不再有頁尾連結列）
 - 防止複製（v17 起，預設開啟）：首頁、最新消息、隱私權政策、404 頁不能按右鍵、選取或複製文字、拖曳圖片、使用複製／全選／存檔／列印／檢視原始碼／開發者工具快捷鍵，列印只會印出版權提示。提問表單的欄位照常可以輸入、選取、複製、貼上；LINE 行動條碼仍可長按或右鍵儲存；後台與視覺化編輯不受影響。後台「網站設定」→「防止複製網頁內容」可關閉，「訪客嘗試複製時的提示文字」可修改或留空。限制：截圖、拍照、關閉 JavaScript 或從瀏覽器選單打開開發者工具仍無法阻擋，這是所有網站共同的限制
 
+## Google 搜尋結果顯示標誌（v18 起）
+
+網站圖示：`favicon.ico`（16／32／48）與 `assets/img/favicon-32.png`、`-48`、`-96`、`-144`、`-192.png`（皆由 `logo-circle.png` 縮成，正方形、透明角），另有 `apple-touch-icon.png`（180）。首頁 `<head>` 已全部宣告，符合 Google 規定（正方形、建議大於 48×48、Googlebot 可抓取）。**這些檔名請不要更改**，Google 要求圖示網址固定。
+
+Google 重新抓取並處理圖示需要幾天到幾週，可用 Search Console 加快：
+
+1. 打開 https://search.google.com/search-console 用 Google 帳號登入。
+2. 新增資源 →「網址前置字元」輸入 `https://myopiacare.site/` → 繼續。
+3. 驗證方式選「HTML 檔案」→ 下載 `google` 開頭的 `.html` 檔（不要改名、不要修改內容）。
+4. 把這個檔案上傳到 GitHub repository 最外層（和 `index.html` 同一層）→ Commit → 等 Actions 綠勾 → 回 Search Console 按「驗證」。這個檔案以後不要刪除。
+5. 左側「Sitemap」輸入 `sitemap.xml` → 提交。
+6. 最上方搜尋列（網址審查）輸入 `https://myopiacare.site/` → 按「要求建立索引」。
+7. 等幾天到幾週，搜尋結果左側的房子圖示就會換成 MyopiaCare 標誌。Google 不保證一定顯示，但規定都已符合。
+
 ## 發布失敗怎麼辦（v10 起會自動找原因）
 
 按「檢查並發布」沒有成功時，後台會自動跳出「發布沒有成功：原因與解決步驟」視窗，逐項檢查 8 個設定並用白話說明要修正哪一步。也可以隨時按工具列的「連線診斷」自行檢查（只讀取資料，不會改動網站內容）。
@@ -98,9 +112,9 @@ Facebook、X、Instagram、App 商店與 LINE 連結少打 `https://`、打成 `
 ## 從舊版升級
 
 1. 上傳前先從資料夾刪掉 `assets/js/config.js`，再用新檔案覆蓋 repository 裡的舊檔案（GitHub 上已填好的 config.js 會保留）。
-2. 從 v2 升級：**把新的 `firestore.rules` 重新貼上並發布**（v3 起新增瀏覽人次 `stats` 的權限）。v3–v13 規則相同；**v14 起規則升級為 v4（提問可記錄 IP），請重新貼上 `firestore.rules` 並發布**。v15、v16、v17 規則與 v14 相同，不需重貼。
+2. 從 v2 升級：**把新的 `firestore.rules` 重新貼上並發布**（v3 起新增瀏覽人次 `stats` 的權限）。v3–v13 規則相同；**v14 起規則升級為 v4（提問可記錄 IP），請重新貼上 `firestore.rules` 並發布**。v15–v18 規則與 v14 相同，不需重貼。
 3. 若後台曾經發布過內容，裡面仍是舊的佔位文字（○○○ 醫師、04-0000-0000、service@myopiacare.site、請於管理後台填寫公司地址）或 v3 的英文地址、v8 以前的「MyopiaCare／MYOPIACARE APP」標題時，網站會自動改為新的公司資料與「Myopia Care」寫法；其他你改過的內容維持不變。
 
 ## 修改程式後
 
-改過 CSS 或 JS，請把所有 HTML 裡的 `?v=17` 改成 `?v=18`，訪客才不會看到舊的快取版本。
+改過 CSS 或 JS，請把所有 HTML 裡的 `?v=18` 改成 `?v=19`，訪客才不會看到舊的快取版本。
