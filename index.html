@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-Hant-TW">
+<html lang="zh-Hant-TW" class="mc-protect">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -29,14 +29,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap">
-  <link rel="stylesheet" href="assets/css/style.css?v=15">
+  <link rel="stylesheet" href="assets/css/style.css?v=17">
 
-  <script src="assets/js/theme-init.js?v=15"></script>
-  <script src="assets/js/config.js?v=15" defer></script>
-  <script src="assets/js/content.js?v=15" defer></script>
-  <script src="assets/js/firebase-service.js?v=15" defer></script>
-  <script src="assets/js/core.js?v=15" defer></script>
-  <script src="assets/js/main.js?v=15" defer></script>
+  <script src="assets/js/theme-init.js?v=17"></script>
+  <script src="assets/js/protect.js?v=17"></script>
+  <script src="assets/js/config.js?v=17" defer></script>
+  <script src="assets/js/content.js?v=17" defer></script>
+  <script src="assets/js/firebase-service.js?v=17" defer></script>
+  <script src="assets/js/core.js?v=17" defer></script>
+  <script src="assets/js/main.js?v=17" defer></script>
 
   <script type="application/ld+json">
   {
@@ -80,6 +81,7 @@
           <li data-section-key="flow"><a href="/#flow" data-route="home" data-hash="flow" data-cms="nav.flow">使用流程</a></li>
           <li data-section-key="news"><a href="/news/" data-route="news" data-cms="nav.news">最新消息</a></li>
           <li data-section-key="about"><a href="/#about" data-route="home" data-hash="about" data-cms="nav.about">關於我們</a></li>
+          <li><a href="/privacy/" data-route="privacy" data-cms="nav.privacy" data-cms-fallback="隱私政策">隱私政策</a></li>
           <li data-section-key="contact"><a href="/#contact" data-route="home" data-hash="contact" data-cms="nav.contact">聯絡我們</a></li>
         </ul>
       </nav>
@@ -272,7 +274,7 @@
           </header>
           <!-- LINE 加好友：行動條碼 + 動態漸層按鈕 -->
           <div class="line-card" data-show="contact.showLine" data-edit="contact.lineUrl" hidden>
-            <a class="line-qr" data-href="contact.lineUrl" href="#contact" target="_blank" rel="noopener noreferrer" aria-label="加入豪智慧 LINE 官方帳號好友">
+            <a class="line-qr" data-allow-save data-href="contact.lineUrl" href="#contact" target="_blank" rel="noopener noreferrer" aria-label="加入豪智慧 LINE 官方帳號好友">
               <img src="assets/img/line-qr.png" data-img="contact.lineQr" data-fallback="assets/img/line-qr.png" data-alt-fixed width="543" height="543" alt="LINE 加入好友行動條碼" loading="lazy">
             </a>
             <div class="line-card-text">
@@ -411,13 +413,6 @@
         <li data-hide-empty="contact.taxId"><span>統編</span><span data-cms="contact.taxId">61954117</span></li>
         <li><span>時間</span><span data-cms="contact.hours"></span></li>
       </ul>
-      <nav class="footer-links" aria-label="頁尾連結">
-        <a href="/#services" data-route="home" data-hash="services" data-section-key="services" data-cms="nav.services">服務項目</a>
-        <a href="/news/" data-route="news" data-section-key="news" data-cms="nav.news">最新消息</a>
-        <a href="/#about" data-route="home" data-hash="about" data-section-key="about" data-cms="nav.about">關於我們</a>
-        <a href="/#contact" data-route="home" data-hash="contact" data-section-key="contact" data-cms="nav.contact">聯絡我們</a>
-        <a href="/privacy/" data-route="privacy" data-cms="footer.privacyLabel">隱私政策</a>
-      </nav>
     </div>
     <div class="container footer-bottom">
       <p class="footer-note" data-cms="footer.note"></p>

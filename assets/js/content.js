@@ -12,7 +12,9 @@ window.MC_DEFAULT_CONTENT = {
   site: {
     title: '豪智慧有限公司｜MyopiaCare 眼科數據紀錄',
     description: '豪智慧有限公司由醫師創立，提供 MyopiaCare 眼科數據雲端紀錄、AI 數據趨勢圖表與回診提醒，協助醫師與家長清楚溝通。',
-    palette: 'mist'
+    palette: 'mist',
+    protect: true,
+    protectMsg: '本網站內容受著作權保護，請勿複製。'
   },
   brand: {
     nameZh: '豪智慧有限公司',
@@ -25,6 +27,7 @@ window.MC_DEFAULT_CONTENT = {
     flow: '使用流程',
     news: '最新消息',
     about: '關於我們',
+    privacy: '隱私政策',
     contact: '聯絡我們',
     cta: '線上提問'
   },
@@ -163,7 +166,6 @@ window.MC_DEFAULT_CONTENT = {
     image: ''
   },
   footer: {
-    privacyLabel: '隱私政策',
     showCounter: true,
     counterLabel: '累計瀏覽人次',
     note: '豪智慧有限公司非醫療機構。本網站與 MyopiaCare 提供資料紀錄與整理工具，不提供醫療診斷、治療或醫療諮詢；網站資訊僅供參考，如有眼睛不適，請儘速就醫。'

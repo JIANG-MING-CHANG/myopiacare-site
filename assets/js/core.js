@@ -105,6 +105,10 @@
   };
   function withDefaults(over) {
     var c = merge(DEFAULTS, over);
+    // v16 起「隱私政策」從頁尾移到上方選單：v15 在「頁尾」改過的文字自動帶到選單
+    var oldPrivacy = isObj(over) && isObj(over.footer) ? over.footer.privacyLabel : null;
+    var hasNavPrivacy = isObj(over) && isObj(over.nav) && typeof over.nav.privacy === 'string';
+    if (c.nav && typeof oldPrivacy === 'string' && oldPrivacy.trim() && !hasNavPrivacy) c.nav.privacy = oldPrivacy;
     Object.keys(LEGACY).forEach(function (path) {
       var k = path.split('.');
       if (c[k[0]] && DEFAULTS[k[0]] && LEGACY[path].indexOf(c[k[0]][k[1]]) !== -1) c[k[0]][k[1]] = DEFAULTS[k[0]][k[1]];
@@ -334,6 +338,8 @@
   function renderChrome(content, pageTitle) {
     var site = content.site || {};
     root.setAttribute('data-palette', PALETTES.indexOf(site.palette) !== -1 ? site.palette : 'mist');
+    // v17 防止複製：只在公開網頁作用（後台、視覺化編輯器不受影響），可在後台「網站設定」關閉
+    if (window.MCProtect && typeof window.MCProtect.configure === 'function') window.MCProtect.configure(!EDIT && site.protect !== false, site.protectMsg);
     if (pageTitle) doc.title = pageTitle;
     var meta = $('meta[name="description"]');
     if (meta && site.description && doc.body.classList.contains('page-home')) meta.setAttribute('content', site.description);

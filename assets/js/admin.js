@@ -433,16 +433,18 @@
      ========================================================= */
   var T = function (label, extra) { return Object.assign({ type: 'text', label: label }, extra || {}); };
   var SCHEMA = [
-    { key: 'site', label: '網站設定', desc: '瀏覽器分頁名稱、搜尋引擎摘要與背景色系。', fields: {
+    { key: 'site', label: '網站設定', desc: '瀏覽器分頁名稱、搜尋引擎摘要、背景色系與防止複製。', fields: {
       title: T('首頁網頁標題（瀏覽器分頁名稱）', { hint: '顯示在瀏覽器分頁與 Google 搜尋結果的標題。' }),
       description: T('網站描述', { type: 'textarea', hint: '搜尋引擎顯示的摘要，建議 80 字以內。' }),
-      palette: T('背景色系', { type: 'palette' }) } },
+      palette: T('背景色系', { type: 'palette' }),
+      protect: T('防止複製網頁內容', { type: 'bool', hint: '開啟後，訪客無法在網頁上按右鍵、選取或複製文字、拖曳圖片，也無法列印網頁；提問表單仍可正常填寫，後台不受影響。' }),
+      protectMsg: T('訪客嘗試複製時的提示文字', { hint: '留空則不顯示提示。' }) } },
     { key: 'brand', label: '品牌', fields: {
       nameZh: T('公司中文名稱'), nameEn: T('品牌英文名稱'), tagline: T('品牌標語'),
       logo: T('Logo 圖片（選填）', { type: 'image', hint: '建議使用正方形圖片；留空則使用預設的 MyopiaCare 圓形 logo。' }) } },
-    { key: 'nav', label: '選單與頁面名稱', desc: '修改上方選單、頁尾連結顯示的名稱。各區塊與內頁的標題請到各自的分頁修改。', fields: {
+    { key: 'nav', label: '選單與頁面名稱', desc: '修改上方選單顯示的名稱。各區塊與內頁的標題請到各自的分頁修改。', fields: {
       services: T('「服務項目」選單名稱'), flow: T('「使用流程」選單名稱'), news: T('「最新消息」選單名稱'),
-      about: T('「關於我們」選單名稱'), contact: T('「聯絡我們」選單名稱'), cta: T('「線上提問」按鈕文字（關於我們區塊）') } },
+      about: T('「關於我們」選單名稱'), privacy: T('「隱私政策」選單名稱', { hint: '上方選單顯示的文字；隱私權政策頁面本身的標題請到「隱私權政策頁」修改。' }), contact: T('「聯絡我們」選單名稱'), cta: T('「線上提問」按鈕文字（關於我們區塊）') } },
     { key: 'sections', label: '區塊顯示', desc: '關閉的區塊不會出現在首頁，選單中的對應項目也會一起隱藏。', fields: {
       services: T('顯示「服務項目」', { type: 'bool' }), flow: T('顯示「使用流程」', { type: 'bool' }), news: T('顯示「最新消息」', { type: 'bool' }),
       about: T('顯示「關於我們」', { type: 'bool' }), contact: T('顯示「聯絡我們」與提問表單', { type: 'bool' }), app: T('顯示「App 下載」', { type: 'bool' }) } },
@@ -509,7 +511,6 @@
     { key: 'privacy', label: '隱私權政策頁', desc: '頁面網址：myopiacare.site/privacy/', fields: {
       kicker: T('英文小標'), title: T('頁面名稱'), body: T('內容', { type: 'rich' }) } },
     { key: 'footer', label: '頁尾', fields: {
-      privacyLabel: T('頁尾「隱私政策」連結文字', { hint: '頁尾連結顯示的文字；隱私權政策頁面本身的標題請到「隱私權政策頁」修改。' }),
       note: T('頁尾聲明', { type: 'textarea', hint: '建議保留「本公司非醫療機構、不提供醫療診斷」的聲明。' }),
       showCounter: T('顯示瀏覽人次', { type: 'bool', hint: '同一個瀏覽器 30 分鐘內重複瀏覽只算 1 次；不記錄任何個人資料。' }),
       counterLabel: T('瀏覽人次文字'),
