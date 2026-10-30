@@ -281,3 +281,20 @@ body.vis-wide .admin-main { max-width: 1720px; }
   .diag-dialog .dialog-foot { gap: 8px; }
   .diag-dialog .dialog-foot .btn { flex: 1 1 auto; }
 }
+
+/* ---------- 圖片選項（眼球寶寶造型） ---------- */
+.choice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.choice-opt { position: relative; display: flex !important; flex-direction: column; align-items: center; gap: 8px; padding: 12px 10px; border-radius: 14px; border: 1.5px solid var(--line-strong); background: var(--surface); cursor: pointer; text-align: center; }
+.choice-opt input { position: absolute; opacity: 0; }
+.choice-opt:has(input:checked) { border-color: #0B78A8; box-shadow: 0 0 0 3px rgba(43, 179, 230, .2); }
+.choice-opt:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 2px; }
+.choice-pics { display: flex; justify-content: center; gap: 2px; min-height: 48px; }
+.choice-pic { width: 48px; height: 48px; object-fit: contain; }
+.choice-text { font-size: .9rem; font-weight: 600; }
+.cms-choice { border: 0; padding: 0; margin: 0 0 16px; }
+.cms-choice legend { font-size: .92rem; font-weight: 500; margin-bottom: 8px; }
+.cms-choice .choice-opt { align-items: center; justify-content: center; margin-bottom: 0; letter-spacing: .02em; }
+
+/* 提問紀錄：IP 位址 */
+.inq-ip { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .9rem; overflow-wrap: anywhere; }
+.inq-ip-look { margin-left: 10px; font-size: .84rem; }

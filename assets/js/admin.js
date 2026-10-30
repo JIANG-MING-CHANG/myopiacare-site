@@ -196,7 +196,7 @@
   function matches(q) {
     if (filter !== 'all' && (q.status || 'new') !== filter) return false;
     if (!search) return true;
-    return [q.name, q.email, q.phone, q.subject, q.message, q.reply].map(str).join(' ').toLowerCase().indexOf(search) !== -1;
+    return [q.name, q.email, q.phone, q.subject, q.message, q.reply, q.ip].map(str).join(' ').toLowerCase().indexOf(search) !== -1;
   }
 
   function buildCard(q) {
@@ -217,7 +217,7 @@
     var body = el('div', 'inq-body');
     body.hidden = true;
     var meta = el('dl', 'inq-meta');
-    [['Email', 'email'], ['電話', 'phone'], ['身分', 'role'], ['收到時間', 'time']].forEach(function (p) {
+    [['Email', 'email'], ['電話', 'phone'], ['身分', 'role'], ['收到時間', 'time'], ['IP 位址', 'ip'], ['瀏覽器／裝置', 'ua']].forEach(function (p) {
       meta.appendChild(el('dt', null, p[0]));
       var dd = el('dd');
       dd.dataset.k = p[1];
@@ -246,6 +246,14 @@
     li.appendChild(body);
     return li;
   }
+  /* 由瀏覽器資訊整理出「裝置 · 瀏覽器」 */
+  function uaSummary(ua) {
+    ua = str(ua);
+    if (!ua) return '';
+    var os = /iPhone/.test(ua) ? 'iPhone' : /iPad/.test(ua) ? 'iPad' : /Android/.test(ua) ? 'Android' : /Windows/.test(ua) ? 'Windows' : /Macintosh|Mac OS X/.test(ua) ? 'Mac' : /Linux|CrOS/.test(ua) ? 'Linux／ChromeOS' : '其他裝置';
+    var br = /Line\//.test(ua) ? 'LINE 內建瀏覽器' : /FBAN|FBAV|Instagram/.test(ua) ? '社群 App 內建瀏覽器' : /Edg\//.test(ua) ? 'Edge' : /OPR\//.test(ua) ? 'Opera' : /SamsungBrowser/.test(ua) ? 'Samsung 瀏覽器' : /CriOS|Chrome\//.test(ua) ? 'Chrome' : /FxiOS|Firefox\//.test(ua) ? 'Firefox' : /Safari\//.test(ua) ? 'Safari' : '其他瀏覽器';
+    return os + ' · ' + br;
+  }
   function fillCard(li, q) {
     var status = q.status || 'new';
     li.classList.toggle('is-new', status === 'new');
@@ -267,6 +275,20 @@
     $('[data-k="phone"]', li).textContent = str(q.phone) || '—';
     $('[data-k="role"]', li).textContent = ROLE_LABEL[q.role] || '—';
     $('[data-k="time"]', li).textContent = fmtTime(q.createdAt);
+    var ipDd = $('[data-k="ip"]', li);
+    ipDd.textContent = '';
+    var ip = str(q.ip).trim();
+    if (/^[0-9A-Fa-f:.]{3,45}$/.test(ip)) {
+      ipDd.appendChild(el('span', 'inq-ip', ip));
+      var look = el('a', 'inq-ip-look', '查詢來源');
+      look.href = 'https://ipinfo.io/' + encodeURIComponent(ip);
+      look.target = '_blank';
+      look.rel = 'noopener noreferrer';
+      ipDd.appendChild(look);
+    } else ipDd.textContent = '未記錄（' + (q.ua ? '查詢 IP 失敗' : '舊版表單或資料庫規則未更新') + '）';
+    var uaDd = $('[data-k="ua"]', li);
+    uaDd.textContent = uaSummary(q.ua) || '—';
+    uaDd.title = str(q.ua);
     $('.inq-msg', li).textContent = str(q.message);
     var ta = $('textarea', li);
     if (ta.dataset.dirty !== '1' && doc.activeElement !== ta) ta.value = str(q.reply);
@@ -378,10 +400,10 @@
   function exportCsv() {
     var rows = inquiries.filter(matches);
     if (!rows.length) { toast('沒有可匯出的資料。'); return; }
-    var lines = [['收到時間', '狀態', '姓名', 'Email', '電話', '身分', '主旨', '提問內容', '回覆內容', '回覆時間'].map(csvCell).join(',')];
+    var lines = [['收到時間', '狀態', '姓名', 'Email', '電話', '身分', '主旨', '提問內容', '回覆內容', '回覆時間', 'IP 位址', '瀏覽器／裝置'].map(csvCell).join(',')];
     rows.forEach(function (q) {
       lines.push([fmtTime(q.createdAt), STATUS_LABEL[q.status] || q.status, q.name, q.email, q.phone, ROLE_LABEL[q.role] || q.role,
-        q.subject, q.message, q.reply, q.repliedAt ? fmtTime(q.repliedAt) : ''].map(csvCell).join(','));
+        q.subject, q.message, q.reply, q.repliedAt ? fmtTime(q.repliedAt) : '', q.ip, uaSummary(q.ua)].map(csvCell).join(','));
     });
     var d = new Date();
     download(new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' }), 'myopiacare-inquiries-' + d.getFullYear() + p2(d.getMonth() + 1) + p2(d.getDate()) + '.csv');
@@ -420,7 +442,7 @@
       logo: T('Logo 圖片（選填）', { type: 'image', hint: '建議使用正方形圖片；留空則使用預設的 MyopiaCare 圓形 logo。' }) } },
     { key: 'nav', label: '選單與頁面名稱', desc: '修改上方選單、頁尾連結顯示的名稱。各區塊與內頁的標題請到各自的分頁修改。', fields: {
       services: T('「服務項目」選單名稱'), flow: T('「使用流程」選單名稱'), news: T('「最新消息」選單名稱'),
-      about: T('「關於我們」選單名稱'), contact: T('「聯絡我們」選單名稱'), cta: T('提問按鈕文字') } },
+      about: T('「關於我們」選單名稱'), contact: T('「聯絡我們」選單名稱'), cta: T('「線上提問」按鈕文字（關於我們區塊）') } },
     { key: 'sections', label: '區塊顯示', desc: '關閉的區塊不會出現在首頁，選單中的對應項目也會一起隱藏。', fields: {
       services: T('顯示「服務項目」', { type: 'bool' }), flow: T('顯示「使用流程」', { type: 'bool' }), news: T('顯示「最新消息」', { type: 'bool' }),
       about: T('顯示「關於我們」', { type: 'bool' }), contact: T('顯示「聯絡我們」與提問表單', { type: 'bool' }), app: T('顯示「App 下載」', { type: 'bool' }) } },
@@ -456,14 +478,19 @@
       doctorName: T('醫師姓名'),
       doctorLicense: T('專科醫師證書字號', { hint: '顯示在醫師姓名右邊，會自動加上全形括號；留空則不顯示。' }),
       doctorTitle: T('職稱'), doctorQuote: T('醫師的話', { type: 'textarea' }),
-      doctorPhoto: T('醫師照片（選填）', { type: 'image', hint: '留空會顯示姓氏頭像。' }) } },
+      doctorPhoto: T('醫師照片（選填）', { type: 'image', hint: '引言旁的小圓形頭像；留空會顯示姓氏頭像。' }),
+      showPortrait: T('顯示醫師形象照', { type: 'bool' }),
+      portrait: T('醫師形象照（選填）', { type: 'image', hint: '關於我們左側的大張形象照。建議直式 3:4（例如 960×1280）；留空則使用預設的王志盟醫師形象照。' }) } },
     { key: 'contact', label: '聯絡我們', fields: {
       kicker: T('英文小標'), title: T('區塊名稱'), intro: T('區塊介紹', { type: 'textarea' }),
       formTitle: T('表單標題'), submitLabel: T('送出按鈕文字'),
       formNote: T('表單下方提醒', { type: 'textarea', hint: '建議保留「不提供醫療諮詢、請勿填寫病歷等敏感資料」的提醒。' }),
-      phone: T('電話'), email: T('Email'), address: T('地址'), hours: T('服務時間'),
-      showLine: T('顯示 LINE 按鈕（頁首深淺模式按鈕左邊、聯絡我們）', { type: 'bool' }),
-      lineUrl: T('LINE 官方帳號連結', { type: 'url', hint: '目前是 LINE ID @892zqqxn：https://line.me/R/ti/p/%40892zqqxn（@ 寫成 %40）。留空會自動使用這個連結；不想顯示請關閉上方開關。' }) } },
+      phone: T('電話', { hint: '顯示在頁尾。' }), email: T('Email', { hint: '顯示在頁尾。' }), address: T('地址', { hint: '顯示在頁尾。' }),
+      taxId: T('統一編號', { hint: '顯示在頁尾地址下方；留空則不顯示。' }), hours: T('服務時間', { hint: '顯示在頁尾。' }),
+      showLine: T('顯示 LINE（頁首圖示、聯絡我們的行動條碼與按鈕）', { type: 'bool' }),
+      lineUrl: T('LINE 官方帳號連結', { type: 'url', hint: '目前是 LINE ID @892zqqxn：https://line.me/R/ti/p/%40892zqqxn（@ 寫成 %40）。留空會自動使用這個連結；不想顯示請關閉上方開關。' }),
+      lineQr: T('LINE 加好友行動條碼（選填）', { type: 'image', hint: '顯示在聯絡我們區塊。更換 LINE 帳號時，請到 LINE 官方帳號管理後台 → 加入好友 → 行動條碼，下載後上傳；留空則使用預設的行動條碼。' }),
+      lineQrTitle: T('行動條碼標題'), lineQrText: T('行動條碼說明', { type: 'textarea' }), lineLabel: T('LINE 按鈕文字') } },
     { key: 'app', label: 'App 下載', fields: {
       kicker: T('英文小標'), title: T('區塊名稱'), desc: T('說明', { type: 'textarea' }),
       image: T('App 圖示（選填）', { type: 'image', hint: '顯示在手機示意圖中央；留空則使用預設的 MyopiaCare 方形圖示。' }),
@@ -475,11 +502,14 @@
       instagramUrl: T('Instagram 連結', { type: 'url', hint: '例如 https://www.instagram.com/你的帳號；留空時點擊會提示「即將開放」。' }) } },
     { key: 'mascot', label: '眼球寶寶', desc: '浮動提問吉祥物：畫面右下角的眼球寶寶會跟著訪客捲動；點一下會出現特效，並直接前往「線上提問」表單。關閉「聯絡我們」區塊時也會一起隱藏。', fields: {
       show: T('顯示眼球寶寶', { type: 'bool' }),
+      style: T('眼球寶寶造型', { type: 'choice', hint: '選「每次進站隨機」時，每位訪客進站會隨機看到男生或女生，同一次瀏覽維持同一個。', options: [
+        ['boy', '男生眼球寶寶', ['mascot.webp']], ['girl', '女生眼球寶寶', ['mascot-girl.webp']], ['random', '每次進站隨機', ['mascot.webp', 'mascot-girl.webp']]] }),
       bubble: T('對話泡泡文字', { hint: '第一次進站、滑鼠移上去時顯示，例如「有問題嗎？點我線上提問」。建議 15 字以內。' }),
       image: T('眼球寶寶圖片（選填）', { type: 'image', hint: '請用去背的 PNG 或 WebP（直式、約 240×245）；留空則使用預設的眼球寶寶。' }) } },
     { key: 'privacy', label: '隱私權政策頁', desc: '頁面網址：myopiacare.site/privacy/', fields: {
       kicker: T('英文小標'), title: T('頁面名稱'), body: T('內容', { type: 'rich' }) } },
     { key: 'footer', label: '頁尾', fields: {
+      privacyLabel: T('頁尾「隱私政策」連結文字', { hint: '頁尾連結顯示的文字；隱私權政策頁面本身的標題請到「隱私權政策頁」修改。' }),
       note: T('頁尾聲明', { type: 'textarea', hint: '建議保留「本公司非醫療機構、不提供醫療診斷」的聲明。' }),
       showCounter: T('顯示瀏覽人次', { type: 'bool', hint: '同一個瀏覽器 30 分鐘內重複瀏覽只算 1 次；不記錄任何個人資料。' }),
       counterLabel: T('瀏覽人次文字'),
@@ -592,6 +622,39 @@
         grid.appendChild(opt);
       });
       wrap.appendChild(grid);
+      return wrap;
+    }
+    if (type === 'choice') {
+      wrap = el('fieldset', 'field cms-field cms-choice');
+      wrap.appendChild(el('legend', null, spec.label));
+      var cgrid = el('div', 'choice-grid');
+      var cur = spec.options.some(function (o) { return o[0] === value; }) ? value : spec.options[0][0];
+      spec.options.forEach(function (o) {
+        var opt = el('label', 'choice-opt');
+        var r = el('input');
+        r.type = 'radio';
+        r.name = id;
+        r.value = o[0];
+        r.checked = cur === o[0];
+        r.dataset.path = JSON.stringify(path);
+        r.dataset.kind = 'radio';
+        opt.appendChild(r);
+        var pics = el('span', 'choice-pics');
+        pics.setAttribute('aria-hidden', 'true');
+        (o[2] || []).forEach(function (f) {
+          var im = el('img', 'choice-pic');
+          im.src = '../assets/img/' + f;
+          im.alt = '';
+          im.width = 48;
+          im.height = 48;
+          pics.appendChild(im);
+        });
+        opt.appendChild(pics);
+        opt.appendChild(el('span', 'choice-text', o[1]));
+        cgrid.appendChild(opt);
+      });
+      wrap.appendChild(cgrid);
+      addHint(wrap, spec);
       return wrap;
     }
     wrap = fieldShell(spec, id);
@@ -886,6 +949,8 @@
       if (!str(n.title).trim()) problems.push({ msg: '消息 #' + (i + 1) + ' 沒有標題，前台不會顯示。', section: 'news', field: 'items', index: i, sub: 'title' });
     });
     if (!str(c.site.title).trim()) problems.push({ msg: '「首頁網頁標題」不能空白。', section: 'site', field: 'title', index: -1 });
+    var tax = str(c.contact.taxId).trim();
+    if (tax && !/^\d{8}$/.test(tax)) problems.push({ msg: '「統一編號」應為 8 位數字。', section: 'contact', field: 'taxId', index: -1 });
     var axis = str(c.hero.card4Value).replace(/[°\s]/g, '');
     if (axis && !(/^\d{1,3}(\.\d+)?$/.test(axis) && parseFloat(axis) <= 180)) problems.push({ msg: '「數據卡 4｜軸度數值」請填 0–180 的數字。', section: 'hero', field: 'card4Value', index: -1 });
     return problems;

@@ -92,6 +92,8 @@
 
   /* 以預設內容為骨架合併，並把 v2 版尚未修改的佔位文字（例如 ○○○ 醫師、04-0000-0000）換成目前的正式資料 */
   var LEGACY = {
+    // v14 起隱私權政策加入 IP 紀錄告知：沒改過的舊預設內容自動換成新版，自訂過的維持不變
+    'privacy.body': ['<p class="tc-muted">最後更新：2026 年 10 月 25 日</p><p>豪智慧有限公司（以下稱「本公司」）重視您的隱私。依據《個人資料保護法》第 8 條，當您透過本網站「線上提問」表單提供個人資料時，本公司告知您下列事項。</p><h3>一、蒐集目的</h3><p>（〇九〇）消費者、客戶管理與服務：用於回覆您的提問、提供服務說明與聯繫。本公司不會將您的資料用於行銷，也不會出售或出租給任何人。</p><h3>二、蒐集的個人資料類別</h3><ul><li>識別類：姓名、電子郵件、電話（選填）。</li><li>其他：您填寫的身分類別、主旨與提問內容，以及送出時間。</li></ul><p>請勿在表單中填寫病歷、檢查報告、身分證字號等敏感資料。本網站表單並非醫療諮詢管道，如有急症請立即就醫。</p><h3>三、利用期間、地區、對象及方式</h3><ul><li>期間：自蒐集之日起，至提問處理完畢後二年，或法令規定的保存期間屆滿為止，期滿後刪除。</li><li>地區：資料儲存於 Google Firebase（Google Cloud）雲端資料庫。</li><li>對象：僅限本公司經授權的管理人員；除法律另有規定或經您同意外，不會提供給第三人。</li><li>方式：以電子郵件或電話回覆您的提問。</li></ul><h3>四、您的權利</h3><p>依《個人資料保護法》第 3 條，您可以就您的個人資料向本公司請求：查詢或閱覽、製給複製本、補充或更正、停止蒐集處理或利用、刪除。請以本頁下方的聯絡方式與我們聯繫，本公司將於確認身分後儘速處理。</p><h3>五、不提供資料的影響</h3><p>您可以自由選擇是否提供個人資料；若未提供必填欄位，本公司將無法回覆您的提問。</p><h3>六、資料安全</h3><p>本網站全程以 HTTPS 加密傳輸；客戶提問存放於設有存取權限控管的資料庫，網站訪客無法讀取，只有經授權的管理員帳號可以查看。</p><h3>七、Cookie 與瀏覽器儲存</h3><p>本網站不使用追蹤型 Cookie，也不使用第三方廣告或行為分析工具。網站只會在您的瀏覽器本機儲存深／淺色模式偏好、網站內容暫存、表單送出時間（避免重複送出），以及最近一次瀏覽時間（用於瀏覽人次統計，避免重複計算）。頁尾的瀏覽人次只累計總次數，不記錄 IP 位址或任何可識別個人的資料。網站字型由 Google Fonts 提供，載入字型時您的瀏覽器會連線至 Google 伺服器。</p><h3>八、政策修訂</h3><p>本公司得視需要修訂本政策，修訂後將公布於本頁面。</p>'],
     'about.doctorName': ['○○○ 醫師'],
     'contact.phone': ['04-0000-0000'],
     'contact.email': ['service@myopiacare.site'],
@@ -342,6 +344,8 @@
       n.textContent = v;
     });
     $all('[data-cms-rich]').forEach(function (n) { renderRich(n, get(content, n.getAttribute('data-cms-rich'))); });
+    // 內容留空時整列隱藏（例如頁尾的統編）
+    $all('[data-hide-empty]').forEach(function (n) { setShown(n, !!str(get(content, n.getAttribute('data-hide-empty'))).trim()); });
 
     $all('[data-route]').forEach(function (a) {
       var h = a.getAttribute('data-hash');
@@ -375,7 +379,9 @@
     });
     // 可在後台關閉的元素（例如 LINE 按鈕）
     $all('[data-show]').forEach(function (n) {
-      if (get(content, n.getAttribute('data-show')) === false) setShown(n, false);
+      var on = get(content, n.getAttribute('data-show')) !== false;
+      if (!on) setShown(n, false);
+      else if (!n.hasAttribute('data-href')) setShown(n, true);   // 有連結的元素已由上方依網址決定是否顯示
     });
     $all('[data-tel]').forEach(function (a) {
       var dial = str(get(content, a.getAttribute('data-tel'))).replace(/[^\d+]/g, '');
@@ -390,6 +396,7 @@
       if (addr && addr.indexOf('請於管理後台') === -1) a.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(addr);
       else a.removeAttribute('href');
     });
+    prepMascot(content);
     $all('img[data-img]').forEach(function (img) {
       var fb = img.getAttribute('data-fallback') || '';
       setImage(img, get(content, img.getAttribute('data-img')), fb);
@@ -623,17 +630,50 @@
    * 點一下：周圍出現特效 → 捲到「線上提問」表單（其他頁面則回到首頁表單）。
    * 進到聯絡我們區塊、或手機選單打開時自動收起。 */
   var mascotSync = function () {};
+  // 造型：boy（男生，預設）、girl（女生）、random（每次進站隨機，同一次瀏覽維持同一個）
+  var MASCOT_FILES = { boy: 'mascot.webp', girl: 'mascot-girl.webp' };
+  function mascotStyle(content) {
+    var s = content && content.mascot && content.mascot.style;
+    if (s === 'boy' || s === 'girl') return s;
+    if (s !== 'random') return 'boy';
+    var pick = null;
+    try { pick = sessionStorage.getItem('mc-mascot-style'); } catch (e) { pick = null; }
+    if (pick !== 'boy' && pick !== 'girl') {
+      pick = Math.random() < 0.5 ? 'boy' : 'girl';
+      try { sessionStorage.setItem('mc-mascot-style', pick); } catch (e) { /* ignore */ }
+    }
+    return pick;
+  }
+  // 在載入圖片前決定要用哪一個預設眼球寶寶（後台另外上傳的圖片仍優先）
+  function prepMascot(content) {
+    var img = $('#mascot .mascot-img');
+    if (!img) return;
+    var fb = img.getAttribute('data-fallback') || '';
+    var dir = fb.slice(0, fb.lastIndexOf('/') + 1);
+    var style = mascotStyle(content);
+    img.setAttribute('data-fallback', dir + MASCOT_FILES[style]);
+    var m = $('#mascot');
+    if (m) m.setAttribute('data-style', style);
+  }
   function mascotEnabled(content) {
     if (!content) return true;
     return !(content.mascot && content.mascot.show === false) && !(content.sections && content.sections.contact === false);
   }
+  // 等網站內容（含造型設定）載入後才顯示，訪客只會下載到正確的那一個眼球寶寶
+  var mascotGate = false, mascotLast = null;
   function renderMascot(content) {
     var m = $('#mascot');
     if (!m) return;
+    mascotLast = content;
     var on = mascotEnabled(content);
     if (EDIT) { m.hidden = false; m.classList.toggle('mc-off', !on); }
-    else m.hidden = !on;
+    else m.hidden = !(on && mascotGate);
     mascotSync();
+  }
+  function openMascotGate() {
+    if (mascotGate) return;
+    mascotGate = true;
+    setTimeout(function () { if (mascotLast) renderMascot(mascotLast); }, 0);
   }
   function initMascot() {
     var m = $('#mascot');
@@ -930,6 +970,7 @@
     }
     if (EDIT) {
       // 預覽框內：內容由管理後台即時傳入；不讀取暫存、不計入瀏覽人次
+      mascotGate = true;
       content = merge(DEFAULTS, null);
       render(content);
       if (opts.afterFirstRender) opts.afterFirstRender(content);
@@ -946,6 +987,7 @@
     if (FB && FB.isConfigured()) {
       if (cached) markReady();
       setTimeout(markReady, 1200);
+      setTimeout(openMascotGate, 2500);
       FB.fetchSiteContent(6000).then(function (remote) {
         if (remote) {
           lsSet(CACHE_KEY, JSON.stringify(remote));
@@ -953,10 +995,12 @@
           if (JSON.stringify(fresh) !== JSON.stringify(content)) { content = fresh; render(content); }
         }
         markReady();
+        openMascotGate();
       });
     } else {
       lsDel(CACHE_KEY);
       markReady();
+      openMascotGate();
     }
   }
 

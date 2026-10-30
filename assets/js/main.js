@@ -194,6 +194,36 @@
     var clean = str(name).replace(/[○\s]/g, '').replace(/醫師$/, '');
     return clean ? Array.from(clean)[0] : '醫';
   }
+  /* 醫師形象照：預設使用網站內建的照片（依螢幕大小載入 600 或 960 寬），後台上傳的照片優先 */
+  var portraitDefault = null;
+  function renderPortrait(c) {
+    var wrap = $('.portrait-wrap');
+    var card = $('.about-card');
+    var img = wrap ? $('.portrait-img', wrap) : null;
+    if (!wrap || !card || !img) return;
+    if (!portraitDefault) portraitDefault = { src: img.getAttribute('src'), srcset: img.getAttribute('srcset'), sizes: img.getAttribute('sizes') };
+    var on = c.about.showPortrait !== false;
+    card.classList.toggle('no-portrait', !on && !MC.EDIT);
+    var name = str(c.about.doctorName).trim();
+    img.alt = (name || '醫師') + '形象照';
+    var want = str(c.about.portrait).trim();
+    img.dataset.want = want;
+    function useDefault() {
+      if (img.getAttribute('srcset') === portraitDefault.srcset && img.getAttribute('src') === portraitDefault.src) return;
+      img.setAttribute('sizes', portraitDefault.sizes);
+      img.setAttribute('srcset', portraitDefault.srcset);
+      img.setAttribute('src', portraitDefault.src);
+    }
+    if (!want) { useDefault(); return; }
+    MC.resolveImage(want).then(function (r) {
+      if (img.dataset.want !== want) return;
+      if (!r) { useDefault(); return; }
+      img.removeAttribute('srcset');
+      img.removeAttribute('sizes');
+      img.src = r.src;
+    });
+  }
+
   function renderDoctor(c) {
     var av = $('#doctor-avatar');
     if (!av) return;
@@ -613,6 +643,20 @@
       if (input) input.setAttribute('aria-invalid', msg ? 'true' : 'false');
       if (err) err.textContent = msg || '';
     }
+    /* 送出時記錄 IP 位址（防止不當使用）：瀏覽器本身不知道對外 IP，向 ipify 查詢；查不到也照常送出 */
+    function lookupIp() {
+      if (!window.fetch) return Promise.resolve('');
+      var ctrl = typeof AbortController === 'function' ? new AbortController() : null;
+      var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 4000);
+      return fetch('https://api64.ipify.org?format=json', { cache: 'no-store', credentials: 'omit', referrerPolicy: 'no-referrer', signal: ctrl ? ctrl.signal : undefined })
+        .then(function (res) { return res.ok ? res.json() : null; })
+        .then(function (d) {
+          var ip = d && typeof d.ip === 'string' ? d.ip.trim() : '';
+          return /^[0-9A-Fa-f:.]{3,45}$/.test(ip) ? ip : '';
+        })
+        .catch(function () { return ''; })
+        .then(function (ip) { clearTimeout(timer); return ip; });
+    }
     function collect() {
       var f = form.elements;
       return {
@@ -693,8 +737,10 @@
       btn.classList.add('is-loading');
       setStatus('傳送中，請稍候…');
 
-      var job = FB.firestore().then(function (f) {
-        return f.fs.addDoc(f.fs.collection(f.db, 'inquiries'), {
+      var job = Promise.all([FB.firestore(), lookupIp()]).then(function (r) {
+        var f = r[0];
+        var col = f.fs.collection(f.db, 'inquiries');
+        var record = {
           name: data.name,
           email: data.email,
           phone: data.phone,
@@ -703,7 +749,16 @@
           message: data.message,
           consent: true,
           status: 'new',
-          createdAt: f.fs.serverTimestamp()
+          createdAt: f.fs.serverTimestamp(),
+          ip: r[1],
+          ua: str(navigator.userAgent).slice(0, 400)
+        };
+        return f.fs.addDoc(col, record).catch(function (err) {
+          // 資料庫規則尚未更新（還不接受 IP 欄位）時，仍然照常收下提問，不讓訪客送不出去
+          if (!err || err.code !== 'permission-denied') throw err;
+          delete record.ip;
+          delete record.ua;
+          return f.fs.addDoc(col, record);
         });
       });
 
@@ -749,6 +804,7 @@
         renderFlow((c.flow && c.flow.steps) || []);
         renderNews(c);
         renderDoctor(c);
+        renderPortrait(c);
       },
       afterFirstRender: function () {
         initHeroCanvas();

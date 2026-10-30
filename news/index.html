@@ -21,13 +21,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap">
-  <link rel="stylesheet" href="../assets/css/style.css?v=11">
-  <script src="../assets/js/theme-init.js?v=11"></script>
-  <script src="../assets/js/config.js?v=11" defer></script>
-  <script src="../assets/js/content.js?v=11" defer></script>
-  <script src="../assets/js/firebase-service.js?v=11" defer></script>
-  <script src="../assets/js/core.js?v=11" defer></script>
-  <script src="../assets/js/page.js?v=11" defer></script>
+  <link rel="stylesheet" href="../assets/css/style.css?v=15">
+  <script src="../assets/js/theme-init.js?v=15"></script>
+  <script src="../assets/js/config.js?v=15" defer></script>
+  <script src="../assets/js/content.js?v=15" defer></script>
+  <script src="../assets/js/firebase-service.js?v=15" defer></script>
+  <script src="../assets/js/core.js?v=15" defer></script>
+  <script src="../assets/js/page.js?v=15" defer></script>
 </head>
 <body class="page-sub page-news">
   <a class="skip-link" href="#main">跳到主要內容</a>
@@ -46,7 +46,6 @@
           <li data-section-key="about"><a href="/#about" data-route="home" data-hash="about" data-cms="nav.about">關於我們</a></li>
           <li data-section-key="contact"><a href="/#contact" data-route="home" data-hash="contact" data-cms="nav.contact">聯絡我們</a></li>
         </ul>
-        <a class="btn btn-3d btn-primary nav-cta" href="/#contact" data-route="home" data-hash="contact"><span data-cms="nav.cta">線上提問</span></a>
       </nav>
       <div class="header-actions">
         <a class="icon-btn line-btn" data-href="contact.lineUrl" data-show="contact.showLine" href="/#contact" target="_blank" rel="noopener noreferrer" aria-label="加入 LINE 官方帳號" title="加入 LINE 官方帳號" hidden><img class="line-ico line-ico-light" src="../assets/img/line-black.png" width="40" height="40" alt=""><img class="line-ico line-ico-dark" src="../assets/img/line-green.png" width="40" height="40" alt=""></a>
@@ -54,7 +53,6 @@
           <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
           <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.6A8.2 8.2 0 0 1 9.4 4a8.2 8.2 0 1 0 10.6 10.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
         </button>
-        <a class="btn btn-3d btn-primary btn-sm header-cta btn-pulse" href="/#contact" data-route="home" data-hash="contact"><span data-cms="nav.cta">線上提問</span></a>
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav" aria-label="開啟選單"><span></span><span></span><span></span></button>
       </div>
     </div>
@@ -87,6 +85,7 @@
         <li><span>電話</span><a data-tel="contact.phone" data-cms="contact.phone"></a></li>
         <li><span>Email</span><a data-mailto="contact.email" data-cms="contact.email"></a></li>
         <li><span>地址</span><span data-cms="contact.address"></span></li>
+        <li data-hide-empty="contact.taxId"><span>統編</span><span data-cms="contact.taxId">61954117</span></li>
         <li><span>時間</span><span data-cms="contact.hours"></span></li>
       </ul>
       <nav class="footer-links" aria-label="頁尾連結">
@@ -94,7 +93,7 @@
         <a href="/news/" data-route="news" data-section-key="news" data-cms="nav.news">最新消息</a>
         <a href="/#about" data-route="home" data-hash="about" data-section-key="about" data-cms="nav.about">關於我們</a>
         <a href="/#contact" data-route="home" data-hash="contact" data-section-key="contact" data-cms="nav.contact">聯絡我們</a>
-        <a href="/privacy/" data-route="privacy" data-cms="privacy.title">隱私權政策</a>
+        <a href="/privacy/" data-route="privacy" data-cms="footer.privacyLabel">隱私政策</a>
       </nav>
     </div>
     <div class="container footer-bottom">
@@ -110,7 +109,7 @@
   <!-- 眼球寶寶：浮動提問吉祥物（跟著捲動，點一下出現特效並前往線上提問表單） -->
   <a class="mascot" id="mascot" href="/#contact" data-route="home" data-hash="contact" data-edit="mascot" hidden>
     <span class="mascot-bubble" data-cms="mascot.bubble" data-cms-fallback="線上提問">有問題嗎？點我線上提問</span>
-    <span class="mascot-body"><span class="mascot-act"><span class="mascot-bob"><img class="mascot-img" src="../assets/img/mascot.webp" data-img="mascot.image" data-fallback="../assets/img/mascot.webp" data-alt-fixed width="240" height="245" alt="" draggable="false"></span></span></span>
+    <span class="mascot-body"><span class="mascot-act"><span class="mascot-bob"><img class="mascot-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-img="mascot.image" data-fallback="../assets/img/mascot.webp" data-alt-fixed width="240" height="245" alt="" draggable="false" loading="lazy"></span></span></span>
     <span class="mascot-shadow" aria-hidden="true"></span>
     <span class="mascot-fx" aria-hidden="true"></span>
   </a>

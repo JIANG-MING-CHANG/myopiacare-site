@@ -1,11 +1,12 @@
 rules_version = '2';
 
 // =====================================================================
-// MyopiaCare｜豪智慧有限公司 — Firestore 安全規則 v3
+// MyopiaCare｜豪智慧有限公司 — Firestore 安全規則 v4
 // 貼到：Firebase 主控台 → Firestore Database → 規則 → 全部取代 → 發布
 //
 // 原則（最小權限）：
 //   1. 訪客只能「新增」一筆格式完全正確的客戶提問；不能讀取、修改或刪除。
+//      v4：提問可附帶送出時的 IP 位址（ip）與瀏覽器資訊（ua），寫入後任何人（含管理員）都不能修改這兩欄。
 //   2. 網站內容（site/content）與網站圖片（media）任何人可讀單一文件，只有管理員可寫。
 //   3. 管理員 = admins 集合中有一份「文件 ID = 登入帳號 UID」的文件；
 //      admins 只能在 Firebase 主控台手動新增，網站程式完全無法寫入。
@@ -43,7 +44,7 @@ service cloud.firestore {
     // ---------- 客戶提問 ----------
     match /inquiries/{inquiryId} {
       allow create: if
-        request.resource.data.keys().hasOnly(['name', 'email', 'phone', 'role', 'subject', 'message', 'consent', 'status', 'createdAt'])
+        request.resource.data.keys().hasOnly(['name', 'email', 'phone', 'role', 'subject', 'message', 'consent', 'status', 'createdAt', 'ip', 'ua'])
         && request.resource.data.keys().hasAll(['name', 'email', 'phone', 'role', 'subject', 'message', 'consent', 'status', 'createdAt'])
         && isText(request.resource.data.name, 1, 50)
         && isText(request.resource.data.email, 5, 120)
@@ -54,7 +55,9 @@ service cloud.firestore {
         && isText(request.resource.data.message, 5, 2000)
         && request.resource.data.consent == true
         && request.resource.data.status == 'new'
-        && request.resource.data.createdAt == request.time;
+        && request.resource.data.createdAt == request.time
+        && (!('ip' in request.resource.data) || (request.resource.data.ip is string && request.resource.data.ip.matches('^[0-9A-Fa-f:.]{0,45}$')))
+        && (!('ua' in request.resource.data) || isText(request.resource.data.ua, 0, 400));
 
       allow read, delete: if isAdmin();
       allow update: if isAdmin()
