@@ -33,15 +33,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap">
-  <link rel="stylesheet" href="assets/css/style.css?v=18">
+  <link rel="stylesheet" href="assets/css/style.css?v=20">
 
-  <script src="assets/js/theme-init.js?v=18"></script>
-  <script src="assets/js/protect.js?v=18"></script>
-  <script src="assets/js/config.js?v=18" defer></script>
-  <script src="assets/js/content.js?v=18" defer></script>
-  <script src="assets/js/firebase-service.js?v=18" defer></script>
-  <script src="assets/js/core.js?v=18" defer></script>
-  <script src="assets/js/main.js?v=18" defer></script>
+  <script src="assets/js/theme-init.js?v=20"></script>
+  <script src="assets/js/protect.js?v=20"></script>
+  <script src="assets/js/config.js?v=20" defer></script>
+  <script src="assets/js/content.js?v=20" defer></script>
+  <script src="assets/js/firebase-service.js?v=20" defer></script>
+  <script src="assets/js/core.js?v=20" defer></script>
+  <script src="assets/js/main.js?v=20" defer></script>
 
   <script type="application/ld+json">
   {
@@ -76,7 +76,7 @@
   <header class="site-header" id="site-header" data-edit="nav">
     <div class="container header-inner">
       <a class="brand" href="/" data-route="home" aria-label="回到首頁">
-        <img class="brand-logo" src="assets/img/logo-circle.webp" data-img="brand.logo" data-fallback="assets/img/logo-circle.webp" data-alt-fixed width="48" height="48" alt="MyopiaCare 標誌">
+        <img class="brand-logo" src="assets/img/logo-mark.webp" data-img="brand.logo" data-fallback="assets/img/logo-mark.webp" data-alt-fixed width="48" height="48" alt="MyopiaCare 標誌">
         <span class="brand-text"><strong data-cms="brand.nameZh">豪智慧有限公司</strong><small data-cms="brand.nameEn">Myopia Care</small></span>
       </a>
       <nav class="main-nav" id="main-nav" aria-label="主選單">
@@ -202,7 +202,7 @@
             <div class="layer-face device-face">
               <span class="glare"></span>
               <div class="device-top">
-                <img src="assets/img/logo-circle.webp" width="28" height="28" alt="">
+                <img src="assets/img/logo-mark.webp" width="28" height="28" alt="">
                 <div><b>眼軸數據紀錄</b><small>MyopiaCare · 示意畫面</small></div>
               </div>
               <svg class="growth-chart" viewBox="0 0 320 170">
@@ -225,9 +225,12 @@
             <h2 class="section-title" id="news-title" data-cms="news.title"></h2>
           </header>
           <ul class="news-list" id="news-list"></ul>
-          <a class="btn btn-3d btn-dark btn-arrow magnetic" href="/news/" data-route="news">
-            <span data-cms="news.moreLabel">查看全部消息</span>
-            <svg viewBox="0 0 40 12" aria-hidden="true"><path d="M0 6h37M32 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+          <!-- v19 互動式行動按鈕：漸層流動、光澤掃過、光環脈動、徽章彈跳、箭頭前進 -->
+          <a class="btn btn-3d btn-cta btn-cta-news magnetic" href="/news/" data-route="news">
+            <span class="cta-shine" aria-hidden="true"></span>
+            <span class="cta-badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4.5 5.5h11.5v12.75a1.75 1.75 0 0 0 1.75 1.75H6.25a1.75 1.75 0 0 1-1.75-1.75z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M16 9.5h3.5v8.75a1.75 1.75 0 0 1-3.5 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M7.5 9h5.5M7.5 12.5h5.5M7.5 16h3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+            <span class="cta-label" data-cms="news.moreLabel">查看全部消息</span>
+            <svg class="cta-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
         </div>
       </div>
@@ -261,7 +264,12 @@
               <figcaption><span class="doctor-name"><strong data-cms="about.doctorName"></strong><span class="doctor-license" data-cms="about.doctorLicense"></span></span><span class="doctor-title" data-cms="about.doctorTitle"></span></figcaption>
             </div>
           </figure>
-          <a class="btn btn-3d btn-dark magnetic" href="#contact"><span data-cms="nav.cta">線上提問</span></a>
+          <a class="btn btn-3d btn-cta btn-cta-ask magnetic" href="#contact">
+            <span class="cta-shine" aria-hidden="true"></span>
+            <span class="cta-badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5.25 5h13.5a1.75 1.75 0 0 1 1.75 1.75v8.5A1.75 1.75 0 0 1 18.75 17H11.5l-4.75 3.6V17h-1.5a1.75 1.75 0 0 1-1.75-1.75v-8.5A1.75 1.75 0 0 1 5.25 5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle class="cta-dot" cx="8.5" cy="11" r="1.2" fill="currentColor"/><circle class="cta-dot" cx="12" cy="11" r="1.2" fill="currentColor"/><circle class="cta-dot" cx="15.5" cy="11" r="1.2" fill="currentColor"/></svg></span>
+            <span class="cta-label" data-cms="nav.cta">線上提問</span>
+            <svg class="cta-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
           </div>
         </div>
       </div>
@@ -276,22 +284,6 @@
             <h2 class="section-title" id="contact-title" data-cms="contact.title"></h2>
             <p class="section-desc" data-cms="contact.intro"></p>
           </header>
-          <!-- LINE 加好友：行動條碼 + 動態漸層按鈕 -->
-          <div class="line-card" data-show="contact.showLine" data-edit="contact.lineUrl" hidden>
-            <a class="line-qr" data-allow-save data-href="contact.lineUrl" href="#contact" target="_blank" rel="noopener noreferrer" aria-label="加入豪智慧 LINE 官方帳號好友">
-              <img src="assets/img/line-qr.png" data-img="contact.lineQr" data-fallback="assets/img/line-qr.png" data-alt-fixed width="543" height="543" alt="LINE 加入好友行動條碼" loading="lazy">
-            </a>
-            <div class="line-card-text">
-              <p class="line-card-title" data-cms="contact.lineQrTitle">掃描行動條碼加入好友</p>
-              <p class="line-card-desc" data-cms="contact.lineQrText">請使用智慧手機版 LINE 掃描行動條碼來加入好友。</p>
-            </div>
-            <a class="btn btn-line magnetic" data-href="contact.lineUrl" data-show="contact.showLine" href="#contact" target="_blank" rel="noopener noreferrer" hidden>
-              <span class="line-shine" aria-hidden="true"></span>
-              <span class="line-badge" aria-hidden="true"><img src="assets/img/line-green.png" width="40" height="40" alt=""></span>
-              <span class="line-label" data-cms="contact.lineLabel">加入 LINE 官方帳號</span>
-              <svg class="line-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
-          </div>
         </div>
 
         <form class="contact-form reveal" id="contact-form" novalidate data-edit="contact.formTitle">
@@ -407,7 +399,7 @@
   <footer class="site-footer" data-edit="footer">
     <div class="container footer-grid">
       <div class="footer-brand">
-        <img src="assets/img/logo-circle.webp" data-img="brand.logo" data-fallback="assets/img/logo-circle.webp" data-alt-fixed width="64" height="64" alt="MyopiaCare 標誌" loading="lazy">
+        <img src="assets/img/logo-mark.webp" data-img="brand.logo" data-fallback="assets/img/logo-mark.webp" data-alt-fixed width="64" height="64" alt="MyopiaCare 標誌" loading="lazy">
         <div><strong data-cms="brand.nameZh">豪智慧有限公司</strong><p data-cms="brand.tagline"></p></div>
       </div>
       <ul class="footer-contact">

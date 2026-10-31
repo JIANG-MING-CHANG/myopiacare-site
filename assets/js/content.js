@@ -136,6 +136,7 @@ window.MC_DEFAULT_CONTENT = {
     hours: '週一至週五 09:00–18:00',
     showLine: true,
     lineUrl: 'https://line.me/R/ti/p/%40892zqqxn',
+    // v19 起聯絡我們不再顯示 LINE 行動條碼卡片；以下 4 個欄位保留原資料（後台不再顯示），日後要恢復時不會遺失
     lineQr: '',
     lineQrTitle: '掃描行動條碼加入好友',
     lineQrText: '請使用智慧手機版 LINE 掃描行動條碼來加入好友。',

@@ -441,7 +441,7 @@
       protectMsg: T('訪客嘗試複製時的提示文字', { hint: '留空則不顯示提示。' }) } },
     { key: 'brand', label: '品牌', fields: {
       nameZh: T('公司中文名稱'), nameEn: T('品牌英文名稱'), tagline: T('品牌標語'),
-      logo: T('Logo 圖片（選填）', { type: 'image', hint: '建議使用正方形圖片；留空則使用預設的 MyopiaCare 圓形 logo。' }) } },
+      logo: T('Logo 圖片（選填）', { type: 'image', hint: '建議使用正方形圖片（會以圓角方形顯示）；留空則使用預設的 MyopiaCare 標誌。' }) } },
     { key: 'nav', label: '選單與頁面名稱', desc: '修改上方選單顯示的名稱。各區塊與內頁的標題請到各自的分頁修改。', fields: {
       services: T('「服務項目」選單名稱'), flow: T('「使用流程」選單名稱'), news: T('「最新消息」選單名稱'),
       about: T('「關於我們」選單名稱'), privacy: T('「隱私政策」選單名稱', { hint: '上方選單顯示的文字；隱私權政策頁面本身的標題請到「隱私權政策頁」修改。' }), contact: T('「聯絡我們」選單名稱'), cta: T('「線上提問」按鈕文字（關於我們區塊）') } },
@@ -489,10 +489,8 @@
       formNote: T('表單下方提醒', { type: 'textarea', hint: '建議保留「不提供醫療諮詢、請勿填寫病歷等敏感資料」的提醒。' }),
       phone: T('電話', { hint: '顯示在頁尾。' }), email: T('Email', { hint: '顯示在頁尾。' }), address: T('地址', { hint: '顯示在頁尾。' }),
       taxId: T('統一編號', { hint: '顯示在頁尾地址下方；留空則不顯示。' }), hours: T('服務時間', { hint: '顯示在頁尾。' }),
-      showLine: T('顯示 LINE（頁首圖示、聯絡我們的行動條碼與按鈕）', { type: 'bool' }),
-      lineUrl: T('LINE 官方帳號連結', { type: 'url', hint: '目前是 LINE ID @892zqqxn：https://line.me/R/ti/p/%40892zqqxn（@ 寫成 %40）。留空會自動使用這個連結；不想顯示請關閉上方開關。' }),
-      lineQr: T('LINE 加好友行動條碼（選填）', { type: 'image', hint: '顯示在聯絡我們區塊。更換 LINE 帳號時，請到 LINE 官方帳號管理後台 → 加入好友 → 行動條碼，下載後上傳；留空則使用預設的行動條碼。' }),
-      lineQrTitle: T('行動條碼標題'), lineQrText: T('行動條碼說明', { type: 'textarea' }), lineLabel: T('LINE 按鈕文字') } },
+      showLine: T('顯示上方選單的 LINE 圖示', { type: 'bool' }),
+      lineUrl: T('LINE 官方帳號連結', { type: 'url', hint: '上方選單 LINE 圖示開啟的連結。目前是 LINE ID @892zqqxn：https://line.me/R/ti/p/%40892zqqxn（@ 寫成 %40）。留空會自動使用這個連結；不想顯示請關閉上方開關。' }) } },
     { key: 'app', label: 'App 下載', fields: {
       kicker: T('英文小標'), title: T('區塊名稱'), desc: T('說明', { type: 'textarea' }),
       image: T('App 圖示（選填）', { type: 'image', hint: '顯示在手機示意圖中央；留空則使用預設的 MyopiaCare 方形圖示。' }),

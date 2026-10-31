@@ -2,7 +2,7 @@
 .admin-page { background: var(--bg); min-height: 100vh; font-size: 1rem; }
 .admin-bar { position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 12px 24px; background: var(--glass-strong); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
 .admin-brand { display: flex; align-items: center; gap: 10px; margin-right: auto; color: var(--text); text-decoration: none; }
-.admin-brand img { border-radius: 50%; }
+.admin-brand img { border-radius: 14%; }
 .admin-brand strong { display: block; font-size: .95rem; letter-spacing: .06em; line-height: 1.2; }
 .admin-brand small { display: block; font-size: .75rem; color: var(--muted); letter-spacing: .12em; }
 .admin-user { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
