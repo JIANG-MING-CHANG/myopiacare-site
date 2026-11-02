@@ -1,4 +1,4 @@
-# MyopiaCare｜豪智慧有限公司 官方網站 v20
+# MyopiaCare｜豪智慧有限公司 官方網站 v22
 
 純靜態網站（HTML／CSS／JavaScript，免建置工具），架設於 **GitHub Pages**，客戶提問、網站內容、圖片與瀏覽人次存放於 **Firebase Firestore**（免費 Spark 方案）。
 
@@ -87,6 +87,32 @@ Google 重新抓取並處理圖示需要幾天到幾週，可用 Search Console 
 6. 最上方搜尋列（網址審查）輸入 `https://myopiacare.site/` → 按「要求建立索引」。
 7. 等幾天到幾週，搜尋結果左側的房子圖示就會換成 MyopiaCare 標誌。Google 不保證一定顯示，但規定都已符合。
 
+## 提問表單 reCAPTCHA v3 防護（v21 起，選填）
+
+訪客送出「線上提問」前先通過 Google reCAPTCHA v3 驗證，驗證成功才會送出，可擋掉大多數機器人灌水。**預設關閉**，填入金鑰後才啟用；未填時表單行為與原本完全相同，所以上傳這版不會影響現有網站。
+
+設定步驟：
+1. 到 https://www.google.com/recaptcha/admin 用 Google 帳號登入 →「＋」建立新網站。
+2. 標籤自取（例如 MyopiaCare）；類型選 **reCAPTCHA v3**；網域（Domains）填 `myopiacare.site`（若也要測試其他網域可一併加入）；接受條款後送出。
+3. 建立後會看到兩把金鑰。複製上面那把「**網站金鑰 (Site key)**」。下面那把「密鑰 (Secret key)」這個架構用不到，不用動。
+4. 到 GitHub repository 打開 `assets/js/config.js` → 鉛筆圖示編輯，找到最後一行 `window.MC_RECAPTCHA_SITE_KEY = '';`，把金鑰貼進引號裡，例如 `window.MC_RECAPTCHA_SITE_KEY = '6Lxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';` → Commit。
+5. 等 Actions 綠勾 → 打開網站按 ⌘+Shift+R → 捲到「線上提問」，表單下方會出現「本表單受 reCAPTCHA 保護…」字樣，代表已啟用。填一則測試提問送出，應能正常送出。
+
+說明與限制：
+- reCAPTCHA 右下角的浮動徽章已隱藏，改在表單下方以文字標示（Google 允許的做法，必須保留這段文字）。
+- 這個架構（靜態網站＋Firebase 免費方案）沒有伺服器，無法用 reCAPTCHA 的分數在後端自動擋可疑提問；目前做到的是「驗證成功才會送出」，已能擋掉大多數機器人。要用分數自動過濾需升級 Firebase 付費方案加 Cloud Functions。
+- reCAPTCHA 只加在首頁表單，為此首頁的 CSP 多允許 `www.google.com`、`www.gstatic.com`；其他頁面維持原本的嚴格設定。
+- 不需要改 `firestore.rules`（權杖不寫入資料庫）。
+
+## JavaScript 壓縮（Terser，v22 起）
+
+這版起，`assets/js/` 裡的程式都用 **Terser** 壓縮過：變數改短、去掉註解與空白、整體縮小約 36%。好處是載入更快，也讓程式碼比較不好直接閱讀（基本的保護）。網站行為與未壓縮版完全相同，已通過 618 項自動化測試。
+
+- **`config.js` 沒有壓縮**，保持好讀，你才方便在裡面貼 Firebase 設定與 reCAPTCHA 金鑰。
+- 這些是壓縮後的成品檔，直接上傳即可，不需要在你電腦上安裝任何工具。
+- 之後若你請我再修改網站，我會改好再壓縮一次給你，你不用自己處理。
+- 提醒：壓縮只是讓程式較難閱讀，無法真正「加密」前端程式；網站真正的安全防線仍是 `firestore.rules`（只有管理員能讀取客戶提問）與 reCAPTCHA。
+
 ## 發布失敗怎麼辦（v10 起會自動找原因）
 
 按「檢查並發布」沒有成功時，後台會自動跳出「發布沒有成功：原因與解決步驟」視窗，逐項檢查 8 個設定並用白話說明要修正哪一步。也可以隨時按工具列的「連線診斷」自行檢查（只讀取資料，不會改動網站內容）。
@@ -114,9 +140,9 @@ Facebook、X、Instagram、App 商店與 LINE 連結少打 `https://`、打成 `
 ## 從舊版升級
 
 1. 上傳前先從資料夾刪掉 `assets/js/config.js`，再用新檔案覆蓋 repository 裡的舊檔案（GitHub 上已填好的 config.js 會保留）。
-2. 從 v2 升級：**把新的 `firestore.rules` 重新貼上並發布**（v3 起新增瀏覽人次 `stats` 的權限）。v3–v13 規則相同；**v14 起規則升級為 v4（提問可記錄 IP），請重新貼上 `firestore.rules` 並發布**。v15–v20 規則與 v14 相同，不需重貼。
+2. 從 v2 升級：**把新的 `firestore.rules` 重新貼上並發布**（v3 起新增瀏覽人次 `stats` 的權限）。v3–v13 規則相同；**v14 起規則升級為 v4（提問可記錄 IP），請重新貼上 `firestore.rules` 並發布**。v15–v22 規則與 v14 相同，不需重貼。
 3. 若後台曾經發布過內容，裡面仍是舊的佔位文字（○○○ 醫師、04-0000-0000、service@myopiacare.site、請於管理後台填寫公司地址）或 v3 的英文地址、v8 以前的「MyopiaCare／MYOPIACARE APP」標題時，網站會自動改為新的公司資料與「Myopia Care」寫法；其他你改過的內容維持不變。
 
 ## 修改程式後
 
-改過 CSS 或 JS，請把所有 HTML 裡的 `?v=20` 改成 `?v=21`，訪客才不會看到舊的快取版本。
+改過 CSS 或 JS，請把所有 HTML 裡的 `?v=22` 改成 `?v=23`，訪客才不會看到舊的快取版本。

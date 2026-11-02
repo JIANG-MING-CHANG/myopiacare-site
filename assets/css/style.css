@@ -749,6 +749,11 @@ img.media-missing { display: none; }
 .form-status.is-success { color: var(--ok-text); }
 .form-status.is-error { color: var(--err-text); }
 .form-status.is-warn { color: var(--warn-text); }
+/* reCAPTCHA v3：隱藏右下角徽章，改在表單下方以文字標示（Google 允許的做法） */
+.grecaptcha-badge { visibility: hidden; }
+.recaptcha-note { margin: 10px 0 0; font-size: .74rem; line-height: 1.6; color: var(--muted); text-align: center; }
+.recaptcha-note a { color: var(--accent-text); text-decoration: none; }
+.recaptcha-note a:hover { text-decoration: underline; }
 
 /* ---------- 內頁：隱私權政策 ---------- */
 .legal-body { font-size: 1rem; }
