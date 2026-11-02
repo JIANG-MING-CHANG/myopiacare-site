@@ -1,4 +1,4 @@
-# MyopiaCare｜豪智慧有限公司 官方網站 v26
+# MyopiaCare｜豪智慧有限公司 官方網站 v29
 
 純靜態網站（HTML／CSS／JavaScript，免建置工具），架設於 **GitHub Pages**，客戶提問、網站內容、圖片與瀏覽人次存放於 **Firebase Firestore**（免費 Spark 方案）。
 
@@ -10,6 +10,7 @@
 | 最新消息列表 | https://myopiacare.site/news/ |
 | 單則消息 | https://myopiacare.site/news/?id=代號 |
 | 隱私權政策 | https://myopiacare.site/privacy/ |
+| 邀請頁面（v27 起） | https://myopiacare.site/invite/（v28 起可直接顯示其他網站的內容） |
 | 管理後台 | https://myopiacare.site/admin/（正式網站不放按鈕，請直接輸入網址或加入書籤） |
 
 ## 檔案說明
@@ -17,7 +18,7 @@
 | 檔案 | 用途 |
 | --- | --- |
 | `index.html` | 首頁 |
-| `news/index.html`、`privacy/index.html` | 內頁 |
+| `news/index.html`、`privacy/index.html`、`invite/index.html` | 內頁 |
 | `admin/index.html` | 管理後台 |
 | `404.html` | 找不到頁面 |
 | `CNAME` | 自訂網域 `myopiacare.site` |
@@ -105,6 +106,33 @@ Google 重新抓取並處理圖示需要幾天到幾週，可用 Search Console 
 - reCAPTCHA 只加在首頁表單，為此首頁的 CSP 多允許 `www.google.com`、`www.gstatic.com`；其他頁面維持原本的嚴格設定。
 - 不需要改 `firestore.rules`（權杖不寫入資料庫）。
 
+## 邀請頁面（v27 起）
+
+上方選單「聯絡我們」右邊新增「邀請頁面」，網址是 **https://myopiacare.site/invite/**。其他網站、舊網址、活動連結或 QR Code 都可以轉址（導向）到這個網址。
+
+- 內容在後台「網站內容 → 邀請頁面」修改：英文小標、頁面標題、引言、內容（可加入標題、粗體、清單、圖片與連結）、兩個按鈕的文字與連結。
+- 按鈕連結可填本站位置（`/#contact` 線上提問、`/#services` 服務項目、`/#about` 關於我們、`/news/` 最新消息），或完整網址 `https://…`（會在新分頁開啟）。按鈕文字或連結留空就不顯示該按鈕；少打 `https://` 會自動補上。
+- 選單名稱在「選單與頁面名稱 →「邀請頁面」選單名稱」修改；「區塊顯示 → 上方選單顯示「邀請頁面」」可以隱藏選單項目，但網址仍可開啟，別人轉址過來不受影響。
+- 帶追蹤參數（例如 `?utm_source=xxx`）或少打最後的斜線（`/invite`）都能正常開啟；已加入 `sitemap.xml`。
+- 視覺化編輯的「預覽頁面」可選「邀請頁面」直接點選修改。
+
+### 在邀請頁面顯示其他網站（嵌入，v28 起）
+
+後台「邀請頁面 → 嵌入網站網址（選填）」有填網址時，打開 https://myopiacare.site/invite/ 會保留頁首選單，下方整個畫面直接顯示那個網站的內容；網址列一直是 `myopiacare.site/invite/`，在裡面點來點去也不會變。預設網址已在後台設定好（實際網址請看後台這一格，或部署指南文件）。
+
+- 換網站：填其他 `https://` 網址並發布；改回文字邀請頁：清空這格並發布（標題、內容、按鈕設定都還在）。
+- 直接開啟嵌入網站的某一頁：`https://myopiacare.site/invite/?p=/某個路徑`。
+- 這個頁面上頁尾、眼球寶寶、回到頂端按鈕會隱藏，避免蓋住內容；其他頁面不受影響。
+- 安全：只接受 `https://`、不能填本站自己；內容放在 sandbox 框架裡，被嵌入的網站無法把訪客的分頁導到它自己的網址。只有邀請頁面放寬「可嵌入 https 網站」，其他頁面的安全設定不變。
+- **v29 保護**：所有 JavaScript 都經 Terser 壓縮；預設的嵌入網址在程式裡以編碼存放（檢視原始碼、下載程式檔、搜尋都找不到明文網址）；框架不寫 `src` 屬性（右鍵「檢查」看不到網址）；「在新分頁開啟」改成按下才開啟，頁面上不留網址。本 README 也不寫出嵌入網站的網址（這份檔案放在網站上任何人都能讀）。
+- 限制：這是「不容易看到」，不是「完全看不到」——會用瀏覽器開發者工具「網路」分頁的人，仍可看到框架載入的網址；在後台發布過的網址也會存在網站內容資料中。對方網站必須允許被嵌入；需要登入的功能在 Safari 可能受第三方 Cookie 限制。被嵌入網站那一端的設定（只允許本站嵌入、直接開啟時自動導回本站、防止複製）請看部署指南文件。
+
+### 把其他網站轉址到邀請頁面
+
+- **別的網域（例如在 GoDaddy 買的另一個網域）**：GoDaddy「Domain Portfolio（網域組合）」→ 點那個網域 →「DNS」→「Forwarding（轉址）」→「Add Forwarding」→ 選「Domain」→ 前面選 `https://`，網址填 `myopiacare.site/invite`（GoDaddy 規定結尾不能是斜線；網站會自動補上）→ 類型選「Permanent (301)」（不要選 Forward with masking）→「Save」。通常 1 小時內生效，最久 48 小時。**只在「另一個網域」設定，絕對不要在 myopiacare.site 本身加轉址**（會蓋掉網站的 DNS 設定），也不要動 Email（MX）紀錄。
+- **其他網站上的按鈕或連結**：連結網址填 `https://myopiacare.site/invite/`。
+- **想分辨來源**：可在網址後加參數，例如 `https://myopiacare.site/invite/?from=facebook`，頁面照常顯示。
+
 ## 醫師介紹圖（v25 起）
 
 「關於我們」上方改為整張王志盟醫師介紹圖（學經歷、專業專長、醫師照片），取代原本的直式形象照；下方的公司介紹、醫師的話、「線上提問」按鈕內容都不變，改為置中排列。
@@ -182,9 +210,9 @@ Facebook、X、Instagram、App 商店與 LINE 連結少打 `https://`、打成 `
 ## 從舊版升級
 
 1. 上傳前先從資料夾刪掉 `assets/js/config.js`，再用新檔案覆蓋 repository 裡的舊檔案（GitHub 上已填好的 config.js 會保留）。
-2. 從 v2 升級：**把新的 `firestore.rules` 重新貼上並發布**（v3 起新增瀏覽人次 `stats` 的權限）。v3–v13 規則相同；**v14 起規則升級為 v4（提問可記錄 IP），請重新貼上 `firestore.rules` 並發布**。v15–v26 規則與 v14 相同，不需重貼。
+2. 從 v2 升級：**把新的 `firestore.rules` 重新貼上並發布**（v3 起新增瀏覽人次 `stats` 的權限）。v3–v13 規則相同；**v14 起規則升級為 v4（提問可記錄 IP），請重新貼上 `firestore.rules` 並發布**。v15–v29 規則與 v14 相同，不需重貼。
 3. 若後台曾經發布過內容，裡面仍是舊的佔位文字（○○○ 醫師、04-0000-0000、service@myopiacare.site、請於管理後台填寫公司地址）或 v3 的英文地址、v8 以前的「MyopiaCare／MYOPIACARE APP」標題時，網站會自動改為新的公司資料與「Myopia Care」寫法；其他你改過的內容維持不變。
 
 ## 修改程式後
 
-改過 CSS 或 JS，請把所有 HTML 裡的 `?v=26` 改成 `?v=27`，訪客才不會看到舊的快取版本。
+改過 CSS 或 JS，請把所有 HTML 裡的 `?v=29` 改成 `?v=30`，訪客才不會看到舊的快取版本。
