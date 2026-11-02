@@ -584,15 +584,19 @@ section[id] { scroll-margin-top: 64px; }
 .invite-actions .btn { min-width: 220px; }
 .invite-btn-label { overflow-wrap: anywhere; }
 /* 邀請頁面（v28）：嵌入其他網站，佔滿頁首以下的整個畫面；頁尾與浮動元件隱藏 */
-body.invite-embedded { overflow: hidden; }
 .invite-embedded .site-footer, .invite-embedded .back-to-top, .invite-embedded .mascot, .invite-embedded .mc-bot { display: none !important; }
-.invite-embed { position: fixed; z-index: 1; top: 64px; left: 0; right: 0; bottom: 0; background: var(--bg); }
+/* v30：嵌入區放在一般版面中（不用固定定位、不鎖住捲動），手機、平板、電腦都能上下滑動看完整內容；
+   高度剛好是「螢幕可視高度 − 頁首」（手機會隨網址列自動調整），內容較長時在嵌入區內捲動 */
+.invite-embed { position: relative; z-index: 1; margin-top: var(--embed-top, 64px); height: calc(100vh - var(--embed-top, 64px)); height: calc(100dvh - var(--embed-top, 64px)); background: var(--bg); }
 .invite-embed[hidden] { display: none; }
+/* v30：頁首跟著頁面一起往上捲走（不再固定在畫面上方）；嵌入網站回報完整高度時（.is-auto），框架撐到內容全高，整頁一起捲動 */
+.invite-embedded .site-header { position: absolute; }
+.invite-embed.is-auto { min-height: calc(100vh - var(--embed-top, 64px)); min-height: calc(100dvh - var(--embed-top, 64px)); }
 .invite-frame { display: block; width: 100%; height: 100%; border: 0; background: #fff; }
 .invite-embed-wait { position: absolute; inset: 0; display: grid; place-items: center; background: var(--bg); pointer-events: none; transition: opacity .3s; }
 .invite-embed-wait[hidden] { display: none; }
 .invite-spinner { width: 42px; height: 42px; border-radius: 50%; border: 3px solid var(--line); border-top-color: var(--accent-text); animation: spin .9s linear infinite; }
-.invite-embed-fail { position: absolute; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); max-width: calc(100% - 24px); margin: 0; padding: 10px 16px; border-radius: 14px; background: var(--surface); color: var(--text); border: 1px solid var(--line); box-shadow: var(--shadow-2); font-size: .9rem; text-align: center; }
+.invite-embed-fail { position: fixed; z-index: 3; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); max-width: calc(100% - 24px); margin: 0; padding: 10px 16px; border-radius: 14px; background: var(--surface); color: var(--text); border: 1px solid var(--line); box-shadow: var(--shadow-2); font-size: .9rem; text-align: center; }
 .invite-embed-fail[hidden] { display: none; }
 .invite-embed-fail a, .invite-embed-open { color: var(--accent-text); font-weight: 600; margin-left: 6px; }
 .invite-embed-open { padding: 0; border: 0; background: none; font: inherit; font-weight: 600; text-decoration: underline; cursor: pointer; }
