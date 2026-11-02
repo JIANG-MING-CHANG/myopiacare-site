@@ -1081,3 +1081,79 @@ html.mc-protect [data-allow-save], html.mc-protect [data-allow-save] img { -webk
   html.mc-protect body > * { display: none !important; }
   html.mc-protect body::after { content: '本網站內容受著作權保護，不提供列印。'; display: block; padding: 48px 24px; color: #000; font-size: 16px; text-align: center; }
 }
+
+/* =========================================================
+   v24 送出提問：互動式行動按鈕（沿用 .btn-cta 的漸層流動、光澤、光環；紙飛機起飛）
+   ========================================================= */
+.btn-cta.btn-cta-submit { width: 100%; max-width: none; min-width: 0; min-height: 60px; font-size: 1.08rem; letter-spacing: .14em; }
+.btn-cta-submit .cta-plane { transition: transform .5s cubic-bezier(.34, 1.56, .64, 1); }
+.btn-cta-submit:hover .cta-plane, .btn-cta-submit:focus-visible .cta-plane { transform: translate(2px, -2px) rotate(-10deg); }
+.btn-cta-submit .spinner { flex: none; }
+.btn-cta.is-loading .cta-arrow { display: none; }
+.btn-cta.is-loading .cta-plane { animation: planeFly 1s ease-in-out infinite; }
+.btn-cta[disabled] { cursor: progress; }
+.btn-cta[disabled]:hover { --press: 0px; }
+@keyframes planeFly { 0%, 100% { transform: translate(0, 0) rotate(0); } 50% { transform: translate(3px, -3px) rotate(-12deg); } }
+
+/* =========================================================
+   v24 眼球寶寶問答（檢索機器人）：只回答本網站公布的內容
+   ========================================================= */
+.mc-bot { position: fixed; z-index: 44; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(134px + env(safe-area-inset-bottom, 0px)); width: min(384px, calc(100vw - 32px)); max-height: min(600px, calc(100vh - 200px)); display: flex; flex-direction: column; border-radius: 22px; background: var(--surface); color: var(--text); border: 1px solid var(--line); box-shadow: 0 30px 70px -24px rgba(6, 30, 48, .5); overflow: hidden; opacity: 0; transform: translateY(14px) scale(.98); transform-origin: 88% 100%; transition: opacity .22s ease, transform .28s var(--ease); }
+.mc-bot.is-open { opacity: 1; transform: none; }
+.mc-bot[hidden] { display: none; }
+.mc-bot:focus { outline: none; }
+.mc-bot-head { display: flex; align-items: center; gap: 10px; padding: 11px 8px 11px 14px; background: linear-gradient(120deg, #0B78A8 0%, #10807A 55%, #2F7D27 100%); color: #fff; }
+.mc-bot-avatar { flex: none; width: 40px; height: 40px; border-radius: 50%; background: rgba(255, 255, 255, .2); object-fit: contain; padding: 2px; }
+.mc-bot-who { min-width: 0; }
+.mc-bot-who strong { display: block; font-size: .98rem; letter-spacing: .06em; line-height: 1.3; }
+.mc-bot-who small { display: block; font-size: .74rem; opacity: .88; }
+.mc-bot-close { flex: none; margin-left: auto; width: 38px; height: 38px; border: 0; border-radius: 10px; background: transparent; color: #fff; font-size: 1.5rem; line-height: 1; cursor: pointer; }
+.mc-bot-close:hover { background: rgba(255, 255, 255, .16); }
+.mc-bot-close:focus-visible { outline: 3px solid #fff; outline-offset: -3px; }
+.mc-bot-terms { flex: none; margin: 0; padding: 9px 14px; font-size: .74rem; line-height: 1.6; color: var(--text-2); background: var(--surface-2); border-bottom: 1px solid var(--line); }
+.mc-bot-terms b { margin-right: 6px; color: var(--warn-text); }
+.mc-bot-log { flex: 1 1 auto; min-height: 150px; overflow-y: auto; overscroll-behavior: contain; padding: 14px 12px 8px; display: flex; flex-direction: column; gap: 10px; }
+.mc-bot-log:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px; }
+.mc-bot-msg { display: flex; }
+.mc-bot-msg.is-user { justify-content: flex-end; }
+.mc-bot-bubble { max-width: 90%; padding: 10px 12px; border-radius: 16px; font-size: .88rem; line-height: 1.65; }
+.mc-bot-msg.is-bot .mc-bot-bubble { background: var(--surface-2); color: var(--text); border-top-left-radius: 6px; }
+.mc-bot-msg.is-user .mc-bot-bubble { background: #0B78A8; color: #fff; border-top-right-radius: 6px; word-break: break-word; }
+.mc-bot-bubble p { margin: 0 0 .45em; }
+.mc-bot-bubble p:last-child { margin-bottom: 0; }
+.mc-bot-card { margin-top: 8px; padding: 9px 11px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); }
+.mc-bot-card-title { display: block; margin-bottom: 3px; font-size: .84rem; color: var(--text); }
+.mc-bot-card-text { margin: 0; font-size: .84rem; color: var(--text-2); }
+.mc-bot-link { display: inline-block; margin-top: 6px; font-size: .82rem; font-weight: 600; color: var(--accent-text); text-decoration: none; }
+.mc-bot-link:hover { text-decoration: underline; }
+.mc-bot-link:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+.mc-bot-typing span { display: inline-block; width: 6px; height: 6px; margin: 0 2px; border-radius: 50%; background: var(--muted); animation: botDot 1s infinite ease-in-out; }
+.mc-bot-typing span:nth-child(2) { animation-delay: .15s; }
+.mc-bot-typing span:nth-child(3) { animation-delay: .3s; }
+@keyframes botDot { 0%, 60%, 100% { transform: translateY(0); opacity: .5; } 30% { transform: translateY(-4px); opacity: 1; } }
+.mc-bot-chips { flex: none; display: flex; gap: 6px; padding: 6px 12px 8px; overflow-x: auto; scrollbar-width: none; }
+.mc-bot-chips::-webkit-scrollbar { display: none; }
+.mc-bot-chip { flex: none; padding: 6px 11px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--text-2); font: inherit; font-size: .78rem; white-space: nowrap; cursor: pointer; }
+.mc-bot-chip:hover { border-color: var(--accent-text); color: var(--accent-text); }
+.mc-bot-chip:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.mc-bot-form { flex: none; display: flex; gap: 8px; padding: 8px 12px 10px; border-top: 1px solid var(--line); }
+.mc-bot-input { flex: 1; min-width: 0; height: 42px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--text); font: inherit; font-size: .9rem; }
+.mc-bot-input:focus { outline: none; border-color: var(--accent-text); box-shadow: 0 0 0 3px rgba(43, 179, 230, .25); }
+.mc-bot-send { flex: none; display: grid; place-items: center; width: 42px; height: 42px; border: 0; border-radius: 50%; background: linear-gradient(135deg, #2BB3E6, #10807A); color: #fff; cursor: pointer; transition: transform .25s var(--ease); }
+.mc-bot-send:hover { transform: scale(1.06); }
+.mc-bot-send:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.mc-bot-send svg { width: 20px; height: 20px; }
+.mc-bot-foot { flex: none; padding: 0 12px 11px; text-align: center; }
+.mc-bot-foot[hidden] { display: none; }
+.mc-bot-ask { border: 0; background: none; padding: 4px 6px; color: var(--accent-text); font: inherit; font-size: .8rem; font-weight: 600; cursor: pointer; }
+.mc-bot-ask:hover { text-decoration: underline; }
+.mc-bot-ask:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+html.bot-open .mascot-bubble { opacity: 0 !important; visibility: hidden; }
+@media (max-width: 1023px) {
+  .mc-bot { bottom: calc(102px + env(safe-area-inset-bottom, 0px)); max-height: calc(100vh - 170px); }
+}
+@media (max-width: 599px) {
+  .mc-bot { left: max(8px, env(safe-area-inset-left, 0px)); right: max(8px, env(safe-area-inset-right, 0px)); width: auto; border-radius: 18px; max-height: calc(100vh - 150px); max-height: calc(100dvh - 150px); }
+  .mc-bot-input { font-size: 1rem; }
+}
+@media print { .mc-bot { display: none !important; } }
