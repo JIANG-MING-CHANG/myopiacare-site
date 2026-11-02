@@ -33,16 +33,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap">
-  <link rel="stylesheet" href="assets/css/style.css?v=24">
+  <link rel="stylesheet" href="assets/css/style.css?v=25">
 
-  <script src="assets/js/theme-init.js?v=24"></script>
-  <script src="assets/js/protect.js?v=24"></script>
-  <script src="assets/js/config.js?v=24" defer></script>
-  <script src="assets/js/content.js?v=24" defer></script>
-  <script src="assets/js/firebase-service.js?v=24" defer></script>
-  <script src="assets/js/core.js?v=24" defer></script>
-  <script src="assets/js/assistant.js?v=24" defer></script>
-  <script src="assets/js/main.js?v=24" defer></script>
+  <script src="assets/js/theme-init.js?v=25"></script>
+  <script src="assets/js/protect.js?v=25"></script>
+  <script src="assets/js/config.js?v=25" defer></script>
+  <script src="assets/js/content.js?v=25" defer></script>
+  <script src="assets/js/firebase-service.js?v=25" defer></script>
+  <script src="assets/js/core.js?v=25" defer></script>
+  <script src="assets/js/assistant.js?v=25" defer></script>
+  <script src="assets/js/main.js?v=25" defer></script>
 
   <script type="application/ld+json">
   {
@@ -242,16 +242,17 @@
       <div class="about-bg" aria-hidden="true"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span></div>
       <div class="container">
         <div class="glass-card about-card reveal">
-          <!-- 醫師形象照：3D 疊層卡（滑鼠傾斜、光澤、流動光暈） -->
-          <div class="portrait-wrap" data-show="about.showPortrait">
-            <span class="portrait-glow" aria-hidden="true"></span>
-            <figure class="portrait layer-card tilt" data-edit="about.portrait">
+          <!-- 醫師介紹圖（v25）：整張圖完整顯示（不裁切）；點一下可全螢幕放大閱讀 -->
+          <div class="portrait-wrap intro-wrap" data-show="about.showPortrait">
+            <span class="portrait-glow intro-glow" aria-hidden="true"></span>
+            <figure class="intro layer-card" data-edit="about.introImage">
               <span class="layer layer-1"></span><span class="layer layer-2"></span>
-              <div class="layer-face portrait-face">
-                <img class="portrait-img" src="assets/img/doctor-portrait-600.webp" srcset="assets/img/doctor-portrait-600.webp 600w, assets/img/doctor-portrait-960.webp 960w" sizes="(min-width: 1024px) 340px, (min-width: 900px) 280px, min(300px, 74vw)" width="960" height="1280" alt="王志盟醫師形象照" loading="lazy" decoding="async">
-                <span class="glare"></span>
-                <span class="portrait-sheen" aria-hidden="true"></span>
-              </div>
+              <button class="layer-face intro-face" type="button" aria-haspopup="dialog" aria-controls="intro-viewer" aria-label="放大檢視醫師介紹圖">
+                <img class="intro-img" src="assets/img/doctor-intro-1264.webp" srcset="assets/img/doctor-intro-800.webp 800w, assets/img/doctor-intro-1264.webp 1264w, assets/img/doctor-intro-1800.webp 1800w, assets/img/doctor-intro-2528.webp 2528w" sizes="(min-width: 1200px) 1012px, (min-width: 900px) calc(100vw - 160px), calc(100vw - 48px)" width="2528" height="1696" alt="王志盟醫師介紹圖：學經歷與專業專長" loading="lazy" decoding="async" draggable="false">
+                <span class="intro-sheen" aria-hidden="true"></span>
+                <span class="intro-chip" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 15l5 5M10.5 8v5M8 10.5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>點圖放大</span></span>
+              </button>
+              <figcaption class="sr-only intro-desc" id="intro-desc">王志盟醫師（Dr. Jyh-Meng Wang），創辦人／專科醫師。學經歷：中國醫藥大學醫學系；衛福部專科醫師；教育部學童視力保健種子師資；相關專科醫學會會員；前三軍總醫院住院醫師；前新竹南門醫院主任醫師；前新樓醫院分院主任醫師；前衛福部台東醫院代理主任；前大型醫療院所主治醫師；前苗安診所院長。專業專長：學童視力與健康保健；乾眼症、飛蚊症；白內障、青光眼；黃斑部及視網膜病變；視力數據紀錄與智慧護理管理。</figcaption>
             </figure>
           </div>
           <div class="about-text">
@@ -435,6 +436,20 @@
     <span class="mascot-fx" aria-hidden="true"></span>
   </a>
   <!-- v23：隱私權政策閱讀視窗（線上提問必須讀到最後，才能勾選同意） -->
+  <!-- 醫師介紹圖放大檢視（v25）：雙指／滑鼠滾輪＋Ctrl／＋－按鈕縮放，拖曳移動，Esc 或 × 關閉 -->
+  <dialog class="zoom-dialog" id="intro-viewer" aria-label="醫師介紹圖（放大檢視）">
+    <div class="zoom-stage" tabindex="0" aria-label="醫師介紹圖，可用方向鍵移動、＋－鍵縮放">
+      <img class="zoom-img" alt="" draggable="false">
+    </div>
+    <div class="zoom-bar">
+      <button class="zoom-btn zoom-out" type="button" aria-label="縮小"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+      <button class="zoom-btn zoom-fit" type="button" aria-label="整張顯示"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V5.5A1.5 1.5 0 0 1 5.5 4H9M15 4h3.5A1.5 1.5 0 0 1 20 5.5V9M20 15v3.5a1.5 1.5 0 0 1-1.5 1.5H15M9 20H5.5A1.5 1.5 0 0 1 4 18.5V15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button class="zoom-btn zoom-in" type="button" aria-label="放大"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+      <button class="zoom-btn zoom-close" type="button" aria-label="關閉"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+    </div>
+    <p class="zoom-hint" aria-live="polite"></p>
+  </dialog>
+
   <dialog class="policy-dialog" id="policy-dialog" aria-labelledby="policy-title">
     <div class="policy-inner">
       <div class="policy-head">

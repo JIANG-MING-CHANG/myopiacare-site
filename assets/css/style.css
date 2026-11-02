@@ -628,32 +628,59 @@ img.media-missing { display: none; }
 @keyframes float { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(40px, -30px, 0) scale(1.1); } }
 .glass-card { max-width: 900px; margin: 0 auto; padding: 60px 56px 56px; text-align: center; border-radius: 30px; background: var(--glass); border: 1px solid var(--glass-border); -webkit-backdrop-filter: blur(20px) saturate(140%); backdrop-filter: blur(20px) saturate(140%); box-shadow: var(--shadow-2), 14px 14px 0 -4px var(--layer-1), 28px 28px 0 -8px var(--layer-2); }
 .about-body { margin: 28px auto 0; max-width: 680px; }
-/* 關於我們：形象照 + 文字兩欄（窄螢幕改為上下排列） */
-.glass-card.about-card { max-width: 1120px; display: grid; grid-template-columns: minmax(250px, 340px) minmax(0, 1fr); gap: 64px; align-items: center; text-align: left; padding: 60px 56px 60px 52px; }
-.about-card.no-portrait { max-width: 900px; grid-template-columns: minmax(0, 1fr); text-align: center; }
-.about-card:not(.no-portrait) .section-title::after { margin-left: 0; }
-.about-card:not(.no-portrait) .about-body, .about-card:not(.no-portrait) .doctor { margin-left: 0; margin-right: 0; max-width: none; }
+/* 關於我們（v25）：上方整張醫師介紹圖（完整顯示、不裁切），下方文字置中；各種螢幕都是上下排列 */
+.glass-card.about-card { max-width: 1120px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 56px; align-items: start; text-align: center; padding: 54px 54px 60px; }
+.about-card.no-portrait { max-width: 900px; padding-top: 60px; }
 .about-text { min-width: 0; }
-.portrait-wrap { position: relative; width: 100%; max-width: 340px; justify-self: center; }
-.portrait-glow { position: absolute; z-index: 0; left: -14%; right: -14%; top: 4%; bottom: -2%; border-radius: 50%; background: conic-gradient(from 0deg, rgba(43, 179, 230, .8), rgba(126, 217, 87, .7), rgba(142, 216, 207, .75), rgba(91, 169, 240, .8), rgba(43, 179, 230, .8)); filter: blur(40px); opacity: .5; animation: spin 18s linear infinite; pointer-events: none; }
-.portrait { z-index: 1; margin: 0; border-radius: 28px; }
-.portrait-face { aspect-ratio: 3 / 4; background: #ECEEF1; box-shadow: 0 34px 64px -30px rgba(19, 48, 74, .5), inset 0 0 0 1px rgba(255, 255, 255, .55); }
-.portrait-face::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 30%; z-index: 1; background: linear-gradient(to top, rgba(11, 43, 63, .26), rgba(11, 43, 63, 0)); pointer-events: none; }
-.portrait-img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; transform: scale(1.001); transition: transform .9s var(--ease); }
-.portrait-sheen { position: absolute; inset: 0; z-index: 3; pointer-events: none; background: linear-gradient(115deg, rgba(255, 255, 255, 0) 35%, rgba(255, 255, 255, .42) 50%, rgba(255, 255, 255, 0) 65%); transform: translateX(-125%); }
+/* 介紹文字左右對齊（兩端對齊），各種螢幕的行首行尾都整齊；醫師的話卡片與內文同寬、左右邊緣對齊 */
+.about-card .about-body { text-align: justify; }
+.about-card .doctor { max-width: 680px; }
+.portrait-wrap { position: relative; width: 100%; min-width: 0; }
+.portrait-glow { position: absolute; z-index: 0; left: 3%; right: 3%; top: 12%; bottom: -5%; border-radius: 40%; background: conic-gradient(from 0deg, rgba(43, 179, 230, .8), rgba(126, 217, 87, .7), rgba(142, 216, 207, .75), rgba(91, 169, 240, .8), rgba(43, 179, 230, .8)); filter: blur(48px); opacity: .3; animation: spin 18s linear infinite; pointer-events: none; }
+.intro { position: relative; z-index: 1; margin: 0; border-radius: 22px; }
+.intro-face { display: block; width: 100%; margin: 0; padding: 0; border: 0; font: inherit; color: inherit; text-align: inherit; background: #E9EDF3; cursor: zoom-in; -webkit-tap-highlight-color: transparent; box-shadow: 0 30px 60px -32px rgba(19, 48, 74, .5); }
+.intro-face::after { content: ''; position: absolute; inset: 0; z-index: 2; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .6), inset 0 0 0 2px rgba(19, 48, 74, .05); pointer-events: none; }
+.intro-face:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.intro-img { display: block; width: 100%; height: auto; }
+/* 後台換成自己的圖片時：依圖片實際比例完整顯示（橫式填滿寬度；直式限制在約一個畫面高並置中） */
+.intro.is-custom { width: 100%; max-width: min(100%, calc(82vh * var(--intro-ar, 1.5))); margin: 0 auto; }
+.intro-sheen { position: absolute; inset: 0; z-index: 3; pointer-events: none; background: linear-gradient(115deg, rgba(255, 255, 255, 0) 38%, rgba(255, 255, 255, .34) 50%, rgba(255, 255, 255, 0) 62%); transform: translateX(-125%); }
+.intro-chip { position: absolute; left: 14px; bottom: 12px; z-index: 4; display: inline-flex; align-items: center; gap: 6px; padding: 7px 13px 7px 10px; border-radius: 999px; background: rgba(11, 43, 63, .74); color: #fff; font-size: .82rem; font-weight: 600; line-height: 1; letter-spacing: .06em; white-space: nowrap; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); box-shadow: 0 8px 18px -8px rgba(0, 0, 0, .45); pointer-events: none; transition: transform .35s var(--ease), background .35s; }
+.intro-chip svg { flex: none; width: 16px; height: 16px; }
+.intro-face:hover .intro-chip, .intro-face:focus-visible .intro-chip { background: rgba(14, 116, 158, .9); transform: translateY(-2px); }
 @media (hover: hover) and (pointer: fine) {
-  .portrait:hover .portrait-img { transform: scale(1.045); }
-  .portrait:hover .portrait-sheen { transform: translateX(125%); transition: transform 1.1s var(--ease); }
+  .intro-face:hover .intro-sheen { transform: translateX(125%); transition: transform 1.1s var(--ease); }
 }
+.sr-only { position: absolute !important; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
 @media (min-width: 900px) and (max-width: 1023px) {
-  .glass-card.about-card { grid-template-columns: minmax(220px, 280px) minmax(0, 1fr); gap: 44px; padding: 52px 40px 52px 36px; }
+  .glass-card.about-card { gap: 48px; padding: 48px 40px 54px; }
 }
 @media (max-width: 899px) {
-  .glass-card.about-card { grid-template-columns: minmax(0, 1fr); gap: 48px; text-align: center; }
-  .about-card:not(.no-portrait) .section-title::after { margin-left: auto; }
-  .about-card:not(.no-portrait) .about-body { margin-left: auto; margin-right: auto; max-width: 680px; }
-  .about-card:not(.no-portrait) .doctor { margin-left: auto; margin-right: auto; max-width: 660px; }
-  .portrait-wrap { max-width: min(300px, 74vw); }
+  .glass-card.about-card { gap: 44px; }
+}
+
+/* 醫師介紹圖：全螢幕放大檢視（v25） */
+html.zoom-open, html.zoom-open body { overflow: hidden; }
+.zoom-dialog { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: #06121B; color: #fff; overflow: hidden; z-index: 2000; }
+.zoom-dialog:not([open]) { display: none; }
+.zoom-dialog::backdrop { background: rgba(5, 16, 25, .6); }
+.zoom-stage { position: absolute; inset: 0; display: grid; overflow: auto; overscroll-behavior: contain; touch-action: pan-x pan-y; cursor: grab; -webkit-overflow-scrolling: touch; padding: calc(66px + env(safe-area-inset-top, 0px)) calc(14px + env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) calc(14px + env(safe-area-inset-left, 0px)); }
+.zoom-stage.is-fit { cursor: zoom-in; }
+.zoom-stage.is-dragging { cursor: grabbing; }
+.zoom-stage:focus-visible { outline: 3px solid #7FD3F2; outline-offset: -3px; }
+.zoom-img { display: block; margin: auto; max-width: none; border-radius: 10px; background: #E9EDF3 center / 100% 100% no-repeat; box-shadow: 0 30px 80px -24px rgba(0, 0, 0, .7); -webkit-user-drag: none; user-select: none; }
+.zoom-bar { position: absolute; z-index: 2; top: calc(10px + env(safe-area-inset-top, 0px)); right: calc(10px + env(safe-area-inset-right, 0px)); display: flex; gap: 4px; padding: 5px; border-radius: 16px; background: rgba(14, 32, 46, .8); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 10px 28px -10px rgba(0, 0, 0, .6); }
+.zoom-btn { width: 42px; height: 42px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 12px; background: transparent; color: #fff; cursor: pointer; transition: background .2s, opacity .2s; }
+.zoom-btn svg { width: 22px; height: 22px; }
+.zoom-btn:hover { background: rgba(255, 255, 255, .14); }
+.zoom-btn:focus-visible { outline: 3px solid #7FD3F2; outline-offset: 1px; }
+.zoom-btn[disabled] { opacity: .32; cursor: default; background: transparent; }
+.zoom-close { background: rgba(255, 255, 255, .14); }
+.zoom-hint { position: absolute; z-index: 2; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); max-width: calc(100% - 24px); margin: 0; padding: 9px 16px; border-radius: 999px; background: rgba(14, 32, 46, .86); color: #fff; font-size: .86rem; line-height: 1.3; letter-spacing: .04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transform: translateX(-50%); pointer-events: none; opacity: 0; transition: opacity .45s; }
+.zoom-hint.is-shown { opacity: 1; }
+@media (max-width: 599px) {
+  .zoom-btn { width: 40px; height: 40px; }
+  .zoom-hint { font-size: .8rem; padding: 8px 13px; }
 }
 .doctor { display: flex; align-items: center; gap: 22px; max-width: 660px; margin: 30px auto 38px; padding: 22px 26px; border-radius: 22px; background: var(--surface); border: 1px solid var(--line); text-align: left; box-shadow: var(--shadow-1); }
 .doctor-avatar { flex: none; width: 76px; height: 76px; border-radius: 50%; display: grid; place-items: center; font-size: 1.7rem; font-weight: 700; color: #fff; background: var(--grad-strong); box-shadow: 6px 6px 0 -2px var(--layer-1), 12px 12px 0 -4px var(--layer-2); overflow: hidden; }
@@ -1040,6 +1067,12 @@ html.policy-open, html.policy-open body { overflow: hidden; }
   .hero-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 440px; }
   .btn-cta { display: flex; width: 100%; max-width: 420px; min-width: 0; }
   .about-card .btn-cta { margin-left: auto; margin-right: auto; }
+  .about-card .portrait-wrap { width: calc(100% + 12px); margin: 0 -6px; }
+  .intro { border-radius: 14px; }
+  .intro.layer-card > .layer-1, .intro.layer-card:hover > .layer-1 { transform: translate3d(5px, 6px, -20px); }
+  .intro.layer-card > .layer-2, .intro.layer-card:hover > .layer-2 { transform: translate3d(10px, 12px, -40px); }
+  .intro-chip { left: 7px; bottom: 6px; gap: 4px; padding: 5px 9px 5px 7px; font-size: .72rem; letter-spacing: .04em; }
+  .intro-chip svg { width: 13px; height: 13px; }
 }
 
 @media (max-width: 380px) {
@@ -1064,7 +1097,7 @@ html.policy-open, html.policy-open body { overflow: hidden; }
 }
 
 @media print {
-  .site-header, .hero-canvas, .hero-cards, .scroll-cue, .back-to-top, .mascot, .toast, .carousel-btn, .carousel-dots, .contact-form, .about-bg { display: none !important; }
+  .site-header, .hero-canvas, .hero-cards, .scroll-cue, .back-to-top, .mascot, .toast, .carousel-btn, .carousel-dots, .contact-form, .about-bg, .intro-chip, .zoom-dialog { display: none !important; }
   .hero, .page-hero { min-height: auto; color: #000; background: none; padding: 24px 0; }
   .hero-title { color: #0B2A4A; background: none; -webkit-background-clip: initial; background-clip: initial; filter: none; }
   .js .reveal, .js .hero-inner > * { opacity: 1 !important; transform: none !important; }
