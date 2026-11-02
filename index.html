@@ -33,15 +33,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap">
-  <link rel="stylesheet" href="assets/css/style.css?v=22">
+  <link rel="stylesheet" href="assets/css/style.css?v=23">
 
-  <script src="assets/js/theme-init.js?v=22"></script>
-  <script src="assets/js/protect.js?v=22"></script>
-  <script src="assets/js/config.js?v=22" defer></script>
-  <script src="assets/js/content.js?v=22" defer></script>
-  <script src="assets/js/firebase-service.js?v=22" defer></script>
-  <script src="assets/js/core.js?v=22" defer></script>
-  <script src="assets/js/main.js?v=22" defer></script>
+  <script src="assets/js/theme-init.js?v=23"></script>
+  <script src="assets/js/protect.js?v=23"></script>
+  <script src="assets/js/config.js?v=23" defer></script>
+  <script src="assets/js/content.js?v=23" defer></script>
+  <script src="assets/js/firebase-service.js?v=23" defer></script>
+  <script src="assets/js/core.js?v=23" defer></script>
+  <script src="assets/js/main.js?v=23" defer></script>
 
   <script type="application/ld+json">
   {
@@ -337,9 +337,10 @@
           </div>
           <div class="field field-consent">
             <label class="consent">
-              <input type="checkbox" name="consent" id="f-consent" required aria-describedby="err-consent">
+              <input type="checkbox" name="consent" id="f-consent" required aria-describedby="consent-hint err-consent">
               <span>我已閱讀並同意<a href="/privacy/" data-route="privacy" target="_blank" rel="noopener">隱私權政策</a>，同意豪智慧有限公司蒐集上述資料及送出時的 IP 位址，用於回覆本次提問與防止不當使用。</span>
             </label>
+            <p class="consent-hint" id="consent-hint" aria-live="polite" hidden></p>
             <p class="field-error" id="err-consent"></p>
           </div>
           <p class="form-note" data-cms="contact.formNote">本表單不提供醫療諮詢或診斷。請勿填寫病歷、檢查報告或身分證字號等敏感資料；如有急症請立即就醫。</p>
@@ -348,7 +349,7 @@
             <span class="spinner" aria-hidden="true"></span>
           </button>
           <p class="form-status" role="status" aria-live="polite"></p>
-          <p class="recaptcha-note" hidden>本表單受 reCAPTCHA 保護，適用 Google 的<a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">隱私權政策</a>與<a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer">服務條款</a>。</p>
+          <p class="recaptcha-note" hidden><svg class="rc-shield" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8 4.5 5.6v5.6c0 4.6 3.1 8.6 7.5 9.9 4.4-1.3 7.5-5.3 7.5-9.9V5.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m8.6 12.2 2.4 2.4 4.4-4.6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg><span>本表單受 Google reCAPTCHA 防機器人保護，適用 Google 的<a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">隱私權政策</a>與<a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer">服務條款</a>。</span></p>
         </form>
       </div>
     </section>
@@ -428,6 +429,22 @@
     <span class="mascot-shadow" aria-hidden="true"></span>
     <span class="mascot-fx" aria-hidden="true"></span>
   </a>
+  <!-- v23：隱私權政策閱讀視窗（線上提問必須讀到最後，才能勾選同意） -->
+  <dialog class="policy-dialog" id="policy-dialog" aria-labelledby="policy-title">
+    <div class="policy-inner">
+      <div class="policy-head">
+        <h2 id="policy-title" data-cms="privacy.title">隱私權政策</h2>
+        <button class="policy-close" type="button" aria-label="關閉">×</button>
+      </div>
+      <div class="policy-scroll" tabindex="0" aria-label="隱私權政策全文，請捲動閱讀至最後">
+        <div class="rich legal-body" data-cms-rich="privacy.body"></div>
+      </div>
+      <div class="policy-foot">
+        <p class="policy-hint" aria-live="polite">請捲動閱讀至最後，即可勾選同意。</p>
+        <button class="btn btn-3d btn-primary policy-agree" type="button" disabled>我已閱讀完畢</button>
+      </div>
+    </div>
+  </dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <noscript><p class="noscript">請開啟瀏覽器的 JavaScript 以完整瀏覽本網站。</p></noscript>
 </body>

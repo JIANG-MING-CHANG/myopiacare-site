@@ -751,9 +751,37 @@ img.media-missing { display: none; }
 .form-status.is-warn { color: var(--warn-text); }
 /* reCAPTCHA v3：隱藏右下角徽章，改在表單下方以文字標示（Google 允許的做法） */
 .grecaptcha-badge { visibility: hidden; }
-.recaptcha-note { margin: 10px 0 0; font-size: .74rem; line-height: 1.6; color: var(--muted); text-align: center; }
+.recaptcha-note { display: flex; align-items: flex-start; justify-content: center; gap: 8px; margin: 12px auto 0; padding: 9px 14px; max-width: 100%; border-radius: 12px; background: var(--surface-2); font-size: .8rem; line-height: 1.6; color: var(--text-2); text-align: left; }
+.recaptcha-note[hidden] { display: none; }
+.rc-shield { flex: none; width: 20px; height: 20px; margin-top: 1px; color: var(--ok-text); }
 .recaptcha-note a { color: var(--accent-text); text-decoration: none; }
 .recaptcha-note a:hover { text-decoration: underline; }
+
+/* ---------- v23 必須讀完隱私權政策才能勾選同意 ---------- */
+.consent.is-locked input { opacity: .45; cursor: not-allowed; }
+.consent-hint { margin: 6px 0 0 30px; font-size: .8rem; line-height: 1.5; color: var(--warn-text); }
+.consent-hint.is-done { color: var(--ok-text); }
+html.policy-open, html.policy-open body { overflow: hidden; }
+.policy-dialog { width: min(720px, calc(100vw - 24px)); max-height: min(86vh, 860px); padding: 0; border: 0; border-radius: 22px; background: var(--surface); color: var(--text); box-shadow: 0 40px 90px -30px rgba(0, 0, 0, .55); overflow: hidden; }
+.policy-dialog::backdrop { background: rgba(6, 22, 34, .58); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+.policy-inner { display: flex; flex-direction: column; max-height: inherit; }
+.policy-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 18px 14px 24px; border-bottom: 1px solid var(--line); }
+.policy-head h2 { margin: 0; font-size: 1.15rem; font-weight: 600; letter-spacing: .06em; }
+.policy-close { flex: none; width: 40px; height: 40px; border: 0; border-radius: 12px; background: transparent; color: var(--text-2); font-size: 1.6rem; line-height: 1; cursor: pointer; }
+.policy-close:hover { background: var(--surface-2); color: var(--text); }
+.policy-close:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.policy-scroll { flex: 1 1 auto; min-height: 120px; overflow-y: auto; overscroll-behavior: contain; padding: 20px 26px 12px; -webkit-overflow-scrolling: touch; }
+.policy-scroll:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px; }
+.policy-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px 16px; flex-wrap: wrap; padding: 14px 22px 18px 24px; border-top: 1px solid var(--line); }
+.policy-hint { margin: 0; font-size: .86rem; color: var(--muted); }
+.policy-hint.is-done { color: var(--ok-text); }
+.policy-agree[disabled] { opacity: .5; cursor: not-allowed; }
+@media (max-width: 599px) {
+  .policy-dialog { width: calc(100vw - 16px); max-height: 90vh; border-radius: 18px; }
+  .policy-scroll { padding: 16px 18px 10px; }
+  .policy-foot { flex-direction: column; align-items: stretch; padding: 12px 16px 16px; }
+  .policy-agree { width: 100%; }
+}
 
 /* ---------- 內頁：隱私權政策 ---------- */
 .legal-body { font-size: 1rem; }
