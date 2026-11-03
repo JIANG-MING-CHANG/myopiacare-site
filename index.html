@@ -33,16 +33,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap">
-  <link rel="stylesheet" href="assets/css/style.css?v=30">
+  <link rel="stylesheet" href="assets/css/style.css?v=32">
 
-  <script src="assets/js/theme-init.js?v=30"></script>
-  <script src="assets/js/protect.js?v=30"></script>
-  <script src="assets/js/config.js?v=30" defer></script>
-  <script src="assets/js/content.js?v=30" defer></script>
-  <script src="assets/js/firebase-service.js?v=30" defer></script>
-  <script src="assets/js/core.js?v=30" defer></script>
-  <script src="assets/js/assistant.js?v=30" defer></script>
-  <script src="assets/js/main.js?v=30" defer></script>
+  <script src="assets/js/theme-init.js?v=32"></script>
+  <script src="assets/js/protect.js?v=32"></script>
+  <script src="assets/js/config.js?v=32" defer></script>
+  <script src="assets/js/content.js?v=32" defer></script>
+  <script src="assets/js/firebase-service.js?v=32" defer></script>
+  <script src="assets/js/core.js?v=32" defer></script>
+  <script src="assets/js/assistant.js?v=32" defer></script>
+  <script src="assets/js/main.js?v=32" defer></script>
 
   <script type="application/ld+json">
   {
@@ -82,8 +82,8 @@
       </a>
       <nav class="main-nav" id="main-nav" aria-label="主選單">
         <ul>
-          <li data-section-key="services"><a href="/#services" data-route="home" data-hash="services" data-cms="nav.services">服務項目</a></li>
-          <li data-section-key="flow"><a href="/#flow" data-route="home" data-hash="flow" data-cms="nav.flow">使用流程</a></li>
+          <li data-section-key="services"><a href="/#services" data-route="home" data-hash="services" data-cms="nav.services">服務探索</a></li>
+          <li data-section-key="flow"><a href="/#flow" data-route="home" data-hash="flow" data-cms="nav.flow">運用流程</a></li>
           <li data-section-key="news"><a href="/news/" data-route="news" data-cms="nav.news">最新消息</a></li>
           <li data-section-key="about"><a href="/#about" data-route="home" data-hash="about" data-cms="nav.about">關於我們</a></li>
           <li><a href="/privacy/" data-route="privacy" data-cms="nav.privacy" data-cms-fallback="隱私政策">隱私政策</a></li>
@@ -113,10 +113,7 @@
         <h1 class="hero-title" id="hero-title" data-cms="hero.title">Myopia Care</h1>
         <p class="hero-sub"><span class="hero-line" aria-hidden="true"></span><span data-cms="hero.subtitle"></span><span class="hero-line" aria-hidden="true"></span></p>
         <p class="hero-lead" data-cms="hero.lead"></p>
-        <div class="hero-cta">
-          <a class="btn btn-3d btn-primary btn-lg magnetic" href="#services"><span data-cms="hero.ctaPrimary"></span></a>
-          <a class="btn btn-3d btn-sky btn-lg magnetic" href="#contact"><span data-cms="hero.ctaSecondary"></span></a>
-        </div>
+        <!-- v31：依需求移除主視覺的「探索服務」「線上提問」兩個按鈕（後台已存的按鈕文字保留不刪） -->
       </div>
       <div class="hero-cards" aria-hidden="true" data-edit="hero.showCards">
         <div class="data-card layer-card tilt depth-a">
@@ -162,7 +159,7 @@
       <a class="scroll-cue" href="#services" aria-label="往下捲動"><span></span></a>
     </section>
 
-    <!-- ================= 服務項目 ================= -->
+    <!-- ================= 服務探索（v32 前稱服務項目） ================= -->
     <section class="section services" id="services" data-section-key="services" aria-labelledby="services-title">
       <div class="container">
         <header class="section-head reveal">
@@ -170,7 +167,7 @@
           <h2 class="section-title" id="services-title" data-cms="services.title"></h2>
           <p class="section-desc" data-cms="services.intro"></p>
         </header>
-        <div class="carousel reveal" data-carousel role="region" aria-roledescription="carousel" aria-label="服務項目">
+        <div class="carousel reveal" data-carousel role="region" aria-roledescription="carousel" aria-label="服務探索">
           <button class="carousel-btn prev" type="button" aria-label="上一張"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           <div class="carousel-viewport" tabindex="0" aria-label="服務卡片，可用左右方向鍵切換"><ul class="carousel-track" id="services-track"></ul></div>
           <button class="carousel-btn next" type="button" aria-label="下一張"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -179,7 +176,7 @@
       </div>
     </section>
 
-    <!-- ================= 使用流程 ================= -->
+    <!-- ================= 運用流程（v32 前稱使用流程） ================= -->
     <section class="section flow" id="flow" data-section-key="flow" aria-labelledby="flow-title">
       <div class="container">
         <header class="section-head reveal">
