@@ -587,13 +587,12 @@ section[id] { scroll-margin-top: 64px; }
 .invite-btn-label { overflow-wrap: anywhere; }
 /* 邀請頁面（v28）：嵌入其他網站，佔滿頁首以下的整個畫面；頁尾與浮動元件隱藏 */
 .invite-embedded .site-footer, .invite-embedded .back-to-top, .invite-embedded .mascot, .invite-embedded .mc-bot { display: none !important; }
-/* v30：嵌入區放在一般版面中（不用固定定位、不鎖住捲動），手機、平板、電腦都能上下滑動看完整內容；
-   高度剛好是「螢幕可視高度 − 頁首」（手機會隨網址列自動調整），內容較長時在嵌入區內捲動 */
-.invite-embed { position: relative; z-index: 1; margin-top: var(--embed-top, 64px); height: calc(100vh - var(--embed-top, 64px)); height: calc(100dvh - var(--embed-top, 64px)); background: var(--bg); }
+/* v33：頁首（豪智慧有限公司功能列）固定在畫面最上方不隨捲動移動；嵌入區固定佔滿「頁首以下到畫面可視範圍底部」
+   （上下用 top／bottom 定位，手機網址列、工具列出現時也剛好貼齊可視範圍），外層頁面鎖住不捲動，內容在嵌入區內上下捲動，
+   被嵌入網站自己的下方功能列（固定在底部的選單）因此一直留在畫面底部。iPhone 主畫面 App 模式會避開底部橫條（安全區）。 */
+html.invite-lock, html.invite-lock body { overflow: hidden; overscroll-behavior: none; }
+.invite-embed { position: fixed; z-index: 1; top: var(--embed-top, 64px); left: 0; right: 0; bottom: 0; box-sizing: border-box; padding: 0 env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px); background: var(--bg); }
 .invite-embed[hidden] { display: none; }
-/* v30：頁首跟著頁面一起往上捲走（不再固定在畫面上方）；嵌入網站回報完整高度時（.is-auto），框架撐到內容全高，整頁一起捲動 */
-.invite-embedded .site-header { position: absolute; }
-.invite-embed.is-auto { min-height: calc(100vh - var(--embed-top, 64px)); min-height: calc(100dvh - var(--embed-top, 64px)); }
 .invite-frame { display: block; width: 100%; height: 100%; border: 0; background: #fff; }
 .invite-embed-wait { position: absolute; inset: 0; display: grid; place-items: center; background: var(--bg); pointer-events: none; transition: opacity .3s; }
 .invite-embed-wait[hidden] { display: none; }
