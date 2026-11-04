@@ -1,0 +1,98 @@
+[debug] [2026-11-04T07:15:12.199Z] ----------------------------------------------------------------------
+[debug] [2026-11-04T07:15:12.201Z] Command:       /usr/local/share/nvm/versions/node/v24.22.2/bin/node /home/codespace/nvm/current/bin/firebase init hosting:github
+[debug] [2026-11-04T07:15:12.202Z] CLI Version:   15.34.2
+[debug] [2026-11-04T07:15:12.202Z] Platform:      linux
+[debug] [2026-11-04T07:15:12.202Z] Node Version:  v24.22.2
+[debug] [2026-11-04T07:15:12.202Z] Detected Agent: unknown
+[debug] [2026-11-04T07:15:12.202Z] Time:          Wed Nov 04 2026 07:15:12 GMT+0000 (Coordinated Universal Time)
+[debug] [2026-11-04T07:15:12.202Z] ----------------------------------------------------------------------
+[debug] 
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /workspaces/myopiacare-site
+
+Before we get started, keep in mind:
+
+  * You are currently outside your home directory
+  * You are initializing within an existing Firebase project directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] 
+[debug] [2026-11-04T07:15:13.312Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-11-04T07:15:13.313Z] > authorizing via signed-in user (osti422@gmail.com)
+[debug] [2026-11-04T07:15:13.332Z] Checked if tokens are valid: true, expires at: 1793779270485
+[debug] [2026-11-04T07:15:13.333Z] Checked if tokens are valid: true, expires at: 1793779270485
+[debug] [2026-11-04T07:15:13.334Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/myopiacare-bc018 [none]
+[debug] [2026-11-04T07:15:13.700Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/myopiacare-bc018 200
+[debug] [2026-11-04T07:15:13.701Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/myopiacare-bc018 {"projectId":"myopiacare-bc018","projectNumber":"973809218892","displayName":"myopia care","name":"projects/myopiacare-bc018","resources":{"hostingSite":"myopiacare-bc018"},"state":"ACTIVE","labels":{"firebase":"enabled","firebaseworkflows/environment":"production"},"etag":"1_aa3fcbef-b960-4e4d-94b2-124b1c3d0eb4"}
+[info] i  Using project myopiacare-bc018 (myopia care) . 
+[info] 
+=== Hosting:github Setup
+[info] 
+[info] i  Detected a .git folder at /workspaces/myopiacare-site 
+[info] i  Authorizing with GitHub to upload your service account to a GitHub repository's secrets store. 
+[info] 
+[info] Visit this URL on this device to log in:
+[info] https://github.com/login/oauth/authorize?client_id=89cf50f02ac6aaed3484&state=160230828&redirect_uri=http%3A%2F%2Flocalhost%3A9005&scope=read%3Auser%20repo%20public_repo
+[info] 
+[info] Waiting for authentication...
+[debug] [2026-11-04T07:23:10.940Z] ----------------------------------------------------------------------
+[debug] [2026-11-04T07:23:10.946Z] Command:       /usr/local/share/nvm/versions/node/v24.22.2/bin/node /home/codespace/nvm/current/bin/firebase init hosting:github
+[debug] [2026-11-04T07:23:10.947Z] CLI Version:   15.34.2
+[debug] [2026-11-04T07:23:10.947Z] Platform:      linux
+[debug] [2026-11-04T07:23:10.947Z] Node Version:  v24.22.2
+[debug] [2026-11-04T07:23:10.947Z] Detected Agent: unknown
+[debug] [2026-11-04T07:23:10.947Z] Time:          Wed Nov 04 2026 07:23:10 GMT+0000 (Coordinated Universal Time)
+[debug] [2026-11-04T07:23:10.947Z] ----------------------------------------------------------------------
+[debug] 
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /workspaces/myopiacare-site
+
+Before we get started, keep in mind:
+
+  * You are currently outside your home directory
+  * You are initializing within an existing Firebase project directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] 
+[debug] [2026-11-04T07:23:12.181Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-11-04T07:23:12.181Z] > authorizing via signed-in user (osti422@gmail.com)
+[debug] [2026-11-04T07:23:12.200Z] Checked if tokens are valid: true, expires at: 1793779270485
+[debug] [2026-11-04T07:23:12.200Z] Checked if tokens are valid: true, expires at: 1793779270485
+[debug] [2026-11-04T07:23:12.202Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/myopiacare-bc018 [none]
+[debug] [2026-11-04T07:23:12.570Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/myopiacare-bc018 200
+[debug] [2026-11-04T07:23:12.570Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/myopiacare-bc018 {"projectId":"myopiacare-bc018","projectNumber":"973809218892","displayName":"myopia care","name":"projects/myopiacare-bc018","resources":{"hostingSite":"myopiacare-bc018"},"state":"ACTIVE","labels":{"firebase":"enabled","firebaseworkflows/environment":"production"},"etag":"1_aa3fcbef-b960-4e4d-94b2-124b1c3d0eb4"}
+[info] i  Using project myopiacare-bc018 (myopia care) . 
+[info] 
+=== Hosting:github Setup
+[info] 
+[info] i  Detected a .git folder at /workspaces/myopiacare-site 
+[info] i  Authorizing with GitHub to upload your service account to a GitHub repository's secrets store. 
+[info] 
+[info] Visit this URL on this device to log in:
+[info] https://github.com/login/oauth/authorize?client_id=89cf50f02ac6aaed3484&state=198238515&redirect_uri=http%3A%2F%2Flocalhost%3A9005&scope=read%3Auser%20repo%20public_repo
+[info] 
+[info] Waiting for authentication...
