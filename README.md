@@ -1,4 +1,4 @@
-# MyopiaCare｜豪智慧有限公司 官方網站 v33
+# MyopiaCare｜豪智慧有限公司 官方網站 v34
 
 純靜態網站（HTML／CSS／JavaScript，免建置工具），架設於 **GitHub Pages**，客戶提問、網站內容、圖片與瀏覽人次存放於 **Firebase Firestore**（免費 Spark 方案）。
 
@@ -105,6 +105,23 @@ Google 重新抓取並處理圖示需要幾天到幾週，可用 Search Console 
 - 這個架構（靜態網站＋Firebase 免費方案）沒有伺服器，無法用 reCAPTCHA 的分數在後端自動擋可疑提問；目前做到的是「驗證成功才會送出」，已能擋掉大多數機器人。要用分數自動過濾需升級 Firebase 付費方案加 Cloud Functions。
 - reCAPTCHA 只加在首頁表單，為此首頁的 CSP 多允許 `www.google.com`、`www.gstatic.com`；其他頁面維持原本的嚴格設定。
 - 不需要改 `firestore.rules`（權杖不寫入資料庫）。
+
+## HTTPS／SSL/TLS 加密防護（v34）
+
+網站全程以 HTTPS（TLS 加密）傳輸。憑證由 GitHub Pages 自動向 Let's Encrypt 申請並自動續約，不需要購買或手動更新。
+
+程式端（v34 已內建，不用設定）：
+- 有人用 `http://myopiacare.site` 或 `http://www.myopiacare.site` 開啟時，網頁一載入就改走 `https://myopiacare.site`（GitHub「Enforce HTTPS」之外的第二道保險；本機預覽不受影響）。
+- 內容裡寫成 `http://myopiacare.site/...` 的本站連結自動改成 `https://`；圖片網址寫成 `http://` 時改走 `https://`（安全設定本來就不載入未加密圖片）。後台發布時，按鈕與社群網址的 `http://` 也會自動補正為 `https://`。
+- 每個頁面都有內容安全政策（CSP）：程式、字型、圖片、連線只允許 `https://` 或本站；所有頁面（含 404）都設定 `strict-origin-when-cross-origin` 參照政策，不會把網址細節傳給 http 網站。
+- 資料庫（Firebase Firestore）、登入、reCAPTCHA、Google 字型全部走 HTTPS。
+
+GitHub 與 GoDaddy 端（照部署指南文件「v34」那一段逐步設定）：
+1. GitHub → 網站 repository → Settings → Pages：Custom domain 是 `myopiacare.site`、DNS check successful，勾選 **Enforce HTTPS**。
+2. GoDaddy DNS 檢查：`@` 的 A 紀錄只有 GitHub 的 4 個 IP（185.199.108.153／109.153／110.153／111.153）；`www` 是 CNAME 指向「你的 GitHub 帳號.github.io」。**MX 與其他郵件紀錄完全不動。**
+3. 建議新增 CAA 紀錄：`@`、Flag 0、Tag issue、值 `letsencrypt.org`（只允許 GitHub 使用的憑證機構為本網域發憑證）。
+4. 建議在 GitHub 個人設定驗證網域（新增一筆 `_github-pages-challenge-帳號` TXT 紀錄），防止別人冒用你的網域。
+5. HSTS（要求瀏覽器以後只用 https 連線）：GitHub Pages 不能自己加這個標頭，可依部署指南的範本請 GitHub Support 為本網域開啟；未開啟時仍有上面兩道 https 轉址保護。
 
 ## 首頁主視覺按鈕（v31）
 
@@ -224,9 +241,9 @@ Facebook、X、Instagram、App 商店與 LINE 連結少打 `https://`、打成 `
 ## 從舊版升級
 
 1. 上傳前先從資料夾刪掉 `assets/js/config.js`，再用新檔案覆蓋 repository 裡的舊檔案（GitHub 上已填好的 config.js 會保留）。
-2. 從 v2 升級：**把新的 `firestore.rules` 重新貼上並發布**（v3 起新增瀏覽人次 `stats` 的權限）。v3–v13 規則相同；**v14 起規則升級為 v4（提問可記錄 IP），請重新貼上 `firestore.rules` 並發布**。v15–v33 規則與 v14 相同，不需重貼。
+2. 從 v2 升級：**把新的 `firestore.rules` 重新貼上並發布**（v3 起新增瀏覽人次 `stats` 的權限）。v3–v13 規則相同；**v14 起規則升級為 v4（提問可記錄 IP），請重新貼上 `firestore.rules` 並發布**。v15–v34 規則與 v14 相同，不需重貼。
 3. 若後台曾經發布過內容，裡面仍是舊的佔位文字（○○○ 醫師、04-0000-0000、service@myopiacare.site、請於管理後台填寫公司地址）或 v3 的英文地址、v8 以前的「MyopiaCare／MYOPIACARE APP」標題時，網站會自動改為新的公司資料與「Myopia Care」寫法；其他你改過的內容維持不變。
 
 ## 修改程式後
 
-改過 CSS 或 JS，請把所有 HTML 裡的 `?v=33` 改成 `?v=34`，訪客才不會看到舊的快取版本。
+改過 CSS 或 JS，請把所有 HTML 裡的 `?v=34` 改成 `?v=35`，訪客才不會看到舊的快取版本。
