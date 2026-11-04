@@ -1,4 +1,4 @@
-# MyopiaCare｜豪智慧有限公司 官方網站 v35
+# MyopiaCare｜豪智慧有限公司 官方網站 v36
 
 純靜態網站（HTML／CSS／JavaScript，免建置工具），架設於 **GitHub Pages**，客戶提問、網站內容、圖片與瀏覽人次存放於 **Firebase Firestore**（免費 Spark 方案）。
 
@@ -128,12 +128,13 @@ GitHub 與 GoDaddy 端（照部署指南文件「v34」那一段逐步設定）�
 
 頁尾聲明文字下方顯示兩個小標章：SSL 加密（SECURE SSL ENCRYPTION）與 Google reCAPTCHA，所有有頁尾的頁面（首頁、最新消息、隱私權政策、文字版邀請頁）都有，手機、平板、電腦與深／淺色模式都清楚，避開右下角的眼球寶寶。
 - 圖檔：`assets/img/badge-ssl-36／72／108.webp`、`assets/img/badge-recaptcha-36／72／108.webp`（已去除原圖的灰白格子背景，依螢幕解析度自動選用）。
+- 隨淺／深色切換（v36）：深色模式（跟隨系統或右上角手動切換）改用深色底板與深色版圖 `badge-ssl-dark-*.webp`（下半部深灰底淺字）、`badge-recaptcha-dark-*.webp`（reCAPTCHA 文字改淺色）。
 - 不誇大：實際以 https 加密連線時才顯示 SSL 標章；`config.js` 有填 reCAPTCHA 網站金鑰時才顯示 reCAPTCHA 標章；兩者都不成立時整列隱藏。
 
 ## SSL Labs 評等 A+：改用 Firebase Hosting（v35 準備好，依部署指南逐步切換）
 
 GitHub Pages 的伺服器（所有 GitHub Pages 網站共用）仍接受舊版 TLS 1.0／1.1，SSL Labs 因此把等級上限壓在 B，而且 GitHub Pages 不能自己修改這項設定，也不能加 HSTS。改由 Firebase Hosting（與網站資料庫同一個 Firebase 專案）提供網站：只接受 TLS 1.2 以上、可加 HSTS，預期可達 A+。
-- `firebase.json`（v35 新增）：部署到專用的 Hosting 網站 `myopiacare-61954117`（不會動到同專案的其他網站）；加上 HSTS（一年）、nosniff、參照政策；網頁每次重新確認、`/assets/` 快取一天（靠 `?v=` 更新）；`README.md`、`firestore.rules`、`CNAME` 與隱藏檔不上傳。路由與 GitHub Pages 相同（`/news` 自動補成 `/news/`、找不到的網址顯示 404 頁）。
+- `firebase.json`（v35 新增，v36 起也不上傳 `firebase-debug.log` 等記錄檔與 `.firebase/` 快取）：部署到專用的 Hosting 網站 `myopiacare-61954117`（不會動到同專案的其他網站）；加上 HSTS（一年）、nosniff、參照政策；網頁每次重新確認、`/assets/` 快取一天（靠 `?v=` 更新）；`README.md`、`firestore.rules`、`CNAME` 與隱藏檔不上傳。路由與 GitHub Pages 相同（`/news` 自動補成 `/news/`、找不到的網址顯示 404 頁）。
 - 切換分階段、不中斷：先部署到 Firebase 測試網址檢查 → 在 Firebase 加自訂網域（GoDaddy 先加驗證 TXT，憑證發好）→ 才把 GoDaddy 的 A 紀錄從 GitHub 改成 Firebase → 設定 GitHub 上傳後自動部署。MX 與郵件紀錄完全不動；要退回只要把 A 紀錄改回 GitHub 的 4 個 IP。
 - Firebase 免費方案每天可傳輸 360 MB（首頁完整瀏覽一次約 0.4 MB，約每天 900 位以上新訪客）；超過時可升級 Blaze 方案，只為超出的部分付費。
 
@@ -255,9 +256,9 @@ Facebook、X、Instagram、App 商店與 LINE 連結少打 `https://`、打成 `
 ## 從舊版升級
 
 1. 上傳前先從資料夾刪掉 `assets/js/config.js`，再用新檔案覆蓋 repository 裡的舊檔案（GitHub 上已填好的 config.js 會保留）。
-2. 從 v2 升級：**把新的 `firestore.rules` 重新貼上並發布**（v3 起新增瀏覽人次 `stats` 的權限）。v3–v13 規則相同；**v14 起規則升級為 v4（提問可記錄 IP），請重新貼上 `firestore.rules` 並發布**。v15–v35 規則與 v14 相同，不需重貼。
+2. 從 v2 升級：**把新的 `firestore.rules` 重新貼上並發布**（v3 起新增瀏覽人次 `stats` 的權限）。v3–v13 規則相同；**v14 起規則升級為 v4（提問可記錄 IP），請重新貼上 `firestore.rules` 並發布**。v15–v36 規則與 v14 相同，不需重貼。
 3. 若後台曾經發布過內容，裡面仍是舊的佔位文字（○○○ 醫師、04-0000-0000、service@myopiacare.site、請於管理後台填寫公司地址）或 v3 的英文地址、v8 以前的「MyopiaCare／MYOPIACARE APP」標題時，網站會自動改為新的公司資料與「Myopia Care」寫法；其他你改過的內容維持不變。
 
 ## 修改程式後
 
-改過 CSS 或 JS，請把所有 HTML 裡的 `?v=35` 改成 `?v=36`，訪客才不會看到舊的快取版本。
+改過 CSS 或 JS，請把所有 HTML 裡的 `?v=36` 改成 `?v=37`，訪客才不會看到舊的快取版本。

@@ -8,7 +8,10 @@
       "**/node_modules/**",
       "README.md",
       "firestore.rules",
-      "CNAME"
+      "CNAME",
+      "firebase-debug.log",
+      "**/*.log",
+      ".firebase/**"
     ],
     "headers": [
       {
