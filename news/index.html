@@ -25,15 +25,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap">
-  <link rel="stylesheet" href="../assets/css/style.css?v=34">
-  <script src="../assets/js/theme-init.js?v=34"></script>
-  <script src="../assets/js/protect.js?v=34"></script>
-  <script src="../assets/js/config.js?v=34" defer></script>
-  <script src="../assets/js/content.js?v=34" defer></script>
-  <script src="../assets/js/firebase-service.js?v=34" defer></script>
-  <script src="../assets/js/core.js?v=34" defer></script>
-  <script src="../assets/js/assistant.js?v=34" defer></script>
-  <script src="../assets/js/page.js?v=34" defer></script>
+  <link rel="stylesheet" href="../assets/css/style.css?v=35">
+  <script src="../assets/js/theme-init.js?v=35"></script>
+  <script src="../assets/js/protect.js?v=35"></script>
+  <script src="../assets/js/config.js?v=35" defer></script>
+  <script src="../assets/js/content.js?v=35" defer></script>
+  <script src="../assets/js/firebase-service.js?v=35" defer></script>
+  <script src="../assets/js/core.js?v=35" defer></script>
+  <script src="../assets/js/assistant.js?v=35" defer></script>
+  <script src="../assets/js/page.js?v=35" defer></script>
 </head>
 <body class="page-sub page-news">
   <a class="skip-link" href="#main">跳到主要內容</a>
@@ -98,7 +98,13 @@
       </ul>
     </div>
     <div class="container footer-bottom">
-      <p class="footer-note" data-cms="footer.note"></p>
+      <div class="footer-legal">
+        <p class="footer-note" data-cms="footer.note"></p>
+        <ul class="footer-trust" aria-label="網站安全防護" hidden>
+          <li data-trust="ssl" hidden><img src="../assets/img/badge-ssl-36.webp" srcset="../assets/img/badge-ssl-36.webp 1x, ../assets/img/badge-ssl-72.webp 2x, ../assets/img/badge-ssl-108.webp 3x" width="81" height="36" alt="SSL 加密：本站全程使用 HTTPS（SSL/TLS）加密傳輸" title="本站全程使用 HTTPS（SSL/TLS）加密傳輸" loading="lazy" decoding="async"></li>
+          <li data-trust="recaptcha" hidden><img src="../assets/img/badge-recaptcha-36.webp" srcset="../assets/img/badge-recaptcha-36.webp 1x, ../assets/img/badge-recaptcha-72.webp 2x, ../assets/img/badge-recaptcha-108.webp 3x" width="98" height="36" alt="Google reCAPTCHA：線上提問表單受機器人防護" title="線上提問表單受 Google reCAPTCHA 保護" loading="lazy" decoding="async"></li>
+        </ul>
+      </div>
       <div class="footer-meta">
         <p class="visit-counter" data-counter data-edit="footer.showCounter" hidden><span data-cms="footer.counterLabel">累計瀏覽人次</span><b class="visit-num" data-visit-count>—</b></p>
         <p>© <span data-year>2026</span> <span data-cms="brand.nameZh">豪智慧有限公司</span> All Rights Reserved.</p>
