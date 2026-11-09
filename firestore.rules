@@ -1,7 +1,7 @@
 rules_version = '2';
 
 // =====================================================================
-// MyopiaCare｜豪智慧有限公司 — Firestore 安全規則 v5
+// MyopiaCare｜豪智慧有限公司 — Firestore 安全規則 v6
 // 貼到：Firebase 主控台 → Firestore Database → 規則 → 全部取代 → 發布
 //
 // 原則（最小權限）：
@@ -13,7 +13,10 @@ rules_version = '2';
 //      admins 只能在 Firebase 主控台手動新增，網站程式完全無法寫入。
 //   4. 圖片只接受 PNG／JPEG／WebP／GIF 的 base64 資料（不接受 SVG，避免夾帶程式碼）。
 //   5. 瀏覽人次（stats/visits）只有一個數字欄位：訪客每次只能 +1，只有管理員能改成指定數字。
-//   6. 其他所有路徑一律拒絕。
+//   6. v6 使用紀錄（後台「使用紀錄」分頁）：
+//      accessLogs 網站瀏覽紀錄、loginFails 後台登入失敗紀錄：訪客只能新增一筆格式正確的紀錄，不能讀取、修改或刪除；
+//      adminLogs 後台登入與操作紀錄：只有管理員能以自己的帳號新增；任何人都不能修改，滿一年後才能刪除（避免被竄改）。
+//   7. 其他所有路徑一律拒絕。
 // =====================================================================
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -40,6 +43,11 @@ service cloud.firestore {
 
     function onlyChanges(keys) {
       return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys);
+    }
+
+    // v6：IP 欄位（沒有這個欄位，或是只含數字、英文 a–f、冒號、點的 45 字以內文字）
+    function isIp(d, key) {
+      return !(key in d) || (d[key] is string && d[key].matches('^[0-9A-Fa-f:.]{0,45}$'));
     }
 
     // ---------- 客戶提問 ----------
@@ -135,6 +143,56 @@ service cloud.firestore {
         && (request.resource.data.count == resource.data.count + 1
             || (isAdmin() && request.resource.data.count >= 0 && request.resource.data.count < 1000000000000));
       allow delete: if false;
+    }
+
+    // ---------- v6 使用紀錄 ----------
+    // 網站瀏覽紀錄：時間由伺服器填入；頁面、來源、瀏覽器資訊有長度上限
+    match /accessLogs/{logId} {
+      allow create: if
+        request.resource.data.keys().hasOnly(['at', 'path', 'ref', 'ua', 'ip', 'ip6'])
+        && request.resource.data.keys().hasAll(['at', 'path'])
+        && request.resource.data.at == request.time
+        && isText(request.resource.data.path, 1, 300)
+        && (!('ref' in request.resource.data) || isText(request.resource.data.ref, 0, 300))
+        && (!('ua' in request.resource.data) || isText(request.resource.data.ua, 0, 400))
+        && isIp(request.resource.data, 'ip')
+        && isIp(request.resource.data, 'ip6');
+      allow read, delete: if isAdmin();
+      allow update: if false;
+    }
+
+    // 後台登入失敗紀錄（登入前還沒有身分，所以訪客可新增；只有管理員能看）
+    match /loginFails/{logId} {
+      allow create: if
+        request.resource.data.keys().hasOnly(['at', 'email', 'code', 'ua', 'ip', 'ip6'])
+        && request.resource.data.keys().hasAll(['at'])
+        && request.resource.data.at == request.time
+        && (!('email' in request.resource.data) || isText(request.resource.data.email, 0, 120))
+        && (!('code' in request.resource.data) || isText(request.resource.data.code, 0, 60))
+        && (!('ua' in request.resource.data) || isText(request.resource.data.ua, 0, 400))
+        && isIp(request.resource.data, 'ip')
+        && isIp(request.resource.data, 'ip6');
+      allow read, delete: if isAdmin();
+      allow update: if false;
+    }
+
+    // 後台登入與操作紀錄：只能用自己的帳號新增，帳號 Email 必須是登入中的那一個；不能修改；滿一年後才能刪除
+    match /adminLogs/{logId} {
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasOnly(['at', 'uid', 'email', 'action', 'detail', 'ua', 'ip', 'ip6'])
+        && request.resource.data.keys().hasAll(['at', 'uid', 'action'])
+        && request.resource.data.at == request.time
+        && request.resource.data.uid == request.auth.uid
+        && (!('email' in request.resource.data) || (request.resource.data.email is string && request.auth.token.email is string
+            && request.resource.data.email.lower() == request.auth.token.email.lower()))
+        && isText(request.resource.data.action, 1, 40)
+        && (!('detail' in request.resource.data) || isText(request.resource.data.detail, 0, 300))
+        && (!('ua' in request.resource.data) || isText(request.resource.data.ua, 0, 400))
+        && isIp(request.resource.data, 'ip')
+        && isIp(request.resource.data, 'ip6');
+      allow read: if isAdmin();
+      allow update: if false;
+      allow delete: if isAdmin() && resource.data.at < request.time - duration.value(365, 'd');
     }
 
     // ---------- 管理員名單：只能讀自己那一份，任何人都不能從網站寫入 ----------

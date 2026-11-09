@@ -5,22 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>管理後台｜豪智慧有限公司</title>
   <meta name="robots" content="noindex, nofollow, noarchive">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; frame-src 'self' https://*.firebaseapp.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://api.ipify.org https://api64.ipify.org; frame-src 'self' https://*.firebaseapp.com; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="referrer" content="no-referrer">
   <meta name="theme-color" content="#0B2B3F">
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&family=Noto+Sans+TC:wght@400;500;700&display=swap">
-  <link rel="stylesheet" href="../assets/css/style.css?v=39">
-  <link rel="stylesheet" href="../assets/css/admin.css?v=39">
-  <script src="../assets/js/theme-init.js?v=39"></script>
-  <script src="../assets/js/config.js?v=39" defer></script>
-  <script src="../assets/js/content.js?v=39" defer></script>
-  <script src="../assets/js/firebase-service.js?v=39" defer></script>
-  <script src="../assets/js/core.js?v=39" defer></script>
-  <script src="../assets/js/admin-editor.js?v=39" defer></script>
-  <script src="../assets/js/admin.js?v=39" defer></script>
+  <link rel="stylesheet" href="../assets/css/style.css?v=40">
+  <link rel="stylesheet" href="../assets/css/admin.css?v=40">
+  <script src="../assets/js/theme-init.js?v=40"></script>
+  <script src="../assets/js/config.js?v=40" defer></script>
+  <script src="../assets/js/content.js?v=40" defer></script>
+  <script src="../assets/js/firebase-service.js?v=40" defer></script>
+  <script src="../assets/js/core.js?v=40" defer></script>
+  <script src="../assets/js/admin-editor.js?v=40" defer></script>
+  <script src="../assets/js/admin.js?v=40" defer></script>
 </head>
 <body class="admin-page">
   <header class="admin-bar">
@@ -80,6 +80,7 @@
         <button type="button" role="tab" id="tab-content" aria-controls="panel-content" aria-selected="false" data-tab="content">網站內容（欄位）</button>
         <button type="button" role="tab" id="tab-media" aria-controls="panel-media" aria-selected="false" data-tab="media">圖片庫</button>
         <button type="button" role="tab" id="tab-history" aria-controls="panel-history" aria-selected="false" data-tab="history">版本紀錄</button>
+        <button type="button" role="tab" id="tab-logs" aria-controls="panel-logs" aria-selected="false" data-tab="logs">使用紀錄</button>
       </nav>
 
       <!-- 客戶提問 -->
@@ -97,6 +98,7 @@
           <button class="btn btn-sm btn-outline danger" type="button" id="btn-purge">刪除超過 2 年的提問</button>
         </div>
         <p class="inbox-summary" id="inbox-summary"></p>
+        <p class="log-note" id="inbox-note" role="status" hidden></p>
         <ul class="inbox" id="inbox-list"></ul>
       </div>
 
@@ -162,6 +164,25 @@
       <!-- 圖片庫 -->
       <div class="tab-panel" id="panel-media" role="tabpanel" aria-labelledby="tab-media" hidden>
         <div id="media-manager"></div>
+      </div>
+
+      <!-- 使用紀錄（v40）：網站瀏覽紀錄、後台登入與操作紀錄 -->
+      <div class="tab-panel" id="panel-logs" role="tabpanel" aria-labelledby="tab-logs" hidden>
+        <div class="admin-toolbar">
+          <div class="chips" role="group" aria-label="紀錄種類">
+            <button type="button" class="chip" data-log="visits" aria-pressed="true">網站瀏覽</button>
+            <button type="button" class="chip" data-log="admin" aria-pressed="false">後台登入與操作</button>
+          </div>
+          <input class="admin-search" id="log-search" type="search" placeholder="搜尋 IP、頁面、帳號或裝置（輸入完整 IP 會查全部紀錄）" aria-label="搜尋使用紀錄">
+          <button class="btn btn-sm btn-outline" type="button" id="btn-log-reload">重新整理</button>
+          <button class="btn btn-sm btn-outline" type="button" id="btn-log-export">匯出 CSV</button>
+          <button class="btn btn-sm btn-outline danger" type="button" id="btn-log-purge">刪除過期紀錄</button>
+        </div>
+        <div class="log-note" id="log-note" role="status" hidden></div>
+        <p class="inbox-summary" id="log-summary"></p>
+        <ul class="log-list" id="log-list" aria-live="polite"></ul>
+        <button class="btn btn-sm btn-outline log-more" type="button" id="btn-log-more" hidden>載入更早的紀錄</button>
+        <p class="admin-sub log-keep">網站瀏覽紀錄與登入失敗紀錄保存 6 個月、後台操作紀錄保存 1 年，過期的會在開啟這一頁時自動刪除。後台操作紀錄無法修改或提前刪除。</p>
       </div>
 
       <!-- 版本紀錄 -->
