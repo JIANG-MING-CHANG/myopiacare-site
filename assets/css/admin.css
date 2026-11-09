@@ -297,4 +297,7 @@ body.vis-wide .admin-main { max-width: 1720px; }
 
 /* 提問紀錄：IP 位址 */
 .inq-ip { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .9rem; overflow-wrap: anywhere; }
-.inq-ip-look { margin-left: 10px; font-size: .84rem; }
+.inq-ip-look { margin-left: 10px; font-size: .84rem; white-space: nowrap; }
+.inq-ip-row { display: block; }
+.inq-ip-row + .inq-ip-row { margin-top: 4px; }
+.inq-ip-tag { display: inline-block; margin-right: 8px; padding: 0 6px; border: 1px solid currentColor; border-radius: 6px; font-size: .72rem; line-height: 1.5; opacity: .7; vertical-align: 1px; }

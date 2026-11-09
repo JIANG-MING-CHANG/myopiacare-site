@@ -920,7 +920,10 @@ html.policy-open, html.policy-open body { overflow: hidden; }
 .footer-trust[hidden], .footer-trust li[hidden] { display: none; }
 .footer-trust li { display: flex; align-items: center; padding: 5px 9px; border-radius: 10px; background: var(--trust-bg); border: 1px solid var(--trust-border); box-shadow: var(--trust-shadow); transition: background-color .35s, border-color .35s; }
 .footer-trust img { display: block; width: auto; height: 30px; }
-/* v36：標章隨淺／深色切換（跟隨系統，或右上角手動切換）：深色模式改用深色底板與深色版圖（SSL 下半部改深灰底淺字、reCAPTCHA 文字改淺色） */
+/* v38：SSL／TLS 標章本身就有金屬外框，不再加底板；透明背景直接融入頁尾底色，高度與旁邊 reCAPTCHA 底板一致 */
+.footer-trust li[data-trust="ssl"] { padding: 0; background: none; border: 0; box-shadow: none; }
+.footer-trust li[data-trust="ssl"] img { height: 42px; }
+/* v36：標章隨淺／深色切換（跟隨系統，或右上角手動切換）：深色模式改用深色版圖（v38 SSL／TLS 標章下半部改深色底淺字、外框調暗；reCAPTCHA 文字改淺色、底板改深色） */
 .footer-trust img.trust-dark { display: none; }
 :root[data-theme="dark"] .footer-trust img.trust-light { display: none; }
 :root[data-theme="dark"] .footer-trust img.trust-dark { display: block; }
@@ -1107,6 +1110,7 @@ html.policy-open, html.policy-open body { overflow: hidden; }
   .footer-bottom { flex-direction: column; padding-top: 20px; padding-bottom: 96px; }
   .footer-meta { align-items: flex-start; text-align: left; }
   .footer-trust img { height: 28px; }
+  .footer-trust li[data-trust="ssl"] img { height: 40px; }
   .back-to-top { right: 14px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); width: 44px; height: 44px; }
   .mascot-on .back-to-top { right: max(29px, calc(env(safe-area-inset-right, 0px) + 17px)); bottom: calc(102px + env(safe-area-inset-bottom, 0px)); }
   .mascot { width: 78px; right: max(12px, env(safe-area-inset-right, 0px)); bottom: calc(10px + env(safe-area-inset-bottom, 0px)); }

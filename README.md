@@ -1,4 +1,4 @@
-# MyopiaCare｜豪智慧有限公司 官方網站 v36
+# MyopiaCare｜豪智慧有限公司 官方網站 v38
 
 純靜態網站（HTML／CSS／JavaScript，免建置工具），架設於 **GitHub Pages**，客戶提問、網站內容、圖片與瀏覽人次存放於 **Firebase Firestore**（免費 Spark 方案）。
 
@@ -22,8 +22,8 @@
 | `admin/index.html` | 管理後台 |
 | `404.html` | 找不到頁面 |
 | `CNAME` | 自訂網域 `myopiacare.site` |
-| `firestore.rules` | 資料庫安全規則 v4（貼到 Firebase 主控台並發布） |
-| `firebase.json` | v35：改用 Firebase Hosting 時的設定（HSTS 等安全標頭、快取、不上傳的檔案）；留在 GitHub Pages 時不影響任何功能 |
+| `firestore.rules` | 資料庫安全規則 v5（v37：提問可另記錄 IPv6；貼到 Firebase 主控台並發布） |
+| `firebase.json` | v35：改用 Firebase Hosting 時的設定（HSTS 等安全標頭；v37 加上防止被其他網站嵌入、關閉相機／麥克風／定位等權限；快取、不上傳的檔案）；留在 GitHub Pages 時不影響任何功能 |
 | `assets/js/config.js` | **Firebase 連線設定（部署時必填）** |
 | `assets/js/content.js` | 網站預設文字（平常請改用後台） |
 | `assets/js/core.js` | 共用核心：內容載入、白名單過濾、路由、互動效果、瀏覽人次、視覺化編輯模式 |
@@ -68,7 +68,7 @@
 - **瀏覽人次**：頁尾顯示累計瀏覽人次（同一瀏覽器 30 分鐘內只算 1 次，不記錄個人資料）；可開關、改文字、歸零或設定數字
 - 發布前自動做「醫療法規用語檢查」
 - 每次發布自動保存版本（最近 20 份），可載入舊版本還原
-- 客戶提問收件匣：回覆、封存、刪除、匯出 CSV、刪除超過 2 年的資料；每則提問記錄送出時的 IP 位址與瀏覽器／裝置（可依 IP 搜尋、一鍵查詢來源，CSV 也包含），寫入後無法被修改
+- 客戶提問收件匣：回覆、封存、刪除、匯出 CSV、刪除超過 2 年的資料；每則提問記錄送出時的 IP 位址與瀏覽器／裝置（可依 IP 搜尋、一鍵查詢來源，CSV 也包含；v37 起 IPv4、IPv6 分行顯示），寫入後無法被修改
 - 關於我們：王志盟醫師介紹圖（v25 起，`assets/img/doctor-intro-800／1264／1800／2528.webp`，取代原本的直式形象照），各種螢幕都完整顯示不裁切，點圖可全螢幕放大；後台「關於我們」可開關、換圖（詳見下方「醫師介紹圖」）
 - 上方選單：服務探索、運用流程、最新消息、關於我們、隱私政策、聯絡我們（v16 起「隱私政策」從頁尾移到選單，文字可在後台「選單與頁面名稱」→「「隱私政策」選單名稱」修改；隱私權政策頁面本身的標題不變）
 - 頁尾：公司名稱與聯絡資料、聲明、瀏覽人次（v16 起不再有頁尾連結列）
@@ -112,7 +112,7 @@ Google 重新抓取並處理圖示需要幾天到幾週，可用 Search Console 
 網站全程以 HTTPS（TLS 加密）傳輸。憑證由 GitHub Pages 自動向 Let's Encrypt 申請並自動續約，不需要購買或手動更新。
 
 程式端（v34 已內建，不用設定）：
-- 有人用 `http://myopiacare.site` 或 `http://www.myopiacare.site` 開啟時，網頁一載入就改走 `https://myopiacare.site`（GitHub「Enforce HTTPS」之外的第二道保險；本機預覽不受影響）。
+- 有人用 `http://myopiacare.site` 或 `http://www.myopiacare.site` 開啟時，網頁一載入就改走 `https://myopiacare.site`（GitHub「Enforce HTTPS」之外的第二道保險；本機預覽不受影響）。v38 起 `https://www.myopiacare.site` 也會轉到主網址。
 - 內容裡寫成 `http://myopiacare.site/...` 的本站連結自動改成 `https://`；圖片網址寫成 `http://` 時改走 `https://`（安全設定本來就不載入未加密圖片）。後台發布時，按鈕與社群網址的 `http://` 也會自動補正為 `https://`。
 - 每個頁面都有內容安全政策（CSP）：程式、字型、圖片、連線只允許 `https://` 或本站；所有頁面（含 404）都設定 `strict-origin-when-cross-origin` 參照政策，不會把網址細節傳給 http 網站。
 - 資料庫（Firebase Firestore）、登入、reCAPTCHA、Google 字型全部走 HTTPS。
@@ -122,21 +122,54 @@ GitHub 與 GoDaddy 端（照部署指南文件「v34」那一段逐步設定）�
 2. GoDaddy DNS 檢查：`@` 的 A 紀錄只有 GitHub 的 4 個 IP（185.199.108.153／109.153／110.153／111.153）；`www` 是 CNAME 指向「你的 GitHub 帳號.github.io」。**MX 與其他郵件紀錄完全不動。**
 3. 建議新增 CAA 紀錄（兩筆）：`@`、Flag 0、Tag issue，值分別是 `letsencrypt.org`（GitHub Pages 使用）與 `pki.goog`（Firebase Hosting 使用）。只允許這兩家憑證機構為本網域發憑證；少了 `pki.goog` 會讓 Firebase Hosting 無法發憑證。
 4. 建議在 GitHub 個人設定驗證網域（新增一筆 `_github-pages-challenge-帳號` TXT 紀錄），防止別人冒用你的網域。
-5. HSTS（要求瀏覽器以後只用 https 連線）：GitHub Pages 不能自己加這個標頭，可依部署指南的範本請 GitHub Support 為本網域開啟；未開啟時仍有上面兩道 https 轉址保護。
+5. HSTS（要求瀏覽器以後只用 https 連線）：GitHub Pages 不能自己加這個標頭；改用 Firebase Hosting（`firebase.json` 已設定一年）或 Cloudflare 後就有（見下方「SSL Labs 評等」）。未開啟時仍有上面兩道 https 轉址保護。
 
-## 頁尾安全標章（v35）
+## 頁尾安全標章（v35，v38 換新 SSL／TLS 標章）
 
-頁尾聲明文字下方顯示兩個小標章：SSL 加密（SECURE SSL ENCRYPTION）與 Google reCAPTCHA，所有有頁尾的頁面（首頁、最新消息、隱私權政策、文字版邀請頁）都有，手機、平板、電腦與深／淺色模式都清楚，避開右下角的眼球寶寶。
-- 圖檔：`assets/img/badge-ssl-36／72／108.webp`、`assets/img/badge-recaptcha-36／72／108.webp`（已去除原圖的灰白格子背景，依螢幕解析度自動選用）。
-- 隨淺／深色切換（v36）：深色模式（跟隨系統或右上角手動切換）改用深色底板與深色版圖 `badge-ssl-dark-*.webp`（下半部深灰底淺字）、`badge-recaptcha-dark-*.webp`（reCAPTCHA 文字改淺色）。
+頁尾聲明文字下方顯示兩個小標章：SSL／TLS 加密（SSL / TLS SECURITY ENCRYPTION）與 Google reCAPTCHA，所有有頁尾的頁面（首頁、最新消息、隱私權政策、文字版邀請頁）都有，手機、平板、電腦與深／淺色模式都清楚，避開右下角的眼球寶寶。
+- 圖檔：`assets/img/badge-tls-36／72／108.webp`（v38 新標章，已去除原圖白色背景與陰影，透明背景直接融入頁尾底色，不另加底板；高度 42px、手機 40px，與 reCAPTCHA 底板等高）、`assets/img/badge-recaptcha-36／72／108.webp`，依螢幕解析度自動選用。v35–v37 的舊圖 `badge-ssl-*.webp`（6 個檔）已刪除，GitHub 上也要刪除（見部署指南 v38）。
+- 隨淺／深色切換（v36）：深色模式（跟隨系統或右上角手動切換）改用深色版圖 `badge-tls-dark-*.webp`（v38：下半部銀色底改深藍灰底、文字改淺色，金屬外框調暗，不刺眼）、`badge-recaptcha-dark-*.webp`（reCAPTCHA 文字改淺色）。
 - 不誇大：實際以 https 加密連線時才顯示 SSL 標章；`config.js` 有填 reCAPTCHA 網站金鑰時才顯示 reCAPTCHA 標章；兩者都不成立時整列隱藏。
 
-## SSL Labs 評等 A+：改用 Firebase Hosting（v35 準備好，依部署指南逐步切換）
+## SSL Labs 評等 A／A+：網站伺服器要換（v35 準備，v37 更正原因與步驟）
 
-GitHub Pages 的伺服器（所有 GitHub Pages 網站共用）仍接受舊版 TLS 1.0／1.1，SSL Labs 因此把等級上限壓在 B，而且 GitHub Pages 不能自己修改這項設定，也不能加 HSTS。改由 Firebase Hosting（與網站資料庫同一個 Firebase 專案）提供網站：只接受 TLS 1.2 以上、可加 HSTS，預期可達 A+。
+**v37 更正**：v35 說 B 級是因為 GitHub Pages 還接受 TLS 1.0／1.1，這個判斷是錯的。SSL Labs 報告裡 TLS 1.0、1.1 都是 No；真正把等級壓在 B 的是報告上方黃色警告「This server does not support Forward Secrecy with the reference browsers. Grade capped to B.」——GitHub Pages 對 SSL Labs 的幾個參考瀏覽器（IE 11／Windows 7、Windows 8.1、Windows Phone 8.1）只能談出沒有「前向保密（Forward Secrecy）」的加密方式；另外 GitHub Pages 也不送 HSTS。這兩項都是所有 GitHub Pages 網站共用的伺服器設定，本站程式、GitHub 與 GoDaddy 的任何設定都改不了：**網址還指向 GitHub（報告上 IP 是 185.199.108–111.153）時，結果一定是 B。** 要拿到 A 以上，只能讓 `myopiacare.site` 改由可以控制加密設定的伺服器提供：
+
+1. **先驗證（不動正式網站，約 2 分鐘）**：用 SSL Labs 測 Firebase 測試網址 `myopiacare-61954117.web.app`。結果 A 或 A+，而且上方沒有「Grade capped」警告 → 走方案 A。
+2. **方案 A：改用 Firebase Hosting**（`firebase.json` 已準備好）：Firebase 主控台加自訂網域（進階設定、零停機）→ 憑證發好 → GoDaddy 把 4 筆 GitHub A 紀錄換成 Firebase 給的 A 紀錄，**4 筆 GitHub AAAA（IPv6）紀錄也要刪除**（SSL Labs 會連 IPv6 一起測，留一筆就還是 B）→ `www.myopiacare.site` 也加到 Firebase，**以一般網域連接、不要勾選「重新導向」**（v38：網頁會自己把 www 轉到 `myopiacare.site`，www 的回應也帶 HSTS，SSL Labs 測 www 才會是 A+）。
+3. **方案 B：第 1 步不是 A 時，改用 Cloudflare（免費方案）**：網站仍放在 GitHub Pages，前面加上 Cloudflare：最低 TLS 1.2、開啟 TLS 1.3、HSTS 6 個月以上。需要把網域的名稱伺服器改到 Cloudflare，**改之前要確認郵件（MX）等所有紀錄 Cloudflare 都已複製**。
+
+完整逐步步驟在部署指南文件「v37」「v38」段落。兩個方案都不刪除 MX 與郵件紀錄；要退回原狀，把 DNS 改回來即可（GitHub Pages 一直保留，可隨時退回）。
+
+**A+ 檢查表（v38）**：本站程式與設定已備齊 A+ 需要的部分（`firebase.json` 的 HSTS 一年，SSL Labs A+ 要求至少 6 個月）；還差的只有讓網址改由 Firebase（或 Cloudflare）提供。測完 SSL Labs 時逐項核對：
+- 報告上的 IP：`185.199.108–111.153` 或 `2606:50c0:800x::153` 還在＝仍指向 GitHub，一定是 B；Firebase 是 `199.36.158.100`；Cloudflare 多為 `104.x`、`172.67.x`。IPv4、IPv6 每一列都要 A+。
+- 「Strict Transport Security (HSTS)」顯示 Yes、max-age=31536000。
+- `myopiacare.site` 與 `www.myopiacare.site` 各測一次（測完按 Clear cache 重測才會是最新結果）。
+
 - `firebase.json`（v35 新增，v36 起也不上傳 `firebase-debug.log` 等記錄檔與 `.firebase/` 快取）：部署到專用的 Hosting 網站 `myopiacare-61954117`（不會動到同專案的其他網站）；加上 HSTS（一年）、nosniff、參照政策；網頁每次重新確認、`/assets/` 快取一天（靠 `?v=` 更新）；`README.md`、`firestore.rules`、`CNAME` 與隱藏檔不上傳。路由與 GitHub Pages 相同（`/news` 自動補成 `/news/`、找不到的網址顯示 404 頁）。
-- 切換分階段、不中斷：先部署到 Firebase 測試網址檢查 → 在 Firebase 加自訂網域（GoDaddy 先加驗證 TXT，憑證發好）→ 才把 GoDaddy 的 A 紀錄從 GitHub 改成 Firebase → 設定 GitHub 上傳後自動部署。MX 與郵件紀錄完全不動；要退回只要把 A 紀錄改回 GitHub 的 4 個 IP。
 - Firebase 免費方案每天可傳輸 360 MB（首頁完整瀏覽一次約 0.4 MB，約每天 900 位以上新訪客）；超過時可升級 Blaze 方案，只為超出的部分付費。
+- v37 起 `firebase.json` 另加三個安全標頭：`X-Frame-Options: SAMEORIGIN` 與 `Content-Security-Policy: frame-ancestors 'self'`（其他網站不能把本站或後台嵌進框架騙人點擊；後台的視覺化編輯是本站自己嵌入，照常可用）、`Permissions-Policy`（關閉相機、麥克風、定位、付款、USB）。只在改用 Firebase Hosting 後生效；邀請頁面嵌入其他網站不受影響。
+
+## 線上提問的 IP 位址（v37）
+
+- 訪客開始填寫「線上提問」時，網站同時向 ipify 查詢 IPv4（`api.ipify.org`）與 IPv6（`api64.ipify.org`）。送出時 `ip` 欄位優先存 IPv4（和一般「查我的 IP」網站顯示的相同），訪客網路同時有 IPv6 時另存 `ip6`。v36 以前只查 `api64.ipify.org`，有 IPv6 的網路（例如許多手機網路）只會記到一串很長的 IPv6，看起來像「抓錯」。
+- 後台收件匣的「IP 位址」分行顯示「IPv4」「IPv6」，各有「查詢來源」（ipinfo.io）；搜尋框可用 IPv4 或 IPv6 搜尋；CSV 最後一欄新增「IPv6 位址」（原有欄位順序不變）。
+- 開始填表時先查好，送出時不必等待；先前沒查到時，送出當下會再查一次（每次最多 5 秒），還是查不到也照常送出提問，後台顯示「未記錄（訪客的瀏覽器或網路擋住了 IP 查詢服務）」。
+- **要重新貼上 `firestore.rules`（v5）並發布**。還沒貼時提問照常收到，只是不存 IPv6；若連 v14 的 v4 規則都沒貼過，IP 完全不會記錄（後台顯示「未記錄（舊版表單，或資料庫規則尚未更新）」）。
+- 限制：本站是純靜態網站，IP 由訪客的瀏覽器查詢後隨提問送出。訪客使用 VPN、iCloud 私密轉送、公司或電信的共用出口時，記錄到的是那個出口的 IP（由伺服器記錄也一樣）；裝了擋廣告／隱私外掛而擋住 ipify 時會記錄不到。IP 只能看出大概的網路業者與縣市，無法定位到個人。隱私權政策已同步說明（沒改過的預設內容會自動換成新版）。
+
+## 網站安全檢查（v37）
+
+程式端已內建（不用設定）：全站 HTTPS 與 http→https 轉址、每頁內容安全政策（CSP）、參照政策、資料庫最小權限規則（訪客只能新增格式正確的提問，讀不到任何提問；管理員名單只能在 Firebase 主控台新增）、圖片只收 PNG／JPEG／WebP／GIF、後台與內容裡的網址白名單過濾、reCAPTCHA v3、提問的 IP 與瀏覽器紀錄寫入後不能修改、後台不被搜尋引擎收錄、邀請頁嵌入框架加 sandbox、程式壓縮。v37 新增上面三個 Firebase Hosting 安全標頭。
+
+需要你在各服務的網頁上設定（部署指南文件「v37」段落有逐步圖文步驟）：
+1. **必要**：Firestore 規則重新貼上 `firestore.rules`（v5）並發布。
+2. **建議**：Firebase Authentication →「設定」→「使用者動作」取消勾選「啟用建立（註冊）」與「啟用刪除」（管理員帳號仍在主控台新增，不受影響），並確認「電子郵件列舉保護」已開啟。
+3. **建議**：Google 帳號（Firebase 擁有者）、GitHub、GoDaddy 都開啟兩步驟驗證。
+4. **建議**：GoDaddy 網域開啟「網域鎖定（Domain lock）」與自動續約。
+5. **建議**：每月在後台匯出一次提問 CSV 備份。
+6. **選做**：Google Cloud 主控台限制 API 金鑰只能從本站網址使用（設錯會讓網站讀不到資料庫，請照指南填並測試）；GoDaddy 新增 DMARC TXT 紀錄（只新增，不動 MX）。
+7. Firebase App Check 目前不建議開啟：開啟「強制執行」後沒有 App Check 的程式（包括現在的網站）會被資料庫拒絕，需要另外改程式並測試；資料庫規則已經是主要防線。
 
 ## 首頁主視覺按鈕（v31）
 
@@ -256,9 +289,9 @@ Facebook、X、Instagram、App 商店與 LINE 連結少打 `https://`、打成 `
 ## 從舊版升級
 
 1. 上傳前先從資料夾刪掉 `assets/js/config.js`，再用新檔案覆蓋 repository 裡的舊檔案（GitHub 上已填好的 config.js 會保留）。
-2. 從 v2 升級：**把新的 `firestore.rules` 重新貼上並發布**（v3 起新增瀏覽人次 `stats` 的權限）。v3–v13 規則相同；**v14 起規則升級為 v4（提問可記錄 IP），請重新貼上 `firestore.rules` 並發布**。v15–v36 規則與 v14 相同，不需重貼。
+2. 從 v2 升級：**把新的 `firestore.rules` 重新貼上並發布**（v3 起新增瀏覽人次 `stats` 的權限）。v3–v13 規則相同；**v14 起規則升級為 v4（提問可記錄 IP），請重新貼上 `firestore.rules` 並發布**。v15–v36 規則與 v14 相同；**v37 起規則升級為 v5（提問可另記錄 IPv6），請重新貼上 `firestore.rules` 並發布**（沒貼時提問照常收到，只是不存 IPv6）；v38 規則與 v37 相同。
 3. 若後台曾經發布過內容，裡面仍是舊的佔位文字（○○○ 醫師、04-0000-0000、service@myopiacare.site、請於管理後台填寫公司地址）或 v3 的英文地址、v8 以前的「MyopiaCare／MYOPIACARE APP」標題時，網站會自動改為新的公司資料與「Myopia Care」寫法；其他你改過的內容維持不變。
 
 ## 修改程式後
 
-改過 CSS 或 JS，請把所有 HTML 裡的 `?v=36` 改成 `?v=37`，訪客才不會看到舊的快取版本。
+改過 CSS 或 JS，請把所有 HTML 裡的 `?v=38` 改成 `?v=39`，訪客才不會看到舊的快取版本。
