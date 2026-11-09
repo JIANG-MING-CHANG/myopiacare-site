@@ -33,16 +33,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap">
-  <link rel="stylesheet" href="assets/css/style.css?v=38">
+  <link rel="stylesheet" href="assets/css/style.css?v=39">
 
-  <script src="assets/js/theme-init.js?v=38"></script>
-  <script src="assets/js/protect.js?v=38"></script>
-  <script src="assets/js/config.js?v=38" defer></script>
-  <script src="assets/js/content.js?v=38" defer></script>
-  <script src="assets/js/firebase-service.js?v=38" defer></script>
-  <script src="assets/js/core.js?v=38" defer></script>
-  <script src="assets/js/assistant.js?v=38" defer></script>
-  <script src="assets/js/main.js?v=38" defer></script>
+  <script src="assets/js/theme-init.js?v=39"></script>
+  <script src="assets/js/protect.js?v=39"></script>
+  <script src="assets/js/config.js?v=39" defer></script>
+  <script src="assets/js/content.js?v=39" defer></script>
+  <script src="assets/js/firebase-service.js?v=39" defer></script>
+  <script src="assets/js/core.js?v=39" defer></script>
+  <script src="assets/js/assistant.js?v=39" defer></script>
+  <script src="assets/js/main.js?v=39" defer></script>
 
   <script type="application/ld+json">
   {
@@ -240,7 +240,10 @@
       <div class="about-bg" aria-hidden="true"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span></div>
       <div class="container">
         <div class="glass-card about-card reveal">
-          <!-- 醫師介紹圖（v25）：整張圖完整顯示（不裁切）；點一下可全螢幕放大閱讀 -->
+          <div class="about-text">
+          <p class="section-kicker" data-cms="about.kicker"></p>
+          <h2 class="section-title" id="about-title" data-cms="about.title"></h2>
+          <!-- 醫師介紹圖（v25）：整張圖完整顯示（不裁切）；點一下可全螢幕放大閱讀。v39 起放在「關於我們」標題下方 -->
           <div class="portrait-wrap intro-wrap" data-show="about.showPortrait">
             <span class="portrait-glow intro-glow" aria-hidden="true"></span>
             <figure class="intro layer-card" data-edit="about.introImage">
@@ -253,9 +256,6 @@
               <figcaption class="sr-only intro-desc" id="intro-desc">王志盟醫師（Dr. Jyh-Meng Wang），創辦人／專科醫師。學經歷：中國醫藥大學醫學系；衛福部專科醫師；教育部學童視力保健種子師資；相關專科醫學會會員；前三軍總醫院住院醫師；前新竹南門醫院主任醫師；前新樓醫院分院主任醫師；前衛福部台東醫院代理主任；前大型醫療院所主治醫師；前苗安診所院長。專業專長：學童視力與健康保健；乾眼症、飛蚊症；白內障、青光眼；黃斑部及視網膜病變；視力數據紀錄與智慧護理管理。</figcaption>
             </figure>
           </div>
-          <div class="about-text">
-          <p class="section-kicker" data-cms="about.kicker"></p>
-          <h2 class="section-title" id="about-title" data-cms="about.title"></h2>
           <div class="about-body rich" data-cms-rich="about.body"></div>
           <figure class="doctor">
             <div class="doctor-avatar" id="doctor-avatar" aria-hidden="true" data-edit="about.doctorPhoto"></div>
@@ -340,7 +340,7 @@
               <input type="checkbox" name="consent" id="f-consent" required aria-describedby="consent-hint err-consent">
               <span>我已閱讀並同意<a href="/privacy/" data-route="privacy" target="_blank" rel="noopener">隱私權政策</a>，同意豪智慧有限公司蒐集上述資料及送出時的 IP 位址，用於回覆本次提問與防止不當使用。</span>
             </label>
-            <p class="consent-hint" id="consent-hint" aria-live="polite" hidden></p>
+            <p class="consent-hint sr-only" id="consent-hint" aria-live="polite" hidden></p>
             <p class="field-error" id="err-consent"></p>
           </div>
           <p class="form-note" data-cms="contact.formNote">本表單不提供醫療諮詢或診斷。請勿填寫病歷、檢查報告或身分證字號等敏感資料；如有急症請立即就醫。</p>

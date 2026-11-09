@@ -45,9 +45,6 @@
   --shadow-2: 0 30px 70px -30px rgba(19, 48, 74, .38);
   --about-bg: linear-gradient(135deg, #DDEFEC 0%, #E8F3E3 100%);
   --footer-bg: #E9F1EE;
-  --trust-bg: #FFFFFF;
-  --trust-border: rgba(19, 48, 74, .12);
-  --trust-shadow: 0 1px 2px rgba(19, 48, 74, .06);
   --blob-opacity: .5;
   --hl: rgba(255, 214, 92, .5);
   --focus: #0A6F9C;
@@ -115,9 +112,6 @@
     --shadow-2: 0 30px 70px -28px rgba(0, 0, 0, .7);
     --about-bg: linear-gradient(135deg, #0D2638 0%, #0F2B2E 100%);
     --footer-bg: #08151F;
-    --trust-bg: #10212D;
-    --trust-border: rgba(159, 227, 255, .16);
-    --trust-shadow: none;
     --blob-opacity: .22;
     --hl: rgba(255, 214, 92, .3);
     --focus: #63CDF2;
@@ -155,9 +149,6 @@
   --shadow-2: 0 30px 70px -28px rgba(0, 0, 0, .7);
   --about-bg: linear-gradient(135deg, #0D2638 0%, #0F2B2E 100%);
   --footer-bg: #08151F;
-  --trust-bg: #10212D;
-  --trust-border: rgba(159, 227, 255, .16);
-  --trust-shadow: none;
   --blob-opacity: .22;
   --hl: rgba(255, 214, 92, .3);
   --focus: #63CDF2;
@@ -574,6 +565,13 @@ section[id] { scroll-margin-top: 64px; }
 .news-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-2), 14px 16px 0 -3px var(--layer-1), 26px 28px 0 -6px var(--layer-2); }
 .news-card-cover { aspect-ratio: 16 / 9; overflow: hidden; background: var(--surface-2); }
 .news-card-cover img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease); }
+/* v39 上傳的封面圖不變形、大小適當：比例接近 16:9 的大圖照常填滿；直式、方形、很寬或尺寸小的圖改為完整顯示、
+ * 不放大超過原尺寸，空白處以同一張圖的柔和模糊背景補滿（page.js 依圖片實際比例加上 is-fit） */
+.news-card-cover.is-fit, .article-cover.is-fit { position: relative; isolation: isolate; background: var(--surface-2); }
+.news-card-cover.is-fit::before, .article-cover.is-fit::before { content: ''; position: absolute; inset: -24px; z-index: -1; background: var(--cover-bg, none) center / cover no-repeat; filter: blur(22px) saturate(1.15); opacity: .55; }
+.news-card-cover.is-fit img { position: relative; object-fit: scale-down; }
+.article-cover.is-fit { aspect-ratio: auto; display: flex; justify-content: center; align-items: center; min-height: clamp(200px, 28vw, 300px); }
+.article-cover.is-fit img { position: relative; width: auto; max-width: 100%; height: auto; max-height: min(72vh, 680px); object-fit: contain; }
 .news-card:hover .news-card-cover img { transform: scale(1.05); }
 .no-image { display: grid; place-items: center; background: radial-gradient(circle at 80% 20%, rgba(43, 179, 230, .35), transparent 55%), linear-gradient(135deg, var(--hero-1), var(--hero-3)); }
 .cover-date { font: 600 1.5rem var(--font-en); letter-spacing: .12em; color: rgba(255, 255, 255, .85); }
@@ -664,7 +662,7 @@ img.media-missing { display: none; }
 @keyframes float { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(40px, -30px, 0) scale(1.1); } }
 .glass-card { max-width: 900px; margin: 0 auto; padding: 60px 56px 56px; text-align: center; border-radius: 30px; background: var(--glass); border: 1px solid var(--glass-border); -webkit-backdrop-filter: blur(20px) saturate(140%); backdrop-filter: blur(20px) saturate(140%); box-shadow: var(--shadow-2), 14px 14px 0 -4px var(--layer-1), 28px 28px 0 -8px var(--layer-2); }
 .about-body { margin: 28px auto 0; max-width: 680px; }
-/* 關於我們（v25）：上方整張醫師介紹圖（完整顯示、不裁切），下方文字置中；各種螢幕都是上下排列 */
+/* 關於我們（v25）：整張醫師介紹圖（完整顯示、不裁切）與置中文字上下排列；v39 起圖放在標題下方 */
 .glass-card.about-card { max-width: 1120px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 56px; align-items: start; text-align: center; padding: 54px 54px 60px; }
 .about-card.no-portrait { max-width: 900px; padding-top: 60px; }
 .about-text { min-width: 0; }
@@ -672,6 +670,9 @@ img.media-missing { display: none; }
 .about-card .about-body { text-align: justify; }
 .about-card .doctor { max-width: 680px; }
 .portrait-wrap { position: relative; width: 100%; min-width: 0; }
+/* v39：創辦人（醫師介紹）照片移到「關於我們」標題下方，再接介紹文字 */
+.about-text > .portrait-wrap { margin-top: 40px; }
+.about-text > .portrait-wrap + .about-body { margin-top: 44px; }
 .portrait-glow { position: absolute; z-index: 0; left: 3%; right: 3%; top: 12%; bottom: -5%; border-radius: 40%; background: conic-gradient(from 0deg, rgba(43, 179, 230, .8), rgba(126, 217, 87, .7), rgba(142, 216, 207, .75), rgba(91, 169, 240, .8), rgba(43, 179, 230, .8)); filter: blur(48px); opacity: .3; animation: spin 18s linear infinite; pointer-events: none; }
 .intro { position: relative; z-index: 1; margin: 0; border-radius: 22px; }
 .intro-face { display: block; width: 100%; margin: 0; padding: 0; border: 0; font: inherit; color: inherit; text-align: inherit; background: #E9EDF3; cursor: zoom-in; -webkit-tap-highlight-color: transparent; box-shadow: 0 30px 60px -32px rgba(19, 48, 74, .5); }
@@ -914,16 +915,16 @@ html.policy-open, html.policy-open body { overflow: hidden; }
 .footer-bottom p { margin: 0; }
 .footer-note { max-width: 680px; }
 .footer-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; text-align: right; }
-/* v35 頁尾安全標章（SSL 加密、Google reCAPTCHA）：小尺寸放在頁尾聲明下方（避開右下角的眼球寶寶）；淺色底板讓兩種模式都清楚，不搶眼 */
+/* v35 頁尾安全標章（SSL 加密、Google reCAPTCHA）：小尺寸放在頁尾聲明下方（避開右下角的眼球寶寶） */
 .footer-legal { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
-.footer-trust { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: flex-start; align-items: center; gap: 8px; }
+.footer-trust { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: flex-start; align-items: center; gap: 10px 18px; }
 .footer-trust[hidden], .footer-trust li[hidden] { display: none; }
-.footer-trust li { display: flex; align-items: center; padding: 5px 9px; border-radius: 10px; background: var(--trust-bg); border: 1px solid var(--trust-border); box-shadow: var(--trust-shadow); transition: background-color .35s, border-color .35s; }
-.footer-trust img { display: block; width: auto; height: 30px; }
-/* v38：SSL／TLS 標章本身就有金屬外框，不再加底板；透明背景直接融入頁尾底色，高度與旁邊 reCAPTCHA 底板一致 */
-.footer-trust li[data-trust="ssl"] { padding: 0; background: none; border: 0; box-shadow: none; }
+/* v38 SSL／TLS、v39 reCAPTCHA：兩個標章都不加底板，透明背景直接融入頁尾底色（淺色／深色各用一張版圖）；
+ * SSL／TLS 標章有金屬外框較搶眼，reCAPTCHA 稍小一點，兩者上下置中、視覺份量相當 */
+.footer-trust li { display: flex; align-items: center; }
+.footer-trust img { display: block; width: auto; height: 34px; }
 .footer-trust li[data-trust="ssl"] img { height: 42px; }
-/* v36：標章隨淺／深色切換（跟隨系統，或右上角手動切換）：深色模式改用深色版圖（v38 SSL／TLS 標章下半部改深色底淺字、外框調暗；reCAPTCHA 文字改淺色、底板改深色） */
+/* v36：標章隨淺／深色切換（跟隨系統，或右上角手動切換）：深色模式改用深色版圖（SSL／TLS 標章下半部改深色底淺字、外框調暗；reCAPTCHA 文字改淺色） */
 .footer-trust img.trust-dark { display: none; }
 :root[data-theme="dark"] .footer-trust img.trust-light { display: none; }
 :root[data-theme="dark"] .footer-trust img.trust-dark { display: block; }
@@ -1109,7 +1110,7 @@ html.policy-open, html.policy-open body { overflow: hidden; }
   .footer-grid { grid-template-columns: 1fr; gap: 28px; padding-top: 44px; padding-bottom: 32px; }
   .footer-bottom { flex-direction: column; padding-top: 20px; padding-bottom: 96px; }
   .footer-meta { align-items: flex-start; text-align: left; }
-  .footer-trust img { height: 28px; }
+  .footer-trust img { height: 32px; }
   .footer-trust li[data-trust="ssl"] img { height: 40px; }
   .back-to-top { right: 14px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); width: 44px; height: 44px; }
   .mascot-on .back-to-top { right: max(29px, calc(env(safe-area-inset-right, 0px) + 17px)); bottom: calc(102px + env(safe-area-inset-bottom, 0px)); }
@@ -1124,7 +1125,7 @@ html.policy-open, html.policy-open body { overflow: hidden; }
   .about-card .btn-cta { margin-left: auto; margin-right: auto; }
   .invite-actions { flex-direction: column; align-items: center; gap: 16px; margin-top: 36px; }
   .invite-actions .btn { width: 100%; max-width: 420px; min-width: 0; }
-  .about-card .portrait-wrap { width: calc(100% + 12px); margin: 0 -6px; }
+  .about-card .portrait-wrap { width: calc(100% + 12px); margin: 30px -6px 0; }
   .intro { border-radius: 14px; }
   .intro.layer-card > .layer-1, .intro.layer-card:hover > .layer-1 { transform: translate3d(5px, 6px, -20px); }
   .intro.layer-card > .layer-2, .intro.layer-card:hover > .layer-2 { transform: translate3d(10px, 12px, -40px); }
@@ -1247,3 +1248,19 @@ html.bot-open .mascot-bubble { opacity: 0 !important; visibility: hidden; }
   .mc-bot-input { font-size: 1rem; }
 }
 @media print { .mc-bot { display: none !important; } }
+
+/* ===== v39 文字左右對齊（兩端對齊）=====
+ * 多行段落每一行的左右兩端都對齊，Windows、Mac、iPhone、Android 顯示一致；最後一行維持原本的靠左或置中（不被拉開）。
+ * 標題、按鈕、標籤、單行文字不受影響；文章裡設定「置中／靠右」的段落照原設定。 */
+.hero-lead, .section-desc, .page-intro, .layer-face p, .flow-step p, .news-card-body p,
+.doctor blockquote, .form-note, .footer-note, .consent, .rich p, .rich li, .phone-app-text {
+  text-align: justify; text-wrap: pretty; overflow-wrap: break-word;
+}
+.hero-lead, .section-head:not(.align-left) .section-desc, .flow-step p, .notfound .page-intro { text-align-last: center; }
+@media (max-width: 1023px) {
+  .app-text .section-desc { text-align-last: center; }
+}
+@media (max-width: 767px) {
+  .flow-step p { text-align-last: auto; }
+  .doctor blockquote { text-align-last: center; }
+}
