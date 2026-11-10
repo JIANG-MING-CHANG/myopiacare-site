@@ -33,16 +33,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap">
-  <link rel="stylesheet" href="assets/css/style.css?v=41">
+  <link rel="stylesheet" href="assets/css/style.css?v=42">
 
-  <script src="assets/js/theme-init.js?v=41"></script>
-  <script src="assets/js/protect.js?v=41"></script>
-  <script src="assets/js/config.js?v=41" defer></script>
-  <script src="assets/js/content.js?v=41" defer></script>
-  <script src="assets/js/firebase-service.js?v=41" defer></script>
-  <script src="assets/js/core.js?v=41" defer></script>
-  <script src="assets/js/assistant.js?v=41" defer></script>
-  <script src="assets/js/main.js?v=41" defer></script>
+  <script src="assets/js/theme-init.js?v=42"></script>
+  <script src="assets/js/protect.js?v=42"></script>
+  <script src="assets/js/config.js?v=42" defer></script>
+  <script src="assets/js/content.js?v=42" defer></script>
+  <script src="assets/js/firebase-service.js?v=42" defer></script>
+  <script src="assets/js/core.js?v=42" defer></script>
+  <script src="assets/js/assistant.js?v=42" defer></script>
+  <script src="assets/js/main.js?v=42" defer></script>
 
   <script type="application/ld+json">
   {
@@ -340,7 +340,7 @@
           <div class="field field-consent">
             <label class="consent">
               <input type="checkbox" name="consent" id="f-consent" required aria-describedby="consent-hint err-consent">
-              <span>我已閱讀並同意<a href="/privacy/" data-route="privacy" target="_blank" rel="noopener">隱私權政策</a>，同意豪智慧有限公司蒐集上述資料及送出時的 IP 位址，用於回覆本次提問與防止不當使用。</span>
+              <span>我已閱讀並同意<a href="/privacy/" data-route="privacy" target="_blank" rel="noopener">隱私權政策</a>及<a href="/terms/" data-route="terms" target="_blank" rel="noopener">服務條款</a>，同意豪智慧有限公司蒐集上述資料及送出時的 IP 位址，用於回覆本次提問與防止不當使用。</span>
             </label>
             <p class="consent-hint sr-only" id="consent-hint" aria-live="polite" hidden></p>
             <p class="field-error" id="err-consent"></p>
@@ -456,14 +456,16 @@
     <p class="zoom-hint" aria-live="polite"></p>
   </dialog>
 
+  <!-- v42：送出提問前要讀完「隱私權政策」與「服務條款」兩份文件（同一個視窗依序顯示） -->
   <dialog class="policy-dialog" id="policy-dialog" aria-labelledby="policy-title">
     <div class="policy-inner">
       <div class="policy-head">
-        <h2 id="policy-title" data-cms="privacy.title">隱私權政策</h2>
+        <h2 id="policy-title"><span data-policy-title="privacy" data-cms="privacy.title">隱私權政策</span><span data-policy-title="terms" data-cms="terms.title" hidden>服務條款</span></h2>
         <button class="policy-close" type="button" aria-label="關閉">×</button>
       </div>
       <div class="policy-scroll" tabindex="0" aria-label="隱私權政策全文，請捲動閱讀至最後">
-        <div class="rich legal-body" data-cms-rich="privacy.body"></div>
+        <div class="rich legal-body" data-policy="privacy" data-cms-rich="privacy.body"></div>
+        <div class="rich legal-body" data-policy="terms" data-cms-rich="terms.body" hidden></div>
       </div>
       <div class="policy-foot">
         <p class="policy-hint" aria-live="polite">請捲動閱讀至最後，即可勾選同意。</p>
