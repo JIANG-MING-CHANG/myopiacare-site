@@ -33,16 +33,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap">
-  <link rel="stylesheet" href="assets/css/style.css?v=40">
+  <link rel="stylesheet" href="assets/css/style.css?v=41">
 
-  <script src="assets/js/theme-init.js?v=40"></script>
-  <script src="assets/js/protect.js?v=40"></script>
-  <script src="assets/js/config.js?v=40" defer></script>
-  <script src="assets/js/content.js?v=40" defer></script>
-  <script src="assets/js/firebase-service.js?v=40" defer></script>
-  <script src="assets/js/core.js?v=40" defer></script>
-  <script src="assets/js/assistant.js?v=40" defer></script>
-  <script src="assets/js/main.js?v=40" defer></script>
+  <script src="assets/js/theme-init.js?v=41"></script>
+  <script src="assets/js/protect.js?v=41"></script>
+  <script src="assets/js/config.js?v=41" defer></script>
+  <script src="assets/js/content.js?v=41" defer></script>
+  <script src="assets/js/firebase-service.js?v=41" defer></script>
+  <script src="assets/js/core.js?v=41" defer></script>
+  <script src="assets/js/assistant.js?v=41" defer></script>
+  <script src="assets/js/main.js?v=41" defer></script>
 
   <script type="application/ld+json">
   {
@@ -87,6 +87,7 @@
           <li data-section-key="news"><a href="/news/" data-route="news" data-cms="nav.news">最新消息</a></li>
           <li data-section-key="about"><a href="/#about" data-route="home" data-hash="about" data-cms="nav.about">關於我們</a></li>
           <li><a href="/privacy/" data-route="privacy" data-cms="nav.privacy" data-cms-fallback="隱私政策">隱私政策</a></li>
+          <li data-section-key="terms"><a href="/terms/" data-route="terms" data-cms="nav.terms" data-cms-fallback="服務條款">服務條款</a></li>
           <li data-section-key="contact"><a href="/#contact" data-route="home" data-hash="contact" data-cms="nav.contact">聯絡我們</a></li>
           <li data-section-key="invite"><a href="/invite/" data-route="invite" data-cms="nav.invite" data-cms-fallback="邀請頁面">邀請頁面</a></li>
         </ul>
@@ -109,8 +110,9 @@
       <canvas class="hero-canvas" aria-hidden="true"></canvas>
       <div class="hero-veil" aria-hidden="true"></div>
       <div class="container hero-inner">
-        <p class="hero-eyebrow" data-cms="hero.eyebrow"></p>
         <h1 class="hero-title" id="hero-title" data-cms="hero.title">Myopia Care</h1>
+        <!-- v41：英文小標移到主標題下方、副標題上方 -->
+        <p class="hero-eyebrow" data-cms="hero.eyebrow"></p>
         <p class="hero-sub"><span class="hero-line" aria-hidden="true"></span><span data-cms="hero.subtitle"></span><span class="hero-line" aria-hidden="true"></span></p>
         <p class="hero-lead" data-cms="hero.lead" data-show="hero.showLead" hidden></p>
         <!-- v31：依需求移除主視覺的「探索服務」「線上提問」兩個按鈕（後台已存的按鈕文字保留不刪） -->
