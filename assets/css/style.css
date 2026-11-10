@@ -437,10 +437,6 @@ section[id] { scroll-margin-top: 64px; }
 .hero.cards-row .data-card { position: relative; left: auto; right: auto; top: auto; bottom: auto; width: auto; flex: 1 1 0; min-width: 0; translate: none; }
 .hero.cards-row .depth-c { order: 1; }
 .dc-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 2px 10px; }
-/* v41／v42：電腦版卡片漂浮在四周時，下方兩張卡片放在動態眼球下緣再往下一段適當距離的位置（位置由 main.js 計算） */
-@media (min-width: 1024px) {
-  .hero.eye-aligned:not(.cards-row) .depth-a, .hero.eye-aligned:not(.cards-row) .depth-c { top: var(--eye-bottom); bottom: auto; }
-}
 .dc-row .dc-value { white-space: nowrap; }
 .dc-row .dc-value small { margin-left: 2px; }
 .dc-axis { display: block; flex: 1 1 52px; max-width: 84px; min-width: 0; height: 42px; overflow: visible; }
@@ -861,6 +857,22 @@ html.policy-open, html.policy-open body { overflow: hidden; }
 
 /* ---------- 內頁：隱私權政策 ---------- */
 .legal-body { font-size: 1rem; }
+/* v43 隱私權政策、服務條款的條列：編號對齊、條與條之間多一點間距、第二層用小圓點 */
+.legal-body ol, .legal-body ul { padding-left: 1.7em; }
+.legal-body li { margin: .55em 0; padding-left: .15em; }
+.legal-body li::marker { color: var(--accent-text); font-weight: 600; }
+.legal-body li > ul, .legal-body li > ol { margin: .45em 0 .2em; padding-left: 1.2em; }
+.legal-body li > ul { list-style: disc; }
+.legal-body li li { margin: .3em 0; }
+.legal-body h3 { margin: 2em 0 .7em; line-height: 1.5; }
+/* v43 服務條款／隱私權政策頁的內文一打開就完整顯示。
+ * 原本整篇內文套用「捲到才浮現」的傾斜淡入效果，但條文很長（手機約 4000px），要捲到一成以上才會觸發，
+ * 打開頁面時標題下方會先出現一大段空白、文字又淡又小。改為頁面載入時直接輕微淡入，其他區塊的浮現效果不變。 */
+.js .legal-body.reveal { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .js .legal-body.reveal { animation: legal-in .7s var(--ease) backwards; }
+}
+@keyframes legal-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 .notfound { min-height: 100vh; display: grid; place-items: center; text-align: center; padding: 96px 0; }
 .notfound .page-intro { margin-left: auto; margin-right: auto; }
 .nf-brand img { width: 72px; height: 72px; border-radius: 14%; margin: 0 auto 18px; }
@@ -1283,4 +1295,12 @@ html.bot-open .mascot-bubble { opacity: 0 !important; visibility: hidden; }
 @media (max-width: 767px) {
   .flow-step p { text-align-last: auto; }
   .doctor blockquote { text-align-last: center; }
+}
+
+/* ===== v43 動態眼球最外圈與下方示意卡片之間保留約五行文字的距離（數值由 main.js 依螢幕計算）===== */
+.hero.eye-spaced .hero-inner { margin-top: var(--eye-top, 0px); }
+.hero.eye-spaced .hero-cards { margin-top: var(--eye-cards, var(--hero-gap)); margin-bottom: var(--eye-after, 0px); }
+/* 電腦較窄（1024–1103px，例如 iPad 橫放）時，一列卡片稍微收窄，不伸進右下角眼球寶寶的位置 */
+@media (min-width: 1024px) and (max-width: 1103px) {
+  .hero.cards-row .hero-cards { max-width: calc(100% - 204px); }
 }
