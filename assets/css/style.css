@@ -1297,7 +1297,7 @@ html.bot-open .mascot-bubble { opacity: 0 !important; visibility: hidden; }
   .doctor blockquote { text-align-last: center; }
 }
 
-/* ===== v43 動態眼球最外圈與下方示意卡片之間保留約五行文字的距離（數值由 main.js 依螢幕計算）===== */
+/* ===== v43 起動態眼球排在示意卡片上方；v44 最外圈與卡片切齊（數值由 main.js 依螢幕計算）===== */
 .hero.eye-spaced .hero-inner { margin-top: var(--eye-top, 0px); }
 .hero.eye-spaced .hero-cards { margin-top: var(--eye-cards, var(--hero-gap)); margin-bottom: var(--eye-after, 0px); }
 /* 電腦較窄（1024–1103px，例如 iPad 橫放）時，一列卡片稍微收窄，不伸進右下角眼球寶寶的位置 */
