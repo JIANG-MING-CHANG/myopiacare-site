@@ -591,12 +591,12 @@ section[id] { scroll-margin-top: 64px; }
 .article-cover img { width: 100%; height: 100%; object-fit: cover; }
 .article-cover.no-image { display: none; }
 .article-body { font-size: 1.08rem; }
-/* 邀請頁面（v27）：內文＋置中的按鈕列；按鈕文字或連結留空時整顆不顯示 */
+/* 專屬頁面（v27；v45 前稱邀請頁面）：內文＋置中的按鈕列；按鈕文字或連結留空時整顆不顯示 */
 .invite-body { max-width: 780px; margin: 0 auto; text-align: justify; }
 .invite-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px 20px; max-width: 780px; margin: 44px auto 0; }
 .invite-actions .btn { min-width: 220px; }
 .invite-btn-label { overflow-wrap: anywhere; }
-/* 邀請頁面（v28）：嵌入其他網站，佔滿頁首以下的整個畫面；頁尾與浮動元件隱藏 */
+/* 專屬頁面（v28）：嵌入其他網站，佔滿頁首以下的整個畫面；頁尾與浮動元件隱藏 */
 .invite-embedded .site-footer, .invite-embedded .back-to-top, .invite-embedded .mascot, .invite-embedded .mc-bot { display: none !important; }
 /* v33：頁首（豪智慧有限公司功能列）固定在畫面最上方不隨捲動移動；嵌入區固定佔滿「頁首以下到畫面可視範圍底部」
    （上下用 top／bottom 定位，手機網址列、工具列出現時也剛好貼齊可視範圍），外層頁面鎖住不捲動，內容在嵌入區內上下捲動，
