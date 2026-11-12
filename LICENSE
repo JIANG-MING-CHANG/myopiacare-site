@@ -1,0 +1,106 @@
+MyopiaCare 網站 著作權與使用授權聲明
+Copyright Notice and License - MyopiaCare Website
+
+Copyright (c) 2026 豪智慧有限公司（Excellence Intelligence LTD.，統一編號 61954117）
+保留一切權利。All rights reserved.
+
+本儲存庫雖然公開，但並非開放原始碼（open source）。除本聲明明文允許者外，
+本公司未授予任何人任何權利。
+
+
+一、適用範圍
+
+本聲明適用於本儲存庫（repository）及網站 https://myopiacare.site 的全部內容，
+包括但不限於：程式碼（HTML、CSS、JavaScript）、版面與視覺設計、動態眼球圖、
+示意卡片、眼球寶寶角色、標誌、圖片、文字內容、資料庫規則與設定檔
+（以下合稱「本著作」）。
+
+二、權利歸屬
+
+本著作的著作權及其他智慧財產權均屬豪智慧有限公司所有，
+受中華民國著作權法及相關國際條約保護。
+
+三、未經授權不得從事的行為
+
+除第四點允許的情形，或事先取得本公司書面同意外，任何人不得：
+
+  1. 重製、改作、編輯、散布或公開傳輸本著作的全部或一部分；
+  2. 以本著作或其修改版本，建立、架設或營運其他網站、應用程式或服務；
+  3. 以框架嵌入、鏡像（mirror）或其他方式，使本著作看似出自他人；
+  4. 移除、遮蔽或變更本著作中的著作權、商標或其他權利標示；
+  5. 將本著作用於商業目的，或用於訓練、建置人工智慧或機器學習模型；
+  6. 出售、出租、出借或再授權本著作。
+
+四、允許的使用
+
+  1. 透過一般瀏覽器瀏覽及使用本網站。
+  2. 搜尋引擎為建立索引所進行的必要存取。
+  3. 依 GitHub 服務條款，在 GitHub 平台上檢視本公開儲存庫及建立分支（fork）；
+     此項不構成第三點任何行為的授權。
+  4. 中華民國著作權法所允許的合理使用。
+
+五、第三方元件
+
+本著作所使用的第三方字型、程式庫或服務（例如 Google Fonts、Firebase），
+依其各自的授權條款辦理，不在本聲明的授權範圍內。
+
+六、名稱與標誌
+
+「豪智慧」、「MyopiaCare」、「Myopia Care」名稱、標誌及眼球寶寶角色，
+為豪智慧有限公司的識別標誌；未經書面同意，不得使用於任何商品、服務或宣傳。
+
+七、網站使用規範
+
+本著作依「現況」提供。網站的使用另依本網站的
+「服務條款」（https://myopiacare.site/terms/）及
+「隱私權政策」（https://myopiacare.site/privacy/）辦理。
+
+八、準據法與管轄法院
+
+本聲明以中華民國法律為準據法；如有爭議，
+以臺灣苗栗地方法院為第一審管轄法院。
+
+九、授權洽詢
+
+如需授權或有任何疑問，請透過本網站「聯絡我們」與我們聯繫：
+https://myopiacare.site/#contact
+
+
+----------------------------------------------------------------------
+English summary (the Chinese text above prevails in case of any difference)
+----------------------------------------------------------------------
+
+Copyright (c) 2026 Excellence Intelligence LTD. (豪智慧有限公司). All rights reserved.
+
+This repository is publicly visible but it is NOT open source. No license
+is granted except as expressly stated below.
+
+All source code (HTML, CSS, JavaScript), designs, the animated eye graphic,
+demo cards, the mascot character, logos, images, text and configuration files
+of this repository and of https://myopiacare.site (the "Work") are owned by
+Excellence Intelligence LTD. and protected by the copyright laws of Taiwan
+(R.O.C.) and international treaties.
+
+Without prior written permission you may NOT: copy, modify, adapt, distribute
+or publicly transmit the Work in whole or in part; build, host or operate
+another website, app or service based on the Work; frame or mirror the Work;
+remove or alter any copyright or other notices; use the Work commercially or
+to train or build artificial intelligence / machine learning models; or sell,
+rent, lend or sublicense the Work.
+
+You MAY: browse and use the website with a normal web browser; access it as a
+search engine for indexing; view and fork this public repository on GitHub as
+required by the GitHub Terms of Service (this grants no other right); and make
+fair use permitted by the Copyright Act of Taiwan (R.O.C.).
+
+Third-party fonts, libraries and services (e.g. Google Fonts, Firebase) are
+subject to their own licenses. The names "豪智慧", "MyopiaCare" and
+"Myopia Care", the logos and the mascot may not be used without written
+permission. Use of the website is also governed by its Terms of Service
+(https://myopiacare.site/terms/) and Privacy Policy
+(https://myopiacare.site/privacy/).
+
+This notice is governed by the laws of Taiwan (R.O.C.); the Taiwan Miaoli
+District Court shall be the court of first instance.
+
+Licensing inquiries: https://myopiacare.site/#contact
