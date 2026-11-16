@@ -34,9 +34,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap">
   <link rel="stylesheet" href="assets/css/style.css?v=45">
+  <link rel="stylesheet" href="assets/css/splash.css?v=46">
 
   <script src="assets/js/theme-init.js?v=45"></script>
   <script src="assets/js/protect.js?v=45"></script>
+  <script src="assets/js/splash.js?v=46"></script>
   <script src="assets/js/config.js?v=45" defer></script>
   <script src="assets/js/content.js?v=45" defer></script>
   <script src="assets/js/firebase-service.js?v=45" defer></script>
@@ -72,6 +74,39 @@
   </script>
 </head>
 <body class="page-home">
+  <!-- v46 開場動畫：每個瀏覽分頁第一次進入首頁時播放一次（assets/js/splash.js、assets/css/splash.css）。預設隱藏，沒有程式時不會出現。 -->
+  <div class="mc-splash" id="mc-splash" hidden aria-hidden="true">
+    <div class="mcs-lid mcs-lid-top"><div class="mcs-sky"></div></div>
+    <div class="mcs-lid mcs-lid-bottom"><div class="mcs-sky"></div></div>
+    <div class="mcs-stage">
+      <div class="mcs-emblem">
+        <span class="mcs-ring mcs-ring-1"></span>
+        <span class="mcs-ring mcs-ring-2"></span>
+        <span class="mcs-ring mcs-ring-3"><i></i><i></i></span>
+        <span class="mcs-halo"></span>
+        <div class="mcs-logo">
+          <div class="mcs-logo-card"><img src="assets/img/logo-mark.webp" alt="" width="512" height="512" draggable="false"><span class="mcs-sheen"></span></div>
+          <span class="mcs-orbit"></span>
+        </div>
+      </div>
+      <div class="mcs-word">
+        <svg viewBox="0 0 640 110" focusable="false">
+          <defs>
+            <linearGradient id="mcs-ink" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#ffffff"/>
+              <stop offset=".55" stop-color="#d4f3ff"/>
+              <stop offset="1" stop-color="#a8ecd5"/>
+            </linearGradient>
+          </defs>
+          <text class="mcs-word-fill" x="320" y="80" text-anchor="middle">Myopia Care</text>
+          <text class="mcs-word-line" x="320" y="80" text-anchor="middle">Myopia Care</text>
+        </svg>
+        <span class="mcs-pen"></span>
+      </div>
+      <p class="mcs-zh"><span>眼</span><span>科</span><span>數</span><span>據</span><span>紀</span><span>錄</span><i class="mcs-dot"></i><span>智</span><span>慧</span><span>照</span><span>護</span></p>
+    </div>
+    <button class="mcs-skip" type="button" tabindex="-1">略過 <span aria-hidden="true">›</span></button>
+  </div>
   <a class="skip-link" href="#main">跳到主要內容</a>
 
   <header class="site-header" id="site-header" data-edit="nav">

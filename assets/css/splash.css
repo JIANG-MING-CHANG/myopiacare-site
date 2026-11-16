@@ -1,0 +1,426 @@
+/* =====================================================================
+ * v46 開場動畫（只在首頁、每個瀏覽分頁第一次進入時播放一次；程式：assets/js/splash.js）
+ * 1. 標誌從背面翻轉流轉進場，光環沿著標誌外框流動，光澤掃過鏡片
+ * 2.「Myopia Care」以光筆描繪輪廓、再填入漸層墨色（動態書寫）
+ * 3.「眼科數據紀錄・智慧照護」以霞鶩文楷粗體（藝術字型）逐字浮現
+ * 4. 結束時像眼睛睜開：上下眼簾向外打開，露出首頁，首頁主視覺接著進場
+ * 任何時候點一下、按 Esc／Enter／空白鍵，或按右下角「略過」就直接進入網站。
+ * 沒有載入程式時這段完全不會出現（HTML 預設 hidden）；9 秒後一定自動關閉。
+ * ===================================================================== */
+
+.mc-splash[hidden] { display: none !important; }
+
+.mc-splash {
+  --mcs-logo: clamp(132px, 40vmin, 230px);
+  --mcs-ease: cubic-bezier(.2, .8, .2, 1);
+  --mcs-bg:
+    radial-gradient(70% 55% at 50% 36%, rgba(72, 132, 164, .42), rgba(72, 132, 164, 0) 70%),
+    radial-gradient(60% 48% at 92% 100%, rgba(38, 132, 104, .38), rgba(38, 132, 104, 0) 72%),
+    radial-gradient(55% 45% at 4% 0%, rgba(96, 128, 150, .35), rgba(96, 128, 150, 0) 70%),
+    linear-gradient(162deg, #2a4659 0%, #183447 46%, #0e2937 100%);
+  position: fixed;
+  inset: 0;
+  z-index: 2147483600;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: #fff;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: none;
+  /* 保險：萬一程式中途出錯，9 秒後畫面一定讓開 */
+  animation: mcs-failsafe 0s linear 9s forwards;
+}
+@keyframes mcs-failsafe { to { visibility: hidden; opacity: 0; pointer-events: none; } }
+
+/* 程式找到開場畫面之前的一瞬間先用底色蓋住，避免首頁先閃一下 */
+html.mc-splash-on:not(.mc-splash-live)::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 2147483600;
+  background: #183447;
+  animation: mcs-failsafe 0s linear 4s forwards;
+}
+/* 開場期間首頁主視覺的進場動畫先暫停，等眼簾打開時再播放（保險：9 秒後一定恢復） */
+html.mc-splash-hold { --mcs-hold: paused; animation: mcs-unhold 0s linear 9s forwards; }
+@keyframes mcs-unhold { to { --mcs-hold: running; } }
+html.mc-splash-hold .hero-inner > * { animation-play-state: var(--mcs-hold, running) !important; }
+
+/* ---------- 上下眼簾（背景） ---------- */
+.mcs-lid {
+  position: absolute;
+  left: -12%;
+  right: -12%;
+  height: 50.6%;
+  overflow: hidden;
+  will-change: transform;
+}
+.mcs-lid-top { top: 0; }
+.mcs-lid-bottom { bottom: 0; }
+.mcs-sky { position: absolute; left: 0; right: 0; height: 197.6%; background: var(--mcs-bg); }
+.mcs-lid-top .mcs-sky { top: 0; }
+.mcs-lid-bottom .mcs-sky { bottom: 0; }
+.mcs-lid::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  pointer-events: none;
+}
+.mcs-lid-top::after { border-bottom: 2px solid rgba(160, 228, 255, .75); box-shadow: 0 10px 28px -10px rgba(120, 210, 255, .55); }
+.mcs-lid-bottom::after { border-top: 2px solid rgba(160, 228, 255, .75); box-shadow: 0 -10px 28px -10px rgba(120, 210, 255, .55); }
+
+/* ---------- 中央內容 ---------- */
+.mcs-stage {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 24px 16px;
+  text-align: center;
+}
+
+/* 標誌與周圍的光圈 */
+.mcs-emblem {
+  position: relative;
+  width: var(--mcs-logo);
+  height: var(--mcs-logo);
+  display: grid;
+  place-items: center;
+}
+.mcs-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, .16);
+  transform: translate(-50%, -50%) scale(.6);
+  opacity: 0;
+  pointer-events: none;
+}
+.mcs-ring-1 { width: 158%; height: 158%; }
+.mcs-ring-2 { width: 214%; height: 214%; border-color: rgba(255, 255, 255, .1); }
+.mcs-ring-3 { width: 282%; height: 282%; border: 1px dashed rgba(170, 225, 255, .16); }
+.mcs-ring-3 i {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: #bff0ff;
+  box-shadow: 0 0 10px 3px rgba(130, 220, 255, .7);
+}
+.mcs-ring-3 i:first-child { left: 50%; top: 0; }
+.mcs-ring-3 i:last-child { left: 50%; top: 100%; width: 4px; height: 4px; margin: -2px 0 0 -2px; background: #c9ffe9; box-shadow: 0 0 8px 2px rgba(120, 240, 190, .6); }
+.mcs-halo {
+  position: absolute;
+  inset: -40%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(120, 205, 245, .34), rgba(120, 205, 245, 0));
+  opacity: 0;
+  pointer-events: none;
+}
+
+.mcs-logo {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  perspective: 900px;
+}
+.mcs-logo-card {
+  position: absolute;
+  inset: 0;
+  border-radius: 22%;
+  overflow: hidden;
+  opacity: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  box-shadow: 0 22px 46px -12px rgba(0, 0, 0, .55), 0 0 0 1px rgba(255, 255, 255, .06);
+  will-change: transform, opacity;
+}
+.mcs-logo-card img { display: block; width: 100%; height: 100%; -webkit-user-drag: none; }
+.mcs-sheen { position: absolute; inset: 0; pointer-events: none; }
+.mcs-sheen::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  bottom: -40%;
+  left: -70%;
+  width: 42%;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, .62) 50%, rgba(255, 255, 255, 0));
+  transform: skewX(-18deg);
+  opacity: 0;
+}
+/* 沿著標誌外框流動的光 */
+@property --mcs-a { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+.mcs-orbit {
+  position: absolute;
+  inset: -6.5%;
+  border-radius: 25%;
+  padding: 2px;
+  background: conic-gradient(from var(--mcs-a), rgba(150, 230, 255, 0) 0deg, rgba(150, 230, 255, 0) 200deg, rgba(150, 230, 255, .55) 270deg, #ffffff 318deg, rgba(150, 255, 210, .7) 336deg, rgba(150, 230, 255, 0) 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  filter: drop-shadow(0 0 6px rgba(140, 225, 255, .85));
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 「Myopia Care」動態書寫 */
+.mcs-word {
+  position: relative;
+  width: min(84vw, 540px);
+  margin: clamp(26px, 5vh, 42px) auto 0;
+}
+.mcs-word svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  -webkit-mask-image: linear-gradient(90deg, #000 0 46%, transparent 54% 100%);
+  mask-image: linear-gradient(90deg, #000 0 46%, transparent 54% 100%);
+  -webkit-mask-size: 260% 100%;
+  mask-size: 260% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: 100% 0;
+  mask-position: 100% 0;
+}
+.mcs-word text {
+  font-family: Montserrat, 'Noto Sans TC', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 68px;
+  font-weight: 500;
+  letter-spacing: 5px;
+}
+.mcs-word-fill { fill: url(#mcs-ink); fill-opacity: 0; }
+.mcs-word-line {
+  fill: none;
+  stroke: url(#mcs-ink);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 480;
+  stroke-dashoffset: 480;
+}
+/* 書寫的光筆 */
+.mcs-pen {
+  position: absolute;
+  left: -30%;
+  top: 52%;
+  width: 7px;
+  height: 7px;
+  margin: -3.5px 0 0 -3.5px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 10px 3px rgba(160, 235, 255, .95), 0 0 30px 10px rgba(110, 200, 255, .45);
+  opacity: 0;
+  pointer-events: none;
+}
+.mcs-pen::after {
+  content: '';
+  position: absolute;
+  right: 3px;
+  top: 50%;
+  width: 70px;
+  height: 2px;
+  margin-top: -1px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(160, 235, 255, 0), rgba(200, 245, 255, .8));
+}
+
+/* 中文藝術字 */
+.mcs-zh {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: .06em;
+  margin: clamp(10px, 2.2vh, 18px) 0 0;
+  font-family: 'LXGW WenKai TC', 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+  font-size: clamp(19px, 5.4vw, 31px);
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: .2em;
+  white-space: nowrap;
+}
+.mcs-zh span {
+  display: inline-block;
+  color: #eaf8ff;
+  background: linear-gradient(180deg, #ffffff 0%, #d9f3ff 55%, #a9e9d6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+  opacity: 0;
+}
+.mcs-dot {
+  display: inline-block;
+  width: .26em;
+  height: .26em;
+  margin: 0 .55em 0 .35em;
+  border-radius: 50%;
+  background: #bdf3e1;
+  box-shadow: 0 0 10px 2px rgba(150, 240, 205, .75);
+  opacity: 0;
+  transform: scale(0);
+}
+
+/* 右下角「略過」 */
+.mcs-skip {
+  position: absolute;
+  z-index: 3;
+  right: max(18px, env(safe-area-inset-right));
+  bottom: max(18px, env(safe-area-inset-bottom));
+  padding: 8px 16px 8px 18px;
+  border: 1px solid rgba(255, 255, 255, .22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .08);
+  color: rgba(255, 255, 255, .86);
+  font: 500 13px/1.2 'Noto Sans TC', 'PingFang TC', sans-serif;
+  letter-spacing: .14em;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: background .25s ease, color .25s ease;
+}
+.mcs-skip:hover { background: rgba(255, 255, 255, .18); color: #fff; }
+
+/* ===================== 播放時間軸 ===================== */
+/* 光圈：畫出、慢慢旋轉 */
+.mc-splash.is-play .mcs-ring-1 { animation: mcs-ring-in 1.3s var(--mcs-ease) .05s forwards; }
+.mc-splash.is-play .mcs-ring-2 { animation: mcs-ring-in 1.5s var(--mcs-ease) .15s forwards; }
+.mc-splash.is-play .mcs-ring-3 { animation: mcs-ring-in 1.7s var(--mcs-ease) .25s forwards, mcs-turn 14s linear .25s infinite; }
+@keyframes mcs-ring-in { to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+@keyframes mcs-turn { from { rotate: 0deg; } to { rotate: 360deg; } }
+.mc-splash.is-play .mcs-halo { animation: mcs-halo 1.6s ease .4s forwards, mcs-breathe 3.2s ease-in-out 2s infinite alternate; }
+@keyframes mcs-halo { to { opacity: 1; } }
+@keyframes mcs-breathe { from { opacity: 1; transform: scale(1); } to { opacity: .55; transform: scale(1.08); } }
+
+/* 標誌：圖片準備好後（程式加上 is-logo）從背面翻轉流轉進場，之後輕輕漂浮 */
+.mc-splash.is-logo .mcs-logo { animation: mcs-float 4s ease-in-out 1.5s infinite alternate; }
+.mc-splash.is-logo .mcs-logo-card { animation: mcs-logo-in 1.5s cubic-bezier(.25, .8, .3, 1.06) .1s forwards; }
+/* 從側面（幾乎看不見的角度）一路轉正：整段旋轉都看得到，最後微微回彈定位 */
+@keyframes mcs-logo-in {
+  0% { opacity: 0; transform: translateY(14px) rotateY(-86deg) rotateX(14deg) rotateZ(-6deg) scale(.6); filter: blur(8px); }
+  30% { opacity: 1; filter: blur(1.5px); }
+  100% { opacity: 1; transform: none; filter: none; }
+}
+@keyframes mcs-float { from { transform: translateY(0); } to { transform: translateY(-7px); } }
+.mc-splash.is-logo .mcs-sheen::before { animation: mcs-sheen 1.05s ease-in-out 1.4s forwards; }
+@keyframes mcs-sheen { 0% { left: -70%; opacity: 1; } 100% { left: 135%; opacity: 1; } }
+.mc-splash.is-logo .mcs-orbit { animation: mcs-fadein .7s ease 1.15s forwards, mcs-orbit 2.6s linear 1.15s infinite; }
+@keyframes mcs-fadein { to { opacity: 1; } }
+@keyframes mcs-orbit { to { --mcs-a: 360deg; } }
+
+/* 文字：程式在字型準備好之後加上 is-write */
+.mc-splash.is-write .mcs-word svg { animation: mcs-reveal 1.6s linear forwards; }
+@keyframes mcs-reveal { to { -webkit-mask-position: 0 0; mask-position: 0 0; } }
+.mc-splash.is-write .mcs-word-line { animation: mcs-draw 1.9s ease-in-out forwards, mcs-line-dim .9s ease 1.9s forwards; }
+@keyframes mcs-draw { to { stroke-dashoffset: 0; } }
+@keyframes mcs-line-dim { to { stroke-opacity: .28; } }
+.mc-splash.is-write .mcs-word-fill { animation: mcs-fill 1s ease .95s forwards; }
+@keyframes mcs-fill { to { fill-opacity: 1; } }
+.mc-splash.is-write .mcs-pen { animation: mcs-pen 1.6s linear forwards; }
+@keyframes mcs-pen {
+  0% { left: -30%; opacity: 0; transform: translateY(0); }
+  14% { opacity: 0; }
+  22% { opacity: 1; transform: translateY(-10px); }
+  32% { transform: translateY(9px); }
+  42% { transform: translateY(-7px); }
+  52% { transform: translateY(10px); }
+  62% { transform: translateY(-9px); }
+  72% { transform: translateY(6px); opacity: 1; }
+  84% { opacity: 0; transform: translateY(0); }
+  100% { left: 130%; opacity: 0; }
+}
+.mc-splash.is-write .mcs-zh span,
+.mc-splash.is-write .mcs-dot { animation: mcs-char .75s var(--mcs-ease) forwards; }
+.mc-splash.is-write .mcs-dot { animation-name: mcs-dot; }
+@keyframes mcs-char {
+  0% { opacity: 0; transform: translateY(16px) scale(.86); filter: blur(8px); }
+  100% { opacity: 1; transform: none; filter: drop-shadow(0 0 8px rgba(150, 225, 255, .35)); }
+}
+@keyframes mcs-dot { 0% { opacity: 0; transform: scale(0); } 60% { opacity: 1; transform: scale(1.5); } 100% { opacity: 1; transform: scale(1); } }
+.mc-splash.is-write .mcs-zh > :nth-child(1) { animation-delay: 1.5s; }
+.mc-splash.is-write .mcs-zh > :nth-child(2) { animation-delay: 1.58s; }
+.mc-splash.is-write .mcs-zh > :nth-child(3) { animation-delay: 1.66s; }
+.mc-splash.is-write .mcs-zh > :nth-child(4) { animation-delay: 1.74s; }
+.mc-splash.is-write .mcs-zh > :nth-child(5) { animation-delay: 1.82s; }
+.mc-splash.is-write .mcs-zh > :nth-child(6) { animation-delay: 1.9s; }
+.mc-splash.is-write .mcs-zh > :nth-child(7) { animation-delay: 1.98s; }
+.mc-splash.is-write .mcs-zh > :nth-child(8) { animation-delay: 2.06s; }
+.mc-splash.is-write .mcs-zh > :nth-child(9) { animation-delay: 2.14s; }
+.mc-splash.is-write .mcs-zh > :nth-child(10) { animation-delay: 2.22s; }
+.mc-splash.is-write .mcs-zh > :nth-child(11) { animation-delay: 2.3s; }
+
+.mc-splash.is-play .mcs-skip { animation: mcs-fadein .5s ease .7s forwards; }
+
+/* ===================== 結束：眼簾打開 ===================== */
+.mc-splash.is-exit,
+.mc-splash.is-skip { pointer-events: none; }
+.mc-splash.is-exit .mcs-stage { animation: mcs-stage-out .5s ease-in forwards; }
+.mc-splash.is-exit .mcs-skip { animation: mcs-fadeout .3s ease forwards; }
+.mc-splash.is-exit .mcs-lid-top { animation: mcs-lid-top .9s cubic-bezier(.7, 0, .24, 1) .42s forwards; }
+.mc-splash.is-exit .mcs-lid-bottom { animation: mcs-lid-bottom .9s cubic-bezier(.7, 0, .24, 1) .42s forwards; }
+.mc-splash.is-exit .mcs-lid::after { animation: mcs-edge .9s ease .42s forwards; }
+.mc-splash.is-skip .mcs-stage { animation: mcs-stage-out .3s ease-in forwards; }
+.mc-splash.is-skip .mcs-skip { animation: mcs-fadeout .2s ease forwards; }
+.mc-splash.is-skip .mcs-lid-top { animation: mcs-lid-top .58s cubic-bezier(.7, 0, .24, 1) .1s forwards; }
+.mc-splash.is-skip .mcs-lid-bottom { animation: mcs-lid-bottom .58s cubic-bezier(.7, 0, .24, 1) .1s forwards; }
+.mc-splash.is-skip .mcs-lid::after { animation: mcs-edge .58s ease .1s forwards; }
+@keyframes mcs-stage-out { to { opacity: 0; transform: scale(1.07); filter: blur(6px); } }
+@keyframes mcs-fadeout { to { opacity: 0; } }
+@keyframes mcs-lid-top {
+  0% { transform: translateY(0); border-radius: 0 0 0 0 / 0 0 0 0; }
+  28% { transform: translateY(-6%); border-radius: 0 0 50% 50% / 0 0 26% 26%; }
+  100% { transform: translateY(-104%); border-radius: 0 0 50% 50% / 0 0 26% 26%; }
+}
+@keyframes mcs-lid-bottom {
+  0% { transform: translateY(0); border-radius: 0 0 0 0 / 0 0 0 0; }
+  28% { transform: translateY(6%); border-radius: 50% 50% 0 0 / 26% 26% 0 0; }
+  100% { transform: translateY(104%); border-radius: 50% 50% 0 0 / 26% 26% 0 0; }
+}
+@keyframes mcs-edge { 0% { opacity: 0; } 25% { opacity: 1; } 100% { opacity: .6; } }
+
+/* ===================== 減少動態效果（系統設定） ===================== */
+/* 只做淡入、停留、淡出，沒有翻轉、移動與書寫 */
+.mc-splash.is-reduced .mcs-stage { animation: mcs-fadein-from0 .5s ease forwards; opacity: 0; }
+.mc-splash.is-reduced .mcs-stage *,
+.mc-splash.is-reduced .mcs-stage *::before,
+.mc-splash.is-reduced .mcs-stage *::after { animation: none !important; }
+.mc-splash.is-reduced .mcs-ring { opacity: 1; transform: translate(-50%, -50%); }
+.mc-splash.is-reduced .mcs-halo,
+.mc-splash.is-reduced .mcs-logo-card,
+.mc-splash.is-reduced .mcs-zh span,
+.mc-splash.is-reduced .mcs-dot { opacity: 1; transform: none; }
+.mc-splash.is-reduced .mcs-orbit,
+.mc-splash.is-reduced .mcs-pen,
+.mc-splash.is-reduced .mcs-sheen,
+.mc-splash.is-reduced .mcs-word-line { display: none; }
+.mc-splash.is-reduced .mcs-word svg { -webkit-mask-image: none; mask-image: none; }
+.mc-splash.is-reduced .mcs-word-fill { fill-opacity: 1; }
+.mc-splash.is-reduced .mcs-skip { opacity: 1; }
+.mc-splash.is-reduced.is-exit,
+.mc-splash.is-reduced.is-skip { animation: mcs-fadeout .5s ease forwards; }
+.mc-splash.is-reduced.is-exit .mcs-lid,
+.mc-splash.is-reduced.is-skip .mcs-lid,
+.mc-splash.is-reduced.is-exit .mcs-stage,
+.mc-splash.is-reduced.is-skip .mcs-stage,
+.mc-splash.is-reduced .mcs-lid::after { animation: none; }
+@keyframes mcs-fadein-from0 { from { opacity: 0; } to { opacity: 1; } }
+
+/* 很矮的橫向手機：字與標誌稍微縮小 */
+@media (max-height: 460px) {
+  .mc-splash { --mcs-logo: clamp(96px, 28vmin, 150px); }
+  .mcs-word { width: min(58vw, 400px); margin-top: 16px; }
+  .mcs-zh { font-size: clamp(16px, 4.4vh, 22px); margin-top: 8px; }
+}
+@media print { .mc-splash { display: none !important; } }
