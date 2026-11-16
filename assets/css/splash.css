@@ -235,42 +235,56 @@ html.mc-splash-hold .hero-inner > * { animation-play-state: var(--mcs-hold, runn
   background: linear-gradient(90deg, rgba(160, 235, 255, 0), rgba(200, 245, 255, .8));
 }
 
-/* 中文藝術字 */
+/* 中文藝術字（v47：字放大、改用實色亮白加柔光，筆畫更清楚） */
 .mcs-zh {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-wrap: nowrap;
-  gap: .06em;
-  margin: clamp(10px, 2.2vh, 18px) 0 0;
+  gap: .04em;
+  margin: clamp(12px, 2.4vh, 20px) 0 0;
   font-family: 'LXGW WenKai TC', 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
-  font-size: clamp(19px, 5.4vw, 31px);
+  font-size: clamp(18px, 5.6vw, 38px);
   font-weight: 700;
   line-height: 1.4;
-  letter-spacing: .2em;
+  letter-spacing: .12em;
   white-space: nowrap;
 }
 .mcs-zh span {
   display: inline-block;
-  color: #eaf8ff;
-  background: linear-gradient(180deg, #ffffff 0%, #d9f3ff 55%, #a9e9d6 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: none;
+  color: #f6fcff;
+  text-shadow: 0 0 1px rgba(255, 255, 255, .55), 0 0 14px rgba(120, 210, 255, .5), 0 2px 6px rgba(0, 0, 0, .4);
   opacity: 0;
 }
 .mcs-dot {
   display: inline-block;
-  width: .26em;
-  height: .26em;
-  margin: 0 .55em 0 .35em;
+  width: .24em;
+  height: .24em;
+  margin: 0 .42em 0 .3em;
   border-radius: 50%;
-  background: #bdf3e1;
-  box-shadow: 0 0 10px 2px rgba(150, 240, 205, .75);
+  background: #c8f6e6;
+  box-shadow: 0 0 10px 2px rgba(150, 240, 205, .8);
   opacity: 0;
   transform: scale(0);
 }
+/* 寬螢幕：字句兩側加上細線（與首頁副標題相同的風格），文字出齊後向外畫出 */
+@media (min-width: 560px) and (min-height: 461px) {
+  .mcs-zh::before,
+  .mcs-zh::after {
+    content: '';
+    flex: none;
+    width: clamp(28px, 5vw, 64px);
+    height: 1px;
+    margin: 0 .7em;
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  .mcs-zh::before { background: linear-gradient(90deg, rgba(160, 230, 255, 0), rgba(160, 230, 255, .75)); transform-origin: right center; }
+  .mcs-zh::after { background: linear-gradient(90deg, rgba(160, 230, 255, .75), rgba(160, 230, 255, 0)); transform-origin: left center; }
+  .mc-splash.is-write .mcs-zh::before,
+  .mc-splash.is-write .mcs-zh::after { animation: mcs-rule .8s var(--mcs-ease) 2.75s forwards; }
+}
+@keyframes mcs-rule { to { opacity: 1; transform: scaleX(1); } }
 
 /* 右下角「略過」 */
 .mcs-skip {
@@ -292,6 +306,56 @@ html.mc-splash-hold .hero-inner > * { animation-play-state: var(--mcs-hold, runn
   transition: background .25s ease, color .25s ease;
 }
 .mcs-skip:hover { background: rgba(255, 255, 255, .18); color: #fff; }
+
+/* 左下角「開啟音樂」（v47）：瀏覽器規定要訪客點一下才能有聲音 */
+.mcs-sound[hidden] { display: none !important; }
+.mcs-sound {
+  position: absolute;
+  z-index: 3;
+  left: max(18px, env(safe-area-inset-left));
+  bottom: max(18px, env(safe-area-inset-bottom));
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 16px 8px 14px;
+  border: 1px solid rgba(160, 230, 255, .38);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .08);
+  color: rgba(255, 255, 255, .92);
+  font: 500 13px/1.2 'Noto Sans TC', 'PingFang TC', sans-serif;
+  letter-spacing: .14em;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: background .25s ease, border-color .25s ease;
+}
+.mcs-sound:hover { background: rgba(255, 255, 255, .18); }
+.mcs-sound::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: 1px solid rgba(160, 230, 255, .6);
+  opacity: 0;
+  pointer-events: none;
+}
+.mcs-sound-on { display: none; }
+.mcs-sound.is-on .mcs-sound-on { display: inline; }
+.mcs-sound.is-on .mcs-sound-off { display: none; }
+.mcs-eq { display: inline-flex; align-items: flex-end; gap: 2px; height: 12px; }
+.mcs-eq i { display: block; width: 2px; height: 4px; border-radius: 1px; background: #9fe6ff; }
+.mcs-eq i:nth-child(2) { height: 8px; }
+.mcs-eq i:nth-child(3) { height: 6px; }
+.mcs-eq i:nth-child(4) { height: 10px; }
+.mcs-sound.is-on .mcs-eq i { animation: mcs-eq .9s ease-in-out infinite alternate; }
+.mcs-sound.is-on .mcs-eq i:nth-child(2) { animation-delay: -.3s; }
+.mcs-sound.is-on .mcs-eq i:nth-child(3) { animation-delay: -.6s; }
+.mcs-sound.is-on .mcs-eq i:nth-child(4) { animation-delay: -.15s; }
+@keyframes mcs-eq { from { height: 3px; } to { height: 12px; } }
+/* 還沒開啟時，外框輕輕擴散提示可以點 */
+.mc-splash.is-play .mcs-sound:not(.is-on)::before { animation: mcs-ping 1.8s ease-out 1.2s infinite; }
+@keyframes mcs-ping { 0% { opacity: .9; transform: scale(1); } 100% { opacity: 0; transform: scale(1.35, 1.6); } }
 
 /* ===================== 播放時間軸 ===================== */
 /* 光圈：畫出、慢慢旋轉 */
@@ -342,37 +406,44 @@ html.mc-splash-hold .hero-inner > * { animation-play-state: var(--mcs-hold, runn
   100% { left: 130%; opacity: 0; }
 }
 .mc-splash.is-write .mcs-zh span,
-.mc-splash.is-write .mcs-dot { animation: mcs-char .75s var(--mcs-ease) forwards; }
+.mc-splash.is-write .mcs-dot { animation: mcs-char .7s var(--mcs-ease) forwards; }
 .mc-splash.is-write .mcs-dot { animation-name: mcs-dot; }
 @keyframes mcs-char {
-  0% { opacity: 0; transform: translateY(16px) scale(.86); filter: blur(8px); }
-  100% { opacity: 1; transform: none; filter: drop-shadow(0 0 8px rgba(150, 225, 255, .35)); }
+  0% { opacity: 0; transform: translateY(12px) scale(.9); filter: blur(4px); }
+  70% { opacity: 1; filter: blur(0); }
+  100% { opacity: 1; transform: none; filter: none; }
 }
 @keyframes mcs-dot { 0% { opacity: 0; transform: scale(0); } 60% { opacity: 1; transform: scale(1.5); } 100% { opacity: 1; transform: scale(1); } }
-.mc-splash.is-write .mcs-zh > :nth-child(1) { animation-delay: 1.5s; }
-.mc-splash.is-write .mcs-zh > :nth-child(2) { animation-delay: 1.58s; }
-.mc-splash.is-write .mcs-zh > :nth-child(3) { animation-delay: 1.66s; }
-.mc-splash.is-write .mcs-zh > :nth-child(4) { animation-delay: 1.74s; }
-.mc-splash.is-write .mcs-zh > :nth-child(5) { animation-delay: 1.82s; }
-.mc-splash.is-write .mcs-zh > :nth-child(6) { animation-delay: 1.9s; }
-.mc-splash.is-write .mcs-zh > :nth-child(7) { animation-delay: 1.98s; }
-.mc-splash.is-write .mcs-zh > :nth-child(8) { animation-delay: 2.06s; }
-.mc-splash.is-write .mcs-zh > :nth-child(9) { animation-delay: 2.14s; }
-.mc-splash.is-write .mcs-zh > :nth-child(10) { animation-delay: 2.22s; }
-.mc-splash.is-write .mcs-zh > :nth-child(11) { animation-delay: 2.3s; }
+/* 12 個字＋中間圓點依序出現：書寫開始後 1.35 秒起，每 0.07 秒一個（開場音樂的鈴聲也照這個時間） */
+.mc-splash.is-write .mcs-zh > :nth-child(1) { animation-delay: 1.35s; }
+.mc-splash.is-write .mcs-zh > :nth-child(2) { animation-delay: 1.42s; }
+.mc-splash.is-write .mcs-zh > :nth-child(3) { animation-delay: 1.49s; }
+.mc-splash.is-write .mcs-zh > :nth-child(4) { animation-delay: 1.56s; }
+.mc-splash.is-write .mcs-zh > :nth-child(5) { animation-delay: 1.63s; }
+.mc-splash.is-write .mcs-zh > :nth-child(6) { animation-delay: 1.7s; }
+.mc-splash.is-write .mcs-zh > :nth-child(7) { animation-delay: 1.77s; }
+.mc-splash.is-write .mcs-zh > :nth-child(8) { animation-delay: 1.84s; }
+.mc-splash.is-write .mcs-zh > :nth-child(9) { animation-delay: 1.91s; }
+.mc-splash.is-write .mcs-zh > :nth-child(10) { animation-delay: 1.98s; }
+.mc-splash.is-write .mcs-zh > :nth-child(11) { animation-delay: 2.05s; }
+.mc-splash.is-write .mcs-zh > :nth-child(12) { animation-delay: 2.12s; }
+.mc-splash.is-write .mcs-zh > :nth-child(13) { animation-delay: 2.19s; }
 
-.mc-splash.is-play .mcs-skip { animation: mcs-fadein .5s ease .7s forwards; }
+.mc-splash.is-play .mcs-skip,
+.mc-splash.is-play .mcs-sound { animation: mcs-fadein .5s ease .7s forwards; }
 
 /* ===================== 結束：眼簾打開 ===================== */
 .mc-splash.is-exit,
 .mc-splash.is-skip { pointer-events: none; }
 .mc-splash.is-exit .mcs-stage { animation: mcs-stage-out .5s ease-in forwards; }
-.mc-splash.is-exit .mcs-skip { animation: mcs-fadeout .3s ease forwards; }
+.mc-splash.is-exit .mcs-skip,
+.mc-splash.is-exit .mcs-sound { animation: mcs-fadeout .3s ease forwards; }
 .mc-splash.is-exit .mcs-lid-top { animation: mcs-lid-top .9s cubic-bezier(.7, 0, .24, 1) .42s forwards; }
 .mc-splash.is-exit .mcs-lid-bottom { animation: mcs-lid-bottom .9s cubic-bezier(.7, 0, .24, 1) .42s forwards; }
 .mc-splash.is-exit .mcs-lid::after { animation: mcs-edge .9s ease .42s forwards; }
 .mc-splash.is-skip .mcs-stage { animation: mcs-stage-out .3s ease-in forwards; }
-.mc-splash.is-skip .mcs-skip { animation: mcs-fadeout .2s ease forwards; }
+.mc-splash.is-skip .mcs-skip,
+.mc-splash.is-skip .mcs-sound { animation: mcs-fadeout .2s ease forwards; }
 .mc-splash.is-skip .mcs-lid-top { animation: mcs-lid-top .58s cubic-bezier(.7, 0, .24, 1) .1s forwards; }
 .mc-splash.is-skip .mcs-lid-bottom { animation: mcs-lid-bottom .58s cubic-bezier(.7, 0, .24, 1) .1s forwards; }
 .mc-splash.is-skip .mcs-lid::after { animation: mcs-edge .58s ease .1s forwards; }
@@ -407,7 +478,12 @@ html.mc-splash-hold .hero-inner > * { animation-play-state: var(--mcs-hold, runn
 .mc-splash.is-reduced .mcs-word-line { display: none; }
 .mc-splash.is-reduced .mcs-word svg { -webkit-mask-image: none; mask-image: none; }
 .mc-splash.is-reduced .mcs-word-fill { fill-opacity: 1; }
-.mc-splash.is-reduced .mcs-skip { opacity: 1; }
+.mc-splash.is-reduced .mcs-skip,
+.mc-splash.is-reduced .mcs-sound { opacity: 1; }
+.mc-splash.is-reduced .mcs-zh::before,
+.mc-splash.is-reduced .mcs-zh::after { opacity: 1; transform: none; }
+.mc-splash.is-reduced .mcs-sound::before,
+.mc-splash.is-reduced .mcs-eq i { animation: none !important; }
 .mc-splash.is-reduced.is-exit,
 .mc-splash.is-reduced.is-skip { animation: mcs-fadeout .5s ease forwards; }
 .mc-splash.is-reduced.is-exit .mcs-lid,
@@ -421,6 +497,6 @@ html.mc-splash-hold .hero-inner > * { animation-play-state: var(--mcs-hold, runn
 @media (max-height: 460px) {
   .mc-splash { --mcs-logo: clamp(96px, 28vmin, 150px); }
   .mcs-word { width: min(58vw, 400px); margin-top: 16px; }
-  .mcs-zh { font-size: clamp(16px, 4.4vh, 22px); margin-top: 8px; }
+  .mcs-zh { font-size: clamp(16px, 4.8vh, 24px); margin-top: 8px; }
 }
 @media print { .mc-splash { display: none !important; } }
