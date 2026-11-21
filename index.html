@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>豪智慧有限公司｜MyopiaCare 眼科數據紀錄</title>
+  <title>豪智慧有限公司｜MyopiaCare 眼球屈光度數</title>
   <meta name="description" content="豪智慧有限公司由醫師創立，提供 MyopiaCare 眼科數據雲端紀錄、AI 數據趨勢圖表與回診提醒，協助醫師與家長清楚溝通。">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://api.ipify.org https://api64.ipify.org https://www.google.com; frame-src https://*.firebaseapp.com https://www.google.com; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -12,7 +12,7 @@
 
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="MyopiaCare｜豪智慧有限公司">
-  <meta property="og:title" content="豪智慧有限公司｜MyopiaCare 眼科數據紀錄">
+  <meta property="og:title" content="豪智慧有限公司｜MyopiaCare 眼球屈光度數">
   <meta property="og:description" content="把每一次檢查紀錄整理成看得見的成長曲線，讓醫師與家長溝通更清楚。">
   <meta property="og:url" content="https://myopiacare.site/">
   <meta property="og:image" content="https://myopiacare.site/assets/img/og-image.jpg">
@@ -33,18 +33,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap">
-  <link rel="stylesheet" href="assets/css/style.css?v=45">
-  <link rel="stylesheet" href="assets/css/splash.css?v=47">
+  <link rel="stylesheet" href="assets/css/style.css?v=49">
+  <link rel="stylesheet" href="assets/css/splash.css?v=49">
 
-  <script src="assets/js/theme-init.js?v=45"></script>
-  <script src="assets/js/protect.js?v=45"></script>
-  <script src="assets/js/splash.js?v=47"></script>
-  <script src="assets/js/config.js?v=45" defer></script>
-  <script src="assets/js/content.js?v=45" defer></script>
-  <script src="assets/js/firebase-service.js?v=45" defer></script>
-  <script src="assets/js/core.js?v=45" defer></script>
-  <script src="assets/js/assistant.js?v=45" defer></script>
-  <script src="assets/js/main.js?v=45" defer></script>
+  <script src="assets/js/theme-init.js?v=49"></script>
+  <script src="assets/js/protect.js?v=49"></script>
+  <!-- v49：config.js 移到開場動畫程式之前（不加 defer），開場一開始就能讀取後台的開場動畫設定 -->
+  <script src="assets/js/config.js?v=49"></script>
+  <script src="assets/js/splash.js?v=49"></script>
+  <script src="assets/js/content.js?v=49" defer></script>
+  <script src="assets/js/firebase-service.js?v=49" defer></script>
+  <script src="assets/js/core.js?v=49" defer></script>
+  <script src="assets/js/assistant.js?v=49" defer></script>
+  <script src="assets/js/main.js?v=49" defer></script>
 
   <script type="application/ld+json">
   {
@@ -75,8 +76,11 @@
 </head>
 <body class="page-home">
   <!-- v46 開場動畫：每個瀏覽分頁第一次進入首頁時播放一次（assets/js/splash.js、assets/css/splash.css）。預設隱藏，沒有程式時不會出現。
-       v47：中文字句改為「眼科數據紀錄 ・ 智慧照護管理」並停留更久；左下角「開啟音樂」播放開場音樂（assets/js/splash-audio.js）。 -->
+       v47：中文字句停留更久；左下角「開啟音樂」播放開場音樂（assets/js/splash-audio.js）。
+       v48：中文字句改為「眼球屈光度數 ・ 智慧照護管理」。
+       v49：文字、動態腳本、出場形式、配色、字型、大小、速度都在後台「開場動畫」修改；下面是預設內容。 -->
   <div class="mc-splash" id="mc-splash" hidden aria-hidden="true">
+    <div class="mcs-frame">
     <div class="mcs-lid mcs-lid-top"><div class="mcs-sky"></div></div>
     <div class="mcs-lid mcs-lid-bottom"><div class="mcs-sky"></div></div>
     <div class="mcs-stage">
@@ -85,6 +89,9 @@
         <span class="mcs-ring mcs-ring-2"></span>
         <span class="mcs-ring mcs-ring-3"><i></i><i></i></span>
         <span class="mcs-halo"></span>
+        <span class="mcs-burst"></span>
+        <span class="mcs-focus"><i></i><i></i><i></i><i></i></span>
+        <span class="mcs-scan"></span>
         <div class="mcs-logo">
           <div class="mcs-logo-card"><img src="assets/img/logo-mark.webp" alt="" width="512" height="512" draggable="false"><span class="mcs-sheen"></span></div>
           <span class="mcs-orbit"></span>
@@ -104,10 +111,12 @@
         </svg>
         <span class="mcs-pen"></span>
       </div>
-      <p class="mcs-zh"><span>眼</span><span>科</span><span>數</span><span>據</span><span>紀</span><span>錄</span><i class="mcs-dot"></i><span>智</span><span>慧</span><span>照</span><span>護</span><span>管</span><span>理</span></p>
+      <p class="mcs-zh"><span>眼</span><span>球</span><span>屈</span><span>光</span><span>度</span><span>數</span><i class="mcs-dot"></i><span>智</span><span>慧</span><span>照</span><span>護</span><span>管</span><span>理</span></p>
     </div>
+    </div>
+    <span class="mcs-iris-ring" aria-hidden="true"></span>
     <button class="mcs-sound" type="button" tabindex="-1" hidden aria-pressed="false"><span class="mcs-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="mcs-sound-off">開啟音樂</span><span class="mcs-sound-on">關閉音樂</span></button>
-    <button class="mcs-skip" type="button" tabindex="-1">略過 <span aria-hidden="true">›</span></button>
+    <button class="mcs-skip" type="button" tabindex="-1"><span class="mcs-skip-label">略過</span> <span aria-hidden="true">›</span></button>
   </div>
   <a class="skip-link" href="#main">跳到主要內容</a>
 
